@@ -2,22 +2,33 @@ from time import sleep
 from dac import DAC
 from mixer import Mixer
 from oscilator import Oscilator
+import numpy as np
+from fractions import Fraction
+from instrument import Instrument
 
-STEP_SLEEP_INTERVAL = 0.2
+DEFAULT_BEAT_INTERVAL = 0.2
 BUFFER_SIZE = 2 ** 10
 
 if __name__ == "__main__":
 
     oscilator_list = []
-    frequencies = [200, 300, 400, 1000, 4000, 4090]
-    gains = [.1, .1, .1, .1, .01, .01]
+    frequencies = [2000, 300, 400, 410, 880, 1000]
+
     rythms = []
-    rythms.append([1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0])
-    rythms.append([0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1])
+    rythms.append([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    rythms.append([1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
+    rythms.append([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+    rythms.append([1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
     rythms.append([1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1])
-    rythms.append([0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0])
-    rythms.append([1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1])
-    rythms.append([0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0])
+    rythms.append([0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1])
+
+    gains = []
+    gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
+    gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
+    gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
+    gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
+    gains.append(0 * np.arange(0, 12) / 12.)
+    gains.append(0 * np.arange(0, 12) / 12.)
 
     dac = DAC(BUFFER_SIZE)
 
@@ -31,11 +42,11 @@ if __name__ == "__main__":
 
     for i in range(0, len(frequencies)):
         f = frequencies[i]
-        g = gains[i]
-        osc = Oscilator(dac.getSamplerate(), dac.getBufferSize())
-        osc.setFreq(f, g)
-        mixer.addDevice(osc)
-        oscilator_list.append(osc)
+        instrument = Instrument(dac.getSamplerate(), dac.getBufferSize())
+        instrument.setFreq(f)
+        instrument.start()
+        mixer.addDevice(instrument)
+        oscilator_list.append(instrument)
 
     print len(oscilator_list)
 
@@ -44,14 +55,17 @@ if __name__ == "__main__":
 
         oscilator_index = 0
         for j in range(0, len(oscilator_list)):
+            gain = gains[j]
             rythm = rythms[j]
-            osc = oscilator_list[j]
+            channel = mixer.channels[j]
+            channel.gain = gain[i]
             if rythm[i]:
-                osc.start()
-            else:
-                osc.stop()
+                channel.device.trigger(.1)
+                # channel.mute = False
+            # else:
+                # channel.mute = True
 
-        sleep(STEP_SLEEP_INTERVAL)
+        sleep(DEFAULT_BEAT_INTERVAL)
 
         i += 1
         i %= 8

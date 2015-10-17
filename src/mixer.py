@@ -1,6 +1,26 @@
+DEFAULT_CHANNEL_GAIN = 1.
+
+
+class Channel:
+    def __init__(self, device, gain=DEFAULT_CHANNEL_GAIN):
+        self.gain = gain
+        self.device = device
+        self.mute = False
+
+    def set_gain(self, gain):
+        self.gain = gain
+
+    def callback(self, in_data, frame_count, time_info, status):
+        if self.mute:
+            return 0 * self.device.callback(in_data, frame_count, time_info, status)
+        else:
+            return self.gain * self.device.callback(in_data, frame_count, time_info, status)
+
+
 class Mixer:
     def __init__(self):
         self.devices = []
+        self.channels = []
         self.volume = 1
         pass
 
@@ -11,20 +31,20 @@ class Mixer:
         return self.volume
 
     def callback(self, in_data, frame_count, time_info, status):
-        output = None
-        for d in self.devices:
-            devOutput = d.callback(in_data, frame_count, time_info, status)
-            if output is None:
-                output = devOutput
+        output_buffer = None
+        for channel in self.channels:
+            channel_buffer = channel.callback(in_data, frame_count, time_info, status)
+
+            if output_buffer is None:
+                output_buffer = channel_buffer
             else:
-                output += devOutput
-        if output is None:
+                output_buffer += channel_buffer
+
+        if output_buffer is None:
             print "output is None:"
             print len(self.devices)
-        if self.volume is None:
-            print "self.volume is None"
-        return self.volume * output
+
+        return self.volume * output_buffer
 
     def addDevice(self, device):
-        self.devices.append(device)
-        pass
+        self.channels.append(Channel(device))

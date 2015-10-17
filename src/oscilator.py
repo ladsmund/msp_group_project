@@ -25,6 +25,9 @@ class Oscilator:
         if gain is not None:
             self.gain = gain
 
+    def set_gain(self, gain):
+        self.gain = gain
+
     def start(self):
         self.running = True
 
