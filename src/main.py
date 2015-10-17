@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from time import sleep
 from dac import DAC
 from mixer import Mixer
