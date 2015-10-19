@@ -1,8 +1,7 @@
-from oscilator import Oscilator
+from src.oscilator import Oscilator
 import time
 
-
-class Instrument(Oscilator):
+class SineSynth(Oscilator):
 
     def __init__(self, samplerate, bufferSize):
         Oscilator.__init__(self, samplerate, bufferSize)

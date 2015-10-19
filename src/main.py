@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
 from time import sleep
+
+import numpy as np
+
 from dac import DAC
 from mixer import Mixer
-from oscilator import Oscilator
-import numpy as np
-from fractions import Fraction
-from instrument import Instrument
+from src.instruments.sinesynth import SineSynth
+from src.instruments.sampler import Sampler
 
 DEFAULT_BEAT_INTERVAL = 0.2
 BUFFER_SIZE = 2 ** 10
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     frequencies = [2000, 300, 400, 410, 880, 1000]
 
     rythms = []
-    rythms.append([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    rythms.append([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0])
     rythms.append([1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
     rythms.append([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
     rythms.append([1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
@@ -25,7 +26,8 @@ if __name__ == "__main__":
     rythms.append([0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1])
 
     gains = []
-    gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
+    gains.append([.1, .1, .1, .1, .1, .1, .1, .1, .1, .1, .1, .1])
+    # gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
     gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
     gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
     gains.append([1, .0, .1, .5, .0, .1, .5, .0, .1, .5, .0, .1])
@@ -42,21 +44,21 @@ if __name__ == "__main__":
 
     mixer.setVolume(.8)
 
-    for i in range(0, len(frequencies)):
+    instrument = Sampler('./instruments/samples/un_TC-03-G1-05.wav')
+    mixer.addDevice(instrument)
+
+    for i in range(1, len(frequencies)):
         f = frequencies[i]
-        instrument = Instrument(dac.getSamplerate(), dac.getBufferSize())
+        instrument = SineSynth(dac.getSamplerate(), dac.getBufferSize())
         instrument.setFreq(f)
         instrument.start()
         mixer.addDevice(instrument)
-        oscilator_list.append(instrument)
-
-    print len(oscilator_list)
 
     i = 0
     while True:
 
         oscilator_index = 0
-        for j in range(0, len(oscilator_list)):
+        for j in range(0, len(mixer.channels)):
             gain = gains[j]
             rythm = rythms[j]
             channel = mixer.channels[j]
@@ -64,7 +66,7 @@ if __name__ == "__main__":
             if rythm[i]:
                 channel.device.trigger(.1)
                 # channel.mute = False
-            # else:
+                # else:
                 # channel.mute = True
 
         sleep(DEFAULT_BEAT_INTERVAL)
