@@ -7,8 +7,6 @@ import numpy as np
 
 from dac import DAC
 from mixer import Mixer
-from src.instruments.sinesynth import SineSynth
-from src.instruments.sampler import Sampler
 
 import parser
 
@@ -17,7 +15,7 @@ BUFFER_SIZE = 2 ** 10
 
 if __name__ == "__main__":
 
-    (speed,length,subdivision,samplerate,buffersize,instruments,rhythms,gains) = parser.parse(sys.argv[1])
+    (speed, length, subdivision, samplerate, buffersize, instruments, rhythms, gains) = parser.parse(sys.argv[1])
 
     dac = DAC(buffersize)
 
