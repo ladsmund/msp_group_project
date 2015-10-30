@@ -35,7 +35,7 @@ class DAC():
     def _callback(self, in_data, frame_count, time_info, status):
         out_array = self.callback(in_data, frame_count, time_info, status)
 
-        if len(out_array) == self.bufferSize:
+        if out_array is not None and len(out_array) == self.bufferSize:
             '''Convert the data format for the audio interface'''
 
             out_scale = self.npFormatVal.max * out_array
