@@ -7,8 +7,8 @@ import numpy as np
 
 from dac import DAC
 from mixer import Mixer
-from src.instruments.sinesynth import SineSynth
-from src.instruments.sampler import Sampler
+from src.instruments import SineSynth
+from src.instruments import Sampler
 
 import parser
 
