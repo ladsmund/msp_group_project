@@ -1,5 +1,7 @@
-from src.oscilator import Oscilator
 import time
+
+from oscilator import Oscilator
+
 
 class SineSynth(Oscilator):
 
