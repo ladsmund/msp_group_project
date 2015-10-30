@@ -1,0 +1,31 @@
+parameters
+speed 90
+length 16
+subdivision 4
+samplerate 44100
+buffersize 128
+
+instruments
+#SineSynth 400
+#SineSynth 430
+Sampler instruments/samples/UN_HH-03-F#1-04.wav
+Sampler instruments/samples/UN_HH-03-G#1-05.wav
+Sampler instruments/samples/UN_SD-03-A0-03.wav
+Sampler instruments/samples/UN_BD-03-B0-06.wav
+
+rhythm
+#1 1 1 0 1 0 1 0 1 0 0 0 1 0 0 0
+#0 1 1 1 0 1 0 1 0 1 0 0 0 1 0 0
+1 1 0 0 1 0 0 0 1 0 0 0 1 0 0 0
+0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0
+0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 1
+1 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0
+
+gains
+#0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+#0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+0.5 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1 0.3 0.1 0.1 0.1
+

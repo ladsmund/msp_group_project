@@ -10,7 +10,6 @@ def parse(file_path):
     file = open(file_path,'r')
     data = file.read()
     file.close()
-    parser.parse(data)
 
     lines = data.split("\n")
 
@@ -26,29 +25,33 @@ def parse(file_path):
     samplerate = None
     buffersize = None
     while len(lines) > 0 and line != 'instruments':
-        line_array = line.split(' ')
-        if line_array[0] == 'speed':
-            speed = int(line_array[1])
-        elif line_array[0] == 'length':
-            length = int(line_array[1])
-        elif line_array[0] == 'subdivision':
-            subdivision = int(line_array[1])
-        elif line_array[0] == 'samplerate':
-            samplerate = int(line_array[1])
-        elif line_array[0] == 'buffersize':
-            buffersize = int(line_array[1])
+        if len(line) > 0 and line[0] != '#':
+            line_array = line.split(' ')
+            if line_array[0] == 'speed':
+                speed = int(line_array[1])
+            elif line_array[0] == 'length':
+                length = int(line_array[1])
+            elif line_array[0] == 'subdivision':
+                subdivision = int(line_array[1])
+            elif line_array[0] == 'samplerate':
+                samplerate = int(line_array[1])
+            elif line_array[0] == 'buffersize':
+                buffersize = int(line_array[1])
         line = lines.pop(0)
 
     # Reading instrumnets
     instruments = []
     line = lines.pop(0)
     while len(lines) > 0 and line != 'rhythm':
-        if len(line) > 0:
+        if len(line) > 0 and line[0] != '#':
             line_array = line.split(' ')
             if line_array[0] == 'Sampler':
                 instruments.append(Sampler(line_array[1]))
             elif line_array[0] == 'SineSynth':
-                instruments.append(SineSynth(samplerate, buffersize))
+                instrument = SineSynth(samplerate, buffersize)
+                instrument.setFreq(int(line_array[1]))
+                instruments.append(instrument)
+
 
         line = lines.pop(0)
 
@@ -58,7 +61,7 @@ def parse(file_path):
     rhythms = []
     line = lines.pop(0)
     while len(lines) > 0 and line != 'gains':
-        if len(line) > 0:
+        if len(line) > 0 and line[0] != '#':
             line_array = line.split(' ')
             rhythms.append([int(c) for c in line_array])
 
@@ -68,10 +71,10 @@ def parse(file_path):
     gains = []
     line = lines.pop(0)
     while len(lines) > 0:
-        if len(line) > 0:
-            line = lines.pop(0)
+        if len(line) > 0 and line[0] != '#':
             line_array = line.split(' ')
             gains.append([float(c) for c in line_array])
+        line = lines.pop(0)
 
 
     return (speed,length,subdivision,samplerate,buffersize,instruments,rhythms,gains)

@@ -41,10 +41,11 @@ class Mixer:
                 output_buffer += channel_buffer
 
         if output_buffer is None:
-            print "output is None:"
-            print len(self.devices)
+            return None
 
         return self.volume * output_buffer
 
     def addDevice(self, device):
-        self.channels.append(Channel(device))
+        channel = Channel(device)
+        self.channels.append(channel)
+        return channel
