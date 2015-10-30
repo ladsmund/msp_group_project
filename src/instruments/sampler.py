@@ -4,20 +4,26 @@ import scipy.io.wavfile
 import numpy
 import time
 
+_DEFAULT_AUDIO_GAIN = 0.00005
 
 class Sampler():
     def __init__(self, filename):
+        self.filename = filename
+        self.on = False
         (rate, audio_data) = scipy.io.wavfile.read(filename)
-        self.audio_data = 0.001 * audio_data[:, 0]
+        if len(audio_data.shape) > 1:
+            self.audio_data = numpy.array(audio_data[:, 0],dtype=float)
+        else:
+            self.audio_data = numpy.array(audio_data,dtype=float)
 
+        self.audio_data *= _DEFAULT_AUDIO_GAIN
 
         self.audio_data_offset = 0
 
-        self.on = False
         self.length = 0
         self.trigger_start = 0
 
-    def trigger(self, length=.1):
+    def trigger(self, length=.4):
         self.audio_data_offset = 0
         self.on = True
         self.length = length
@@ -44,3 +50,7 @@ class Sampler():
             self.audio_data_offset += frame_count
 
         return output_buffer
+
+    def __str__(self):
+        string = "Sampler\n  filename: %s" %(self.filename)
+        return string
