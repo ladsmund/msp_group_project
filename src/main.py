@@ -5,8 +5,8 @@ from time import sleep
 
 from dac import DAC
 from mixer import Mixer
-from src.instruments import SineSynth
-from src.instruments import Sampler
+from instruments import SineSynth
+from instruments import Sampler
 
 import parser
 
