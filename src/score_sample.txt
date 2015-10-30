@@ -1,7 +1,7 @@
 parameters
 speed 90
-length 16
-subdivision 4
+measure_resolution 12
+beats_per_measure 3
 samplerate 44100
 buffersize 128
 
