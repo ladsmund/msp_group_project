@@ -26,17 +26,16 @@ class Sampler():
     def callback(self, in_data, frame_count, time_info, status):
         output_buffer = numpy.zeros(frame_count)
 
-        if self.on and self.audio_data_offset >= len(self.audio_data):
+        if not self.on:
+            return output_buffer
+
+        if self.audio_data_offset >= len(self.audio_data):
             self.on = False
             return output_buffer
 
         audio_data_length = len(self.audio_data[self.audio_data_offset:])
 
         if frame_count > audio_data_length:
-            # print len(output_buffer)
-            # print audio_data_length
-            # print len(self.audio_data)
-            # print len(self.audio_data_offset)
             output_buffer[:audio_data_length] = self.audio_data[self.audio_data_offset:]
             self.audio_data_offset += audio_data_length
 
