@@ -10,6 +10,7 @@ class SineSynth(Oscilator):
         self.on = False
         self.length = 0
         self.trigger_start = 0
+        self.start()
 
 
     def trigger(self, length =.1):
@@ -28,6 +29,10 @@ class SineSynth(Oscilator):
 
         return output_buffer
 
+
+    def __str__(self):
+        string = "SineSynth\n  Frequency: %0.1f"%self.frequency
+        return string
 
     # def __init__(self, frequency):
     #     self.oscilator = Oscilator
