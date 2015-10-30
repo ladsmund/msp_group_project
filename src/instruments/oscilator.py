@@ -9,13 +9,14 @@ _DEFAULT_GAIN = .1
 class Oscilator:
     def __init__(self, samplerate, bufferSize):
         self.samplerate = samplerate
-
+        self.frequency = 100
         self.bufferSize = bufferSize
         self.phase = 0.0
         self.setFreq(_DEFAULT_FREQ)
         self.running = False
 
     def setFreq(self, frequency, gain=None):
+        self.frequency = frequency
         self.sample_phase = 0
         self.phases = 0
         self.gain = _DEFAULT_GAIN
