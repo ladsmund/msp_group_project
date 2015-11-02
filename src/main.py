@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import signal
 
 from dac import DAC
 
@@ -15,15 +16,18 @@ if __name__ == "__main__":
 
     dac.connect(sequencer.callback)
     dac.start()
-
+   
     key = None
-    while key != 'q':
-        sys.stdout.write('>')
-        key = sys.stdin.readline().strip()
-        if key == 'p':
-            sequencer.play()
-        elif key == 's':
-            sequencer.stop()
+    try:
+        while key != 'q':
+            sys.stdout.write('>')
+            key = sys.stdin.readline().strip()
+            if key == 'p':
+                sequencer.play()
+            elif key == 's':
+                sequencer.stop()
+    except KeyboardInterrupt:
+        pass
 
     sequencer.stop()
 
@@ -31,3 +35,5 @@ if __name__ == "__main__":
 
 
     exit()
+
+   
