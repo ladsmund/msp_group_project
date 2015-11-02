@@ -16,7 +16,18 @@ if __name__ == "__main__":
     dac.connect(sequencer.callback)
     dac.start()
 
-    sequencer.play()
+    key = None
+    while key != 'q':
+        sys.stdout.write('>')
+        key = sys.stdin.readline().strip()
+        if key == 'p':
+            sequencer.play()
+        elif key == 's':
+            sequencer.stop()
+
+    sequencer.stop()
 
     dac.stop()
+
+
     exit()

@@ -1,6 +1,8 @@
 from mixer import Mixer
 from time import sleep
 from exceptions import Exception
+import threading
+
 
 from instruments.sampler import Sampler
 from instruments.sinesynth import SineSynth
@@ -18,12 +20,13 @@ class Sequencer(Mixer):
         self.samplerate = 44100
         self.buffersize = 128
         self.sleep_interval = None
+        self.running = False;
+        self._worker_thread = None
 
-    def play(self):
+    def _worker(self):
         i = 0
-        # while True:
-        for _ in range(64):
-            print "Beat"
+        while self.running:
+            # print "Beat"
 
             oscilator_index = 0
             for j in range(0, len(self.channels)):
@@ -32,7 +35,7 @@ class Sequencer(Mixer):
                 channel = self.channels[j]
                 channel.gain = gain[i]
 
-                print "%3i, %i: trigger: %i, gain: %0.2f" % (i, j, rhythm[i], gain[i])
+                # print "%3i, %i: trigger: %i, gain: %0.2f" % (i, j, rhythm[i], gain[i])
                 if rhythm[i]:
                     channel.device.trigger(.05)
 
@@ -40,6 +43,18 @@ class Sequencer(Mixer):
 
             i += 1
             i %= self.measure_resolution
+
+    def play(self):
+        if self._worker_thread is None:
+            self.running = True
+            self._worker_thread = threading.Thread(target=self._worker)
+            self._worker_thread.start()
+
+    def stop(self):
+        if self.running:
+            self.running = False
+            self._worker_thread.join()
+            self._worker_thread = None
 
     def load(self, file_name):
         file = open(file_name, 'r')
@@ -88,7 +103,7 @@ class Sequencer(Mixer):
                     self.instruments.append(instrument)
                     self.addDevice(instrument)
                 elif line_array[0] == 'SineSynth':
-                    instrument = SineSynth(samplerate, buffersize)
+                    instrument = SineSynth(self.samplerate, self.buffersize)
                     instrument.setFreq(int(line_array[1]))
                     self.instruments.append(instrument)
                     self.addDevice(instrument)
