@@ -3,25 +3,39 @@ from time import sleep
 from exceptions import Exception
 import threading
 
+from dac import DAC
 
 from instruments.sampler import Sampler
 from instruments.sinesynth import SineSynth
 
 
 class Sequencer(Mixer):
-    def __init__(self):
+    def __init__(self, buffersize = 128, samplerate = 44100):
+        print("Sequencer: __init__")
         Mixer.__init__(self)
+        self.samplerate = samplerate
+        self.buffersize = buffersize
+
         self.instruments = []
         self.rhythms = []
         self.gains = []
         self.speed = None
         self.measure_resolution = None
         self.beats_per_measure = None
-        self.samplerate = 44100
-        self.buffersize = 128
         self.sleep_interval = None
         self.running = False;
         self._worker_thread = None
+
+        self.dac = DAC(self.buffersize, self.samplerate)
+        self.dac.connect(self.callback)
+        self.dac.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        self.dac.stop()
+
+    def __enter__(self):
+        return self
 
     def _worker(self):
         i = 0
@@ -45,12 +59,14 @@ class Sequencer(Mixer):
             i %= self.measure_resolution
 
     def play(self):
+        print("Sequencer: Play")
         if self._worker_thread is None:
             self.running = True
             self._worker_thread = threading.Thread(target=self._worker)
             self._worker_thread.start()
 
     def stop(self):
+        print("Sequencer: Stop")
         if self.running:
             self.running = False
             self._worker_thread.join()
@@ -81,10 +97,10 @@ class Sequencer(Mixer):
                     self.measure_resolution = int(line_array[1])
                 elif line_array[0] == 'beats_per_measure':
                     self.beats_per_measure = int(line_array[1])
-                elif line_array[0] == 'samplerate':
-                    self.samplerate = int(line_array[1])
-                elif line_array[0] == 'buffersize':
-                    self.buffersize = int(line_array[1])
+                # elif line_array[0] == 'samplerate':
+                #     self.samplerate = int(line_array[1])
+                # elif line_array[0] == 'buffersize':
+                #     self.buffersize = int(line_array[1])
             line = lines.pop(0)
 
         if self.measure_resolution % self.beats_per_measure == 0:

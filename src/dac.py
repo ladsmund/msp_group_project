@@ -3,7 +3,7 @@ import numpy as np
 
 
 class DAC():
-    def __init__(self, bufferSize=1024, depth=16, rate=48000, channels=1):
+    def __init__(self, bufferSize=1024, rate=48000, depth=16, channels=1):
         (self.paFormat, self.npFormat) = self._depth2format(depth)
         self.npFormatVal = np.iinfo(self.npFormat)
         self.rate = rate
