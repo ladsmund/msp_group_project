@@ -7,6 +7,9 @@ from dac import DAC
 
 from sequencer import Sequencer
 
+from gui.main_window import MainWindow
+from Tkinter import Tk
+
 if __name__ == "__main__":
 
     sequencer = Sequencer()
@@ -16,7 +19,11 @@ if __name__ == "__main__":
 
     dac.connect(sequencer.callback)
     dac.start()
-   
+  
+    root = Tk()
+    window = MainWindow(root, sequencer)
+    root.mainloop()
+ 
     key = None
     try:
         while key != 'q':
