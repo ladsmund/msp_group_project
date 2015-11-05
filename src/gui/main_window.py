@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-from Tkinter import *
-
+from Tkinter import Tk
+from ttk import Button, Frame
 
 class RhythmButton(Button):
     def __init__(self, master, sequencer, i, b):
+
         Button.__init__(self, master, text="%i:%i" % (i, b), command=self.command)
         self.sequencer = sequencer
         self.instrument = i
@@ -38,12 +39,12 @@ class RhythmFrame(Frame):
                 self.buttons.append(button)
                 button.grid(row=i, column=b)
 
-class MainWindow():
-    def __init__(self, master, sequencer):
+class MainWindow(Tk):
+    def __init__(self, sequencer):
+        Tk.__init__(self)
         self.sequencer = sequencer
-        self.master = master
 
-        self.control_panel = Frame(master)
+        self.control_panel = Frame(self)
         self.start_button = Button(self.control_panel, text="Start")
         self.stop_button = Button(self.control_panel, text="Stop")
         self.quit_button = Button(self.control_panel, text="Quit")
@@ -56,10 +57,9 @@ class MainWindow():
         self.quit_button.pack()
         self.control_panel.grid(row=0, column=0)
 
-        self.rhythm_frame = RhythmFrame(master, sequencer)
+        self.rhythm_frame = RhythmFrame(self, sequencer)
         self.rhythm_frame.grid(row=0, column=1)
 
     def _quit(self):
-        print("MainWindow: _quit")
-        self.master.destroy()
-        self.master.quit()
+        self.destroy()
+        self.quit()

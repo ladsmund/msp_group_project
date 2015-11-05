@@ -14,11 +14,10 @@ if __name__ == "__main__":
     with Sequencer() as sequencer:
         sequencer.load(sys.argv[1])
 
-        root = Tk()
-        window = MainWindow(root, sequencer)
-        root.mainloop()
-
+        window = MainWindow(sequencer)
+        window.mainloop()
         window = None
+
         print("Exit")
 
     exit()
