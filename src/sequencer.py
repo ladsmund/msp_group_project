@@ -143,7 +143,7 @@ class Sequencer(Mixer):
             line = lines.pop(0)
 
         for i in range(0, len(instruments)):
-            track = Track(instruments[i], rhythms[i], gains[i])
+            track = Track(instruments[i], rhythms[i], gains[i], i)
             self.add_track(track)
 
     def add_track(self, track):
@@ -152,7 +152,8 @@ class Sequencer(Mixer):
 
 
 class Track():
-    def __init__(self, instrument, rhythms, gains):
+    def __init__(self, instrument, rhythms, gains, id):
         self.instrument = instrument
         self.rhythms = rhythms
         self.gains = gains
+        self.id = id

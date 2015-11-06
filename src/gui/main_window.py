@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-from Tkinter import Tk
-from ttk import Button, Frame
+from Tkinter import Tk, Button, Frame, Label
+# from ttk import Button, Frame, Label
 
+_RHYTHM_BUTTON_WIDTH = 4
 
 class RhythmButton(Button):
     def __init__(self, master, track, beat):
-
-        Button.__init__(self, master, text="--", command=self.command)
+        Button.__init__(self, master, text="--", command=self.command, width=_RHYTHM_BUTTON_WIDTH)
         self.track = track
         self.beat = beat
         self.toggle_visual()
@@ -18,7 +18,7 @@ class RhythmButton(Button):
 
     def toggle_visual(self):
         if self.track.rhythms[self.beat]:
-            self.config(text="x")
+            self.config(text=str(self.track.rhythms[self.beat]))
         else:
             self.config(text=" ")
 
@@ -28,8 +28,20 @@ class RhythmTrackFrame(Frame):
         Frame.__init__(self, master)
         self.track = track
 
+        instrument_frame = Frame(self)
+        instrument_frame.grid(row=0, column=1)
+
+        id_label = Label(instrument_frame, text=str(track.id))
+        id_label.grid(row=0, column=0)
+
+        Button(instrument_frame, text="load wav file").grid(row=1, column=0)
+
+
+        rhythm_frame = Frame(self)
+        rhythm_frame.grid(row=0, column=2)
+
         for b in range(0, len(self.track.rhythms)):
-            button = RhythmButton(self, track, b)
+            button = RhythmButton(rhythm_frame, track, b)
             # self.buttons.append(button)
             button.grid(row=0, column=b)
 
