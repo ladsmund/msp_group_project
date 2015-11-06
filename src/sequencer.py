@@ -10,15 +10,13 @@ from instruments.sinesynth import SineSynth
 
 
 class Sequencer(Mixer):
-    def __init__(self, buffersize = 128, samplerate = 44100):
+    def __init__(self, buffersize=128, samplerate=44100):
         print("Sequencer: __init__")
         Mixer.__init__(self)
         self.samplerate = samplerate
         self.buffersize = buffersize
 
-        self.instruments = []
-        self.rhythms = []
-        self.gains = []
+        self.tracks = []
         self.speed = None
         self.measure_resolution = None
         self.beats_per_measure = None
@@ -43,15 +41,17 @@ class Sequencer(Mixer):
             # print "Beat"
 
             oscilator_index = 0
-            for j in range(0, len(self.channels)):
-                gain = self.gains[j]
-                rhythm = self.rhythms[j]
-                channel = self.channels[j]
-                channel.gain = gain[i]
+            for track in self.tracks:
+
+
+                gain = track.gains
+                rhythm = track.rhythms
+                # channel = self.channels[j]
+                # channel.gain = gain[i]
 
                 # print "%3i, %i: trigger: %i, gain: %0.2f" % (i, j, rhythm[i], gain[i])
                 if rhythm[i] != 0:
-                    channel.device.trigger(rhythm[i], .05)
+                    track.instrument.trigger(rhythm[i], .05)
 
             sleep(self.sleep_interval)
 
@@ -146,3 +146,13 @@ class Sequencer(Mixer):
             track = Track(instruments[i], rhythms[i], gains[i])
             self.add_track(track)
 
+    def add_track(self, track):
+        self.tracks.append(track)
+        self.add_device(track.instrument)
+
+
+class Track():
+    def __init__(self, instrument, rhythms, gains):
+        self.instrument = instrument
+        self.rhythms = rhythms
+        self.gains = gains
