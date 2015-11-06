@@ -2,9 +2,14 @@
 
 from Tkinter import Tk, Button, Frame, Label
 import tkFileDialog
-from ttk import Button, Frame, Label
+from ttk import Button, Frame, Label, Style
+import ttk
+import os.path
+import instruments.sampler
 
 _RHYTHM_BUTTON_WIDTH = 4
+_FILE_BUTTON_WIDTH = 8
+
 
 class RhythmButton(Button):
     def __init__(self, master, track, beat):
@@ -23,19 +28,66 @@ class RhythmButton(Button):
         else:
             self.config(text=" ")
 
+class Instrument(Frame):
+    def __init__(self, master, instrument):
+        Frame.__init__(self, master)
+        self.instrument = instrument
 
-class RhythmTrackFrame(Frame):
+class SineSynthFrame(Instrument):
+    def __init__(self, master, instrument):
+        Instrument.__init__(self, master, instrument)
+
+
+        self.frequency_label = Label(self, text=str(self.instrument.frequency))
+        self.frequency_label.grid(row=0, column=0)
+
+
+class SamplerFrame(Instrument):
+    def __init__(self, master, instrument):
+        Instrument.__init__(self, master, instrument)
+
+        file_name = os.path.basename(self.instrument.filename)
+        self.load_file_button = Button(self, text=file_name, command=self.load_file,
+                                       width=_FILE_BUTTON_WIDTH)
+        self.load_file_button.grid(row=0, column=1)
+
+    def load_file(self):
+        file_path = tkFileDialog.askopenfile(filetypes=[('audio files', '.wav')])
+        if file_path:
+            file_name = os.path.basename(file_path.name)
+            self.instrument.load_file(file_path.name)
+            self.load_file_button.config(text=file_name)
+
+
+class TrackFrame(Frame):
     def __init__(self, master, track):
         Frame.__init__(self, master)
         self.track = track
 
-        instrument_frame = Frame(self)
-        instrument_frame.grid(row=0, column=1)
+        self.style_class = Style()
+        self.style_class.configure('Track.TFrame',
+                                   background='black',
+                                   borderwidth=2,
+                                   relief='raised',
+                                   )
 
-        id_label = Label(instrument_frame, text=str(track.id))
-        id_label.grid(row=0, column=0)
+        self.config(style='Track.TFrame')
 
-        Button(instrument_frame, text="load wav file", command=self.load_file).grid(row=1, column=0)
+
+class RhythmTrackFrame(TrackFrame):
+    def __init__(self, master, track):
+        TrackFrame.__init__(self, master, track)
+
+
+        self.id_label = Label(self, text=str(track.id))
+        self.id_label.grid(row=0, column=0)
+
+        if isinstance(track.instrument, instruments.sampler.Sampler):
+            instrument_frame = SamplerFrame(self, track.instrument)
+            instrument_frame.grid(row=0, column=1)
+        elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
+            instrument_frame = SineSynthFrame(self, track.instrument)
+            instrument_frame.grid(row=0, column=1)
 
 
         rhythm_frame = Frame(self)
@@ -46,18 +98,13 @@ class RhythmTrackFrame(Frame):
             # self.buttons.append(button)
             button.grid(row=0, column=b)
 
-    def load_file(self):
-        file_path = tkFileDialog.askopenfile(filetypes=[('audio files', '.wav')])
-        if file_path:
-            self.track.instrument.load_file(file_path)
-
 
 class SequencerFrame(Frame):
     def __init__(self, master, sequencer):
         Frame.__init__(self, master)
         self.sequencer = sequencer
 
-        row = 0;
+        row = 0
         for track in sequencer.tracks:
             RhythmTrackFrame(self, track).grid(row=row, column=0)
             row += 1
