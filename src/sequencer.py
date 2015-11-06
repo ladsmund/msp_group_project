@@ -16,9 +16,7 @@ class Sequencer(Mixer):
         self.samplerate = samplerate
         self.buffersize = buffersize
 
-        self.instruments = []
-        self.rhythms = []
-        self.gains = []
+        self.tracks = []
         self.speed = None
         self.measure_resolution = None
         self.beats_per_measure = None
@@ -144,3 +142,15 @@ class Sequencer(Mixer):
                 line_array = line.split(' ')
                 self.gains.append([float(c) for c in line_array])
             line = lines.pop(0)
+    
+    add_track(self, track):
+      self.tracks.append(track)
+      self.add_device(track.instrument)
+
+Class Track():
+  def __init__(self, instrument, rhythms, gains):
+    self.instrument = instrument
+    self.rhythms = rhythms
+    self.gains = gains
+
+
