@@ -45,7 +45,7 @@ class Mixer:
 
         return self.volume * output_buffer
 
-    def addDevice(self, device):
+    def add_device(self, device):
         channel = Channel(device)
         self.channels.append(channel)
         return channel

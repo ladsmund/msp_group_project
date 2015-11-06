@@ -3,6 +3,8 @@
 from Tkinter import Tk
 from ttk import Button, Frame
 
+
+
 class RhythmButton(Button):
     def __init__(self, master, sequencer, i, b):
 
@@ -57,8 +59,8 @@ class MainWindow(Tk):
         self.quit_button.pack()
         self.control_panel.grid(row=0, column=0)
 
-        self.rhythm_frame = RhythmFrame(self, sequencer)
-        self.rhythm_frame.grid(row=0, column=1)
+        # self.rhythm_frame = RhythmFrame(self, sequencer)
+        # self.rhythm_frame.grid(row=0, column=1)
 
     def _quit(self):
         self.destroy()
