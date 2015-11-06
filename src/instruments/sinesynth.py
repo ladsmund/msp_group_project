@@ -13,7 +13,7 @@ class SineSynth(Oscilator):
         self.start()
 
 
-    def trigger(self, length =.1):
+    def trigger(self, tone=1, length =.1):
         self.on = True
         self.length = length
         self.trigger_start = time.time()

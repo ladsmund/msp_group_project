@@ -23,7 +23,7 @@ class Sampler():
         self.length = 0
         self.trigger_start = 0
 
-    def trigger(self, length=.4):
+    def trigger(self, tone=1, length=.4):
         self.audio_data_offset = 0
         self.on = True
         self.length = length

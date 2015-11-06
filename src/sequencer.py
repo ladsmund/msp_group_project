@@ -50,8 +50,8 @@ class Sequencer(Mixer):
                 channel.gain = gain[i]
 
                 # print "%3i, %i: trigger: %i, gain: %0.2f" % (i, j, rhythm[i], gain[i])
-                if rhythm[i]:
-                    channel.device.trigger(.05)
+                if rhythm[i] != 0:
+                    channel.device.trigger(rhythm[i], .05)
 
             sleep(self.sleep_interval)
 
@@ -97,10 +97,6 @@ class Sequencer(Mixer):
                     self.measure_resolution = int(line_array[1])
                 elif line_array[0] == 'beats_per_measure':
                     self.beats_per_measure = int(line_array[1])
-                # elif line_array[0] == 'samplerate':
-                #     self.samplerate = int(line_array[1])
-                # elif line_array[0] == 'buffersize':
-                #     self.buffersize = int(line_array[1])
             line = lines.pop(0)
 
         if self.measure_resolution % self.beats_per_measure == 0:
