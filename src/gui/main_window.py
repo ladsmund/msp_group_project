@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 from Tkinter import Tk, Button, Frame, Label
-# from ttk import Button, Frame, Label
+import tkFileDialog
+from ttk import Button, Frame, Label
 
 _RHYTHM_BUTTON_WIDTH = 4
 
@@ -34,7 +35,7 @@ class RhythmTrackFrame(Frame):
         id_label = Label(instrument_frame, text=str(track.id))
         id_label.grid(row=0, column=0)
 
-        Button(instrument_frame, text="load wav file").grid(row=1, column=0)
+        Button(instrument_frame, text="load wav file", command=self.load_file).grid(row=1, column=0)
 
 
         rhythm_frame = Frame(self)
@@ -44,6 +45,11 @@ class RhythmTrackFrame(Frame):
             button = RhythmButton(rhythm_frame, track, b)
             # self.buttons.append(button)
             button.grid(row=0, column=b)
+
+    def load_file(self):
+        file_path = tkFileDialog.askopenfile(filetypes=[('audio files', '.wav')])
+        if file_path:
+            self.track.instrument.load_file(file_path)
 
 
 class SequencerFrame(Frame):
