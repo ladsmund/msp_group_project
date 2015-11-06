@@ -106,37 +106,43 @@ class Sequencer(Mixer):
 
 
         # Reading instrumnets
+        instruments = []
         line = lines.pop(0)
         while len(lines) > 0 and line != 'rhythm':
             if len(line) > 0 and line[0] != '#':
                 line_array = line.split(' ')
                 if line_array[0] == 'Sampler':
                     instrument = Sampler(line_array[1])
-                    self.instruments.append(instrument)
-                    self.addDevice(instrument)
+                    instruments.append(instrument)
                 elif line_array[0] == 'SineSynth':
                     instrument = SineSynth(self.samplerate, self.buffersize)
                     instrument.setFreq(int(line_array[1]))
-                    self.instruments.append(instrument)
-                    self.addDevice(instrument)
+                    instruments.append(instrument)
 
             line = lines.pop(0)
 
 
 
         # Reading Rhythm pattern
+        rhythms = []
         line = lines.pop(0)
         while len(lines) > 0 and line != 'gains':
             if len(line) > 0 and line[0] != '#':
                 line_array = line.split(' ')
-                self.rhythms.append([int(c) for c in line_array])
+                rhythms.append([int(c) for c in line_array])
 
             line = lines.pop(0)
 
         # Reading gain pattern
+        gains = []
         line = lines.pop(0)
         while len(lines) > 0:
             if len(line) > 0 and line[0] != '#':
                 line_array = line.split(' ')
-                self.gains.append([float(c) for c in line_array])
+                gains.append([float(c) for c in line_array])
             line = lines.pop(0)
+
+        for i in range(0, len(instruments)):
+            track = Track(instruments[i], rhythms[i], gains[i])
+            self.add_track(track)
+
