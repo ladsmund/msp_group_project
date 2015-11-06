@@ -6,6 +6,7 @@ from ttk import Button, Frame, Label, Style
 import ttk
 import os.path
 import instruments.sampler
+import sys
 
 _RHYTHM_BUTTON_WIDTH = 4
 _FILE_BUTTON_WIDTH = 8
@@ -32,6 +33,7 @@ class Instrument(Frame):
     def __init__(self, master, instrument):
         Frame.__init__(self, master)
         self.instrument = instrument
+        # self.config(width=200)
 
 class SineSynthFrame(Instrument):
     def __init__(self, master, instrument):
@@ -80,18 +82,20 @@ class RhythmTrackFrame(TrackFrame):
 
 
         self.id_label = Label(self, text=str(track.id))
-        self.id_label.grid(row=0, column=0)
+        self.id_label.pack(side='left')#(row=0, column=0, stick='W')
 
         if isinstance(track.instrument, instruments.sampler.Sampler):
             instrument_frame = SamplerFrame(self, track.instrument)
-            instrument_frame.grid(row=0, column=1)
         elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
             instrument_frame = SineSynthFrame(self, track.instrument)
-            instrument_frame.grid(row=0, column=1)
+        else:
+            instrument_frame = Instrument(self, track.instrument)
+
+        instrument_frame.pack(side='left', expand=True)
 
 
         rhythm_frame = Frame(self)
-        rhythm_frame.grid(row=0, column=2)
+        rhythm_frame.pack(side='right')
 
         for b in range(0, len(self.track.rhythms)):
             button = RhythmButton(rhythm_frame, track, b)
@@ -106,7 +110,8 @@ class SequencerFrame(Frame):
 
         row = 0
         for track in sequencer.tracks:
-            RhythmTrackFrame(self, track).grid(row=row, column=0)
+            RhythmTrackFrame(self, track).grid(row=row, column=0,sticky="EW")
+            # RhythmTrackFrame(self, track).pack(side='right', column=0, fill="both", expand=True)
             row += 1
 
 
@@ -116,6 +121,8 @@ class MainWindow(Tk):
         self.sequencer = sequencer
 
         self.control_panel = Frame(self)
+        self.control_label = Label(self.control_panel, text="Control")
+
         self.start_button = Button(self.control_panel, text="Start")
         self.stop_button = Button(self.control_panel, text="Stop")
         self.quit_button = Button(self.control_panel, text="Quit")
@@ -123,13 +130,16 @@ class MainWindow(Tk):
         self.start_button.config(command=self.sequencer.play)
         self.stop_button.config(command=self.sequencer.stop)
         self.quit_button.config(command=self._quit)
+
+        self.control_label.pack()
         self.start_button.pack()
         self.stop_button.pack()
         self.quit_button.pack()
-        self.control_panel.grid(row=0, column=0)
+
+        self.control_panel.grid(row=0,column=0, sticky='ns')
 
         self.sequencer_frame = SequencerFrame(self, sequencer)
-        self.sequencer_frame.grid(row=0, column=1)
+        self.sequencer_frame.grid(row=0,column=1)
 
     def _quit(self):
         self.destroy()
