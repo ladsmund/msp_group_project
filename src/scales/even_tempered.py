@@ -6,9 +6,19 @@ from scale import Scale
 from interval import Interval
 
 class EvenTempered(Scale):
+
+  def __init__(self, base_frequency):
+    Scale.__init__(self, base_frequency)
+    self.intervals = self.get_chromatic_intervals()
   
   exponent = fractions.Fraction("1/12")
   semitone_factor = pow(2, exponent)
+
+  def get_interval_frequency(self, interval):
+    interval = int(interval)
+    interval_adjusted = interval % 12
+    interval_octave = interval / 12
+    return self.intervals[interval_adjusted].frequency * 2**interval_octave
 
   def get_scaletone_frequency(self, interval):
     frequency = self.base_frequency
