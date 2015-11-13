@@ -4,7 +4,6 @@ from oscilator import Oscilator
 
 
 class SineSynth(Oscilator):
-
     def __init__(self, samplerate, bufferSize):
         Oscilator.__init__(self, samplerate, bufferSize)
         self.on = False
@@ -12,8 +11,7 @@ class SineSynth(Oscilator):
         self.trigger_start = 0
         self.start()
 
-
-    def trigger(self, tone=1, length =.1):
+    def trigger(self, tone=1, length=.1):
         self.on = True
         self.length = length
         self.trigger_start = time.time()
@@ -29,25 +27,19 @@ class SineSynth(Oscilator):
 
         return output_buffer
 
-
     def __str__(self):
-        string = "SineSynth\n  Frequency: %0.1f"%self.frequency
+        string = "SineSynth\n  Frequency: %0.1f" % self.frequency
         return string
 
-    # def __init__(self, frequency):
-    #     self.oscilator = Oscilator
-    #     pass
+        # def __init__(self, frequency):
+        #     self.oscilator = Oscilator
+        #     pass
 
-    # def start(self):
-    #     pass
+        # def start(self):
+        #     pass
 
-    # def stop(self):
-    #     pass
+        # def stop(self):
+        #     pass
 
-    # def callback(self, in_data, frame_count, time_info, status):
-    #     pass
-
-
-
-
-
+        # def callback(self, in_data, frame_count, time_info, status):
+        #     pass

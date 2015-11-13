@@ -10,7 +10,6 @@ from gui.main_window import MainWindow
 from Tkinter import Tk
 
 if __name__ == "__main__":
-
     with Sequencer() as sequencer:
         sequencer.load(sys.argv[1])
 

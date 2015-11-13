@@ -11,6 +11,7 @@ from instruments.scalesynth import ScaleSynth
 from scales.pythag_series import PythagSeries
 from scales.even_tempered import EvenTempered
 
+
 class Sequencer(Mixer):
     def __init__(self, buffersize=128, samplerate=44100):
         print("Sequencer: __init__")
@@ -46,7 +47,6 @@ class Sequencer(Mixer):
             oscilator_index = 0
             for track in self.tracks:
 
-
                 gain = track.gains
                 rhythm = track.rhythms
                 # channel = self.channels[j]
@@ -64,7 +64,7 @@ class Sequencer(Mixer):
                 self.running = False
                 break
 
-    def play(self, loop = True):
+    def play(self, loop=True):
         print("Sequencer: Play")
         if self._worker_thread is None:
             self.running = True

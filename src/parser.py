@@ -3,11 +3,11 @@ __author__ = 'mads'
 from instruments.sampler import Sampler
 from instruments.sinesynth import SineSynth
 
+
 # example = "parameters\nspeed 150\nsamplerate 44100\nbuffersize 1024\ninstruments\nSampler ./instruments/samples/un_TC-03-G1-05.wav\nSineSynth 423\nrhythm\n1 1 1 1\n0 1 1 0\n\ngains\n.1 .2 .5 . 6\n.1 .1 .1 .1"
 
 def parse(file_path):
-
-    file = open(file_path,'r')
+    file = open(file_path, 'r')
     data = file.read()
     file.close()
 
@@ -52,7 +52,6 @@ def parse(file_path):
                 instrument.setFreq(int(line_array[1]))
                 instruments.append(instrument)
 
-
         line = lines.pop(0)
 
 
@@ -76,5 +75,4 @@ def parse(file_path):
             gains.append([float(c) for c in line_array])
         line = lines.pop(0)
 
-
-    return (speed,length,subdivision,samplerate,buffersize,instruments,rhythms,gains)
+    return (speed, length, subdivision, samplerate, buffersize, instruments, rhythms, gains)

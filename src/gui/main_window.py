@@ -33,16 +33,17 @@ class RhythmButton(Button):
         else:
             self.config(text=" ")
 
+
 class Instrument(Frame):
     def __init__(self, master, instrument):
         Frame.__init__(self, master)
         self.instrument = instrument
         # self.config(width=200)
 
+
 class SineSynthFrame(Instrument):
     def __init__(self, master, instrument):
         Instrument.__init__(self, master, instrument)
-
 
         self.frequency_label = Label(self, text=str(self.instrument.frequency))
         self.frequency_label.grid(row=0, column=0)
@@ -84,9 +85,8 @@ class RhythmTrackFrame(TrackFrame):
     def __init__(self, master, track):
         TrackFrame.__init__(self, master, track)
 
-
         self.id_label = Label(self, text=str(track.id))
-        self.id_label.pack(side='left')#(row=0, column=0, stick='W')
+        self.id_label.pack(side='left')  # (row=0, column=0, stick='W')
 
         if isinstance(track.instrument, instruments.sampler.Sampler):
             instrument_frame = SamplerFrame(self, track.instrument)
@@ -96,7 +96,6 @@ class RhythmTrackFrame(TrackFrame):
             instrument_frame = Instrument(self, track.instrument)
 
         instrument_frame.pack(side='left', expand=True)
-
 
         rhythm_frame = Frame(self)
         rhythm_frame.pack(side='right')
@@ -114,7 +113,7 @@ class SequencerFrame(Frame):
 
         row = 0
         for track in sequencer.tracks:
-            RhythmTrackFrame(self, track).grid(row=row, column=0,sticky="EW")
+            RhythmTrackFrame(self, track).grid(row=row, column=0, sticky="EW")
             # RhythmTrackFrame(self, track).pack(side='right', column=0, fill="both", expand=True)
             row += 1
 
@@ -140,10 +139,10 @@ class MainWindow(Tk):
         self.stop_button.pack()
         self.quit_button.pack()
 
-        self.control_panel.grid(row=0,column=0, sticky='ns')
+        self.control_panel.grid(row=0, column=0, sticky='ns')
 
         self.sequencer_frame = SequencerFrame(self, sequencer)
-        self.sequencer_frame.grid(row=0,column=1)
+        self.sequencer_frame.grid(row=0, column=1)
 
     def _quit(self):
         self.destroy()

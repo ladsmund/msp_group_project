@@ -23,7 +23,5 @@ ui_mainWindow.gridLayout.addWidget(button, 1, 4, 1, 1)
 
 button.clicked.connect(callback)
 
-
-
 window.show()
 sys.exit(app.exec_())

@@ -1,8 +1,8 @@
 __author__ = 'mads'
 import sys
 
-def cli(sequencer):
 
+def cli(sequencer):
     key = None
     try:
         while key != 'q':
@@ -16,4 +16,3 @@ def cli(sequencer):
         pass
 
     sequencer.stop()
-
