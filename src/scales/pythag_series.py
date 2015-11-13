@@ -86,6 +86,18 @@ class PythagSeries(Scale):
     scale_tones.sort()
     return scale_tones
 
+  def get_dodecaphonic_intervals(self):
+    scale = []
+    notes = [ "Gb/F+", "Db/C#", "Ab/G#", "Eb/D#", "Bb/A#", \
+              "F", "C", "G", "D", "A", "E", "B", "Gb/F#" ]
+    intervals = [ "b5 (-)", "m2", "m6", "m3", "m7", \
+                  "4", "1", "5", "M2", "M6", "M3", "M7", "b5 (+)" ]
+    for i in range(-6, 7):
+      interval = Interval(self.get_frequency(i), notes.pop(0), intervals.pop(0))
+      scale.append(interval)
+    scale.sort()
+    return(scale)
+
   # Returns the spacing between two given pythagorean natural intervals 
   # as a fraction
   def get_spacing(self, low, high):
