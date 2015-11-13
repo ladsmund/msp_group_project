@@ -8,8 +8,8 @@ import os.path
 import instruments.sampler
 import sys
 
-_RHYTHM_BUTTON_WIDTH = 4
-_FILE_BUTTON_WIDTH = 8
+_RHYTHM_BUTTON_WIDTH = 2
+_FILE_BUTTON_WIDTH = 3
 
 
 class RhythmButton(Button):
@@ -20,7 +20,11 @@ class RhythmButton(Button):
         self.toggle_visual()
 
     def command(self):
-        self.track.rhythms[self.beat] = not self.track.rhythms[self.beat];
+        if self.track.rhythms[self.beat]:
+            self.track.rhythms[self.beat] = 0
+        else:
+            self.track.rhythms[self.beat] = 1
+        # self.track.rhythms[self.beat] = not self.track.rhythms[self.beat];
         self.toggle_visual()
 
     def toggle_visual(self):
