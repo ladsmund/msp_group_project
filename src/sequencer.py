@@ -146,7 +146,8 @@ class Sequencer(Mixer):
         while len(lines) > 0 and line != 'gains':
             if len(line) > 0 and line[0] != '#':
                 line = line.split('|')[-1]
-                line_array = line.split(' ')
+                line_array = line.split()[0:self.measure_resolution]
+
                 rhythms.append([int(c) for c in line_array])
 
             line = lines.pop(0)
@@ -156,7 +157,7 @@ class Sequencer(Mixer):
         line = lines.pop(0)
         while len(lines) > 0:
             if len(line) > 0 and line[0] != '#':
-                line_array = line.split(' ')
+                line_array = line.split()
                 gains.append([float(c) for c in line_array])
             line = lines.pop(0)
 
