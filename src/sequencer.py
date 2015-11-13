@@ -24,6 +24,7 @@ class Sequencer(Mixer):
         self.beats_per_measure = None
         self.sleep_interval = None
         self.running = False;
+        self.loop = False
         self._worker_thread = None
 
         self.dac = DAC(self.buffersize, self.samplerate)
@@ -59,11 +60,15 @@ class Sequencer(Mixer):
 
             i += 1
             i %= self.measure_resolution
+            if not self.loop and not i:
+                self.running = False
+                break
 
-    def play(self):
+    def play(self, loop = True):
         print("Sequencer: Play")
         if self._worker_thread is None:
             self.running = True
+            self.loop = loop
             self._worker_thread = threading.Thread(target=self._worker)
             self._worker_thread.start()
 
@@ -71,6 +76,7 @@ class Sequencer(Mixer):
         print("Sequencer: Stop")
         if self.running:
             self.running = False
+            self.loop = False
             self._worker_thread.join()
             self._worker_thread = None
 
