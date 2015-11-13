@@ -15,8 +15,8 @@ class PythagSeries(Scale):
 
   def get_interval_frequency(self, interval):
     interval = int(interval)
-    interval_adjusted = interval % 8
-    interval_octave = interval / 8
+    interval_adjusted = interval % 13
+    interval_octave = interval / 13
     return self.intervals[interval_adjusted].frequency * 2**interval_octave
  
   # Returns the frequncy of the given interval
