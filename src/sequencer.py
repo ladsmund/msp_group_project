@@ -127,6 +127,9 @@ class Sequencer(Mixer):
                     elif line_array[1] == 'EvenTemp':
                         base_frequency = int(line_array[2])
                         scale = EvenTempered(base_frequency)
+                    elif line_array[1] == 'Harmonic':
+                        base_frequency = int(line_array[2])
+                        scale = HarmonicSeries(base_frequency)
                     else:
                         scale = None
                     instrument = ScaleSynth(self.samplerate, self.buffersize, scale)
