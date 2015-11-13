@@ -142,6 +142,7 @@ class Sequencer(Mixer):
         line = lines.pop(0)
         while len(lines) > 0 and line != 'gains':
             if len(line) > 0 and line[0] != '#':
+                line = line.split('|')[-1]
                 line_array = line.split(' ')
                 rhythms.append([int(c) for c in line_array])
 
