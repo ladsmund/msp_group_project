@@ -3,29 +3,29 @@ speed 60
 measure_resolution 7
 beats_per_measure 7
 samplerate 44100
-buffersize 128
+buffersize 512
 
 instruments
-ScaleSynth Pythag 528 19 # F#
-ScaleSynth Pythag 528 18 # F
-ScaleSynth Pythag 528 17 # E
-ScaleSynth Pythag 528 16 # Eb
-ScaleSynth Pythag 528 15 # D
-ScaleSynth Pythag 528 14 # C#
-ScaleSynth Pythag 528 13 # C
-ScaleSynth Pythag 528 12 # B
-ScaleSynth Pythag 528 11 # Bb
-ScaleSynth Pythag 528 10 # A
-ScaleSynth Pythag 528 9  # Ab
-ScaleSynth Pythag 528 8  # G
-ScaleSynth Pythag 528 7  # F#+
-ScaleSynth Pythag 528 6  # Gb-
-ScaleSynth Pythag 528 5  # F
-ScaleSynth Pythag 528 4  # E
-ScaleSynth Pythag 528 3  # Eb
-ScaleSynth Pythag 528 2  # D
-ScaleSynth Pythag 528 1  # C#
-ScaleSynth Pythag 528 0  # C
+ScaleSynth PythagDodecaphonic 528 19 # F#
+ScaleSynth PythagDodecaphonic 528 18 # F
+ScaleSynth PythagDodecaphonic 528 17 # E
+ScaleSynth PythagDodecaphonic 528 16 # Eb
+ScaleSynth PythagDodecaphonic 528 15 # D
+ScaleSynth PythagDodecaphonic 528 14 # C#
+ScaleSynth PythagDodecaphonic 528 13 # C
+ScaleSynth PythagDodecaphonic 528 12 # B
+ScaleSynth PythagDodecaphonic 528 11 # Bb
+ScaleSynth PythagDodecaphonic 528 10 # A
+ScaleSynth PythagDodecaphonic 528 9  # Ab
+ScaleSynth PythagDodecaphonic 528 8  # G
+ScaleSynth PythagDodecaphonic 528 7  # F#+
+ScaleSynth PythagDodecaphonic 528 6  # Gb-
+ScaleSynth PythagDodecaphonic 528 5  # F
+ScaleSynth PythagDodecaphonic 528 4  # E
+ScaleSynth PythagDodecaphonic 528 3  # Eb
+ScaleSynth PythagDodecaphonic 528 2  # D
+ScaleSynth PythagDodecaphonic 528 1  # C#
+ScaleSynth PythagDodecaphonic 528 0  # C
 
 rhythm
 BBB|  0  0  0  0  0  0  0 

@@ -1,9 +1,9 @@
 parameters
-speed 100
-measure_resolution 24
+speed 60
+measure_resolution 16
 beats_per_measure 8
 samplerate 44100
-buffersize 128
+buffersize 512
 
 instruments
 ScaleSynth Pythag 528 12

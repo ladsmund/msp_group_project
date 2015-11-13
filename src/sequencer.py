@@ -8,12 +8,13 @@ from dac import DAC
 from instruments.sampler import Sampler
 from instruments.sinesynth import SineSynth
 from instruments.scalesynth import ScaleSynth
-from scales.pythag_series import PythagSeries
+from instruments.perfect_triads import PerfectTriads
+from scales.pythag_series import PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
 from scales.even_tempered import EvenTempered
 
 
 class Sequencer(Mixer):
-    def __init__(self, buffersize=128, samplerate=44100):
+    def __init__(self, buffersize=512, samplerate=44100):
         print("Sequencer: __init__")
         Mixer.__init__(self)
         self.samplerate = samplerate
@@ -49,12 +50,9 @@ class Sequencer(Mixer):
 
                 gain = track.gains
                 rhythm = track.rhythms
-                # channel = self.channels[j]
-                # channel.gain = gain[i]
 
-                # print "%3i, %i: trigger: %i, gain: %0.2f" % (i, j, rhythm[i], gain[i])
                 if rhythm[i] != 0:
-                    track.instrument.trigger(rhythm[i], .05)
+                    track.instrument.trigger(rhythm[i], self.sleep_interval)
 
             sleep(self.sleep_interval)
 
@@ -126,16 +124,28 @@ class Sequencer(Mixer):
                     instrument = SineSynth(self.samplerate, self.buffersize)
                     instrument.setFreq(int(line_array[1]))
                     instruments.append(instrument)
-                elif line_array[0] == 'ScaleSynth':
-                    if line_array[1] == 'Pythag':
+                elif line_array[0] == 'PerfectTriads':
+                    if line_array[1] == 'PythagDodecaphonic':
                         base_frequency = int(line_array[2])
-                        scale = PythagSeries(base_frequency)
+                        scale = PythagSeriesDodecaphpnic(base_frequency)
                     elif line_array[1] == 'EvenTemp':
                         base_frequency = int(line_array[2])
                         scale = EvenTempered(base_frequency)
-                    elif line_array[1] == 'Harmonic':
+                    else:
+                        scale = None
+                    instrument = PerfectTriads(self.samplerate, self.buffersize, scale)
+                    instrument.set_tone(int(line_array[3]))
+                    instruments.append(instrument)
+                elif line_array[0] == 'ScaleSynth':
+                    if line_array[1] == 'Pythag':
                         base_frequency = int(line_array[2])
-                        scale = HarmonicSeries(base_frequency)
+                        scale = PythagSeriesSevenNoteScale(base_frequency)
+                    elif line_array[1] == 'PythagDodecaphonic':
+                        base_frequency = int(line_array[2])
+                        scale = PythagSeriesDodecaphpnic(base_frequency)
+                    elif line_array[1] == 'EvenTemp':
+                        base_frequency = int(line_array[2])
+                        scale = EvenTempered(base_frequency)
                     else:
                         scale = None
                     instrument = ScaleSynth(self.samplerate, self.buffersize, scale)
