@@ -1,0 +1,74 @@
+parameters
+speed 100
+measure_resolution 24
+beats_per_measure 8
+samplerate 44100
+buffersize 128
+
+instruments
+ScaleSynth Pythag 528 19 # F#
+ScaleSynth Pythag 528 18 # F
+ScaleSynth Pythag 528 17 # E
+ScaleSynth Pythag 528 16 # Eb
+ScaleSynth Pythag 528 15 # D
+ScaleSynth Pythag 528 14 # C#
+ScaleSynth Pythag 528 13 # C
+ScaleSynth Pythag 528 12 # B
+ScaleSynth Pythag 528 11 # Bb
+ScaleSynth Pythag 528 10 # A
+ScaleSynth Pythag 528 9  # Ab
+ScaleSynth Pythag 528 8  # G
+ScaleSynth Pythag 528 7  # F#+
+ScaleSynth Pythag 528 6  # Gb-
+ScaleSynth Pythag 528 5  # F
+ScaleSynth Pythag 528 4  # E
+ScaleSynth Pythag 528 3  # Eb
+ScaleSynth Pythag 528 2  # D
+ScaleSynth Pythag 528 1  # C#
+ScaleSynth Pythag 528 0  # C
+
+rhythm
+BBB|  0  0  0  0  0  0  0 
+---|  0  0  1  0  0  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  0  0  1  0  0 
+---|  0  0  1  0  0  0  0 
+BBB|  0  0  0  0  0  0  1 
+---|  0  1  0  0  1  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  1  1  0  0  1 
+---|  0  1  0  0  0  0  0 
+BBB|  0  0  0  0  1  1  0 
+---|  1  0  0  1  0  0  0 
+BBB|  0  0  0  0  0  0  0  # F#+  
+BBB|  0  0  0  0  0  0  1  # Gb-
+---|  0  1  0  0  0  1  0 
+---|  1  0  0  0  0  0  0 
+BBB|  0  0  0  1  0  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  0  0  0  1  0 
+---|  1  0  0  0  0  0  0 
+##  C  F  Bb Eb Ab Db Gb
+
+gains
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+

@@ -1,0 +1,71 @@
+parameters
+speed 100
+measure_resolution 24
+beats_per_measure 8
+samplerate 44100
+buffersize 128
+
+instruments
+ScaleSynth EvenTemp 528 18 # F#
+ScaleSynth EvenTemp 528 17 # F
+ScaleSynth EvenTemp 528 16 # E
+ScaleSynth EvenTemp 528 15 # Eb
+ScaleSynth EvenTemp 528 14 # D
+ScaleSynth EvenTemp 528 13 # C#
+ScaleSynth EvenTemp 528 12 # C
+ScaleSynth EvenTemp 528 11 # B
+ScaleSynth EvenTemp 528 10 # Bb
+ScaleSynth EvenTemp 528 9  # A
+ScaleSynth EvenTemp 528 8  # Ab
+ScaleSynth EvenTemp 528 7  # G
+ScaleSynth EvenTemp 528 6  # F#
+ScaleSynth EvenTemp 528 5  # F
+ScaleSynth EvenTemp 528 4  # E
+ScaleSynth EvenTemp 528 3  # Eb
+ScaleSynth EvenTemp 528 2  # D
+ScaleSynth EvenTemp 528 1  # C#
+ScaleSynth EvenTemp 528 0  # C
+
+rhythm
+BBB|  0  0  0  0  0  0  0 
+---|  0  0  1  0  0  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  0  0  1  0  0 
+---|  0  0  1  0  0  0  0 
+BBB|  0  0  0  0  0  0  1 
+---|  0  1  0  0  1  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  1  1  0  0  1 
+---|  0  1  0  0  0  0  0 
+BBB|  0  0  0  0  1  1  0 
+---|  1  0  0  1  0  0  0 
+BBB|  0  0  0  0  0  0  1 
+---|  0  1  0  0  0  1  0 
+---|  1  0  0  0  0  0  0 
+BBB|  0  0  0  1  0  0  0 
+---|  0  0  0  0  0  0  0 
+BBB|  0  0  0  0  0  1  0 
+---|  1  0  0  0  0  0  0 
+##  C  F  Bb Eb Ab Db Gb
+
+gains
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+

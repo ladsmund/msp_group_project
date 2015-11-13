@@ -1,0 +1,71 @@
+parameters
+speed 100
+measure_resolution 24
+beats_per_measure 8
+samplerate 44100
+buffersize 128
+
+instruments
+ScaleSynth Harmonic 528 18 # F#
+ScaleSynth Harmonic 528 17 # F
+ScaleSynth Harmonic 528 16 # E
+ScaleSynth Harmonic 528 15 # Eb
+ScaleSynth Harmonic 528 14 # D
+ScaleSynth Harmonic 528 13 # C#
+ScaleSynth Harmonic 528 12 # C
+ScaleSynth Harmonic 528 11 # B
+ScaleSynth Harmonic 528 10 # Bb
+ScaleSynth Harmonic 528 9  # A
+ScaleSynth Harmonic 528 8  # Ab
+ScaleSynth Harmonic 528 7  # G
+ScaleSynth Harmonic 528 6  # F#
+ScaleSynth Harmonic 528 5  # F
+ScaleSynth Harmonic 528 4  # E
+ScaleSynth Harmonic 528 3  # Eb
+ScaleSynth Harmonic 528 2  # D
+ScaleSynth Harmonic 528 1  # C#
+ScaleSynth Harmonic 528 0  # C
+
+rhythm
+BBB|  0  0  0  0  0  1  0  
+---|  0  0  0  0  0  0  0  
+---|  0  0  0  1  0  0  0  
+BBB|  0  0  0  0  0  1  0  
+---|  0  1  0  0  0  0  0  
+BBB|  0  0  0  1  0  0  1  
+---|  0  0  0  0  1  0  0  
+---|  0  1  0  0  0  1  0  
+BBB|  0  0  0  0  0  0  1  
+---|  0  0  1  1  1  0  0  
+BBB|  0  0  0  0  0  0  0  
+---|  1  1  0  0  0  0  0  
+BBB|  0  0  1  0  0  0  1  
+---|  0  0  0  0  1  0  0  
+---|  1  0  0  0  0  0  0  
+BBB|  0  0  0  0  0  0  0  
+---|  0  0  1  0  0  0  0  
+BBB|  0  0  0  0  0  0  0  
+---|  1  0  0  0  0  0  0  
+##  0 C  G  D  A  E  B  F# 
+
+gains
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+
