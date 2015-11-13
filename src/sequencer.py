@@ -127,6 +127,9 @@ class Sequencer(Mixer):
                     elif line_array[1] == 'EvenTemp':
                         base_frequency = int(line_array[2])
                         scale = EvenTempered(base_frequency)
+                    elif line_array[1] == 'Harmonic':
+                        base_frequency = int(line_array[2])
+                        scale = HarmonicSeries(base_frequency)
                     else:
                         scale = None
                     instrument = ScaleSynth(self.samplerate, self.buffersize, scale)
@@ -142,6 +145,7 @@ class Sequencer(Mixer):
         line = lines.pop(0)
         while len(lines) > 0 and line != 'gains':
             if len(line) > 0 and line[0] != '#':
+                line = line.split('|')[-1]
                 line_array = line.split(' ')
                 rhythms.append([int(c) for c in line_array])
 
