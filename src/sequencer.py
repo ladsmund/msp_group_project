@@ -7,7 +7,9 @@ from dac import DAC
 
 from instruments.sampler import Sampler
 from instruments.sinesynth import SineSynth
-
+from instruments.scalesynth import ScaleSynth
+from scales.pythag_series import PythagSeries
+from scales.even_tempered import EvenTempered
 
 class Sequencer(Mixer):
     def __init__(self, buffersize=128, samplerate=44100):
@@ -117,6 +119,18 @@ class Sequencer(Mixer):
                 elif line_array[0] == 'SineSynth':
                     instrument = SineSynth(self.samplerate, self.buffersize)
                     instrument.setFreq(int(line_array[1]))
+                    instruments.append(instrument)
+                elif line_array[0] == 'ScaleSynth':
+                    if line_array[1] == 'Pythag':
+                        base_frequency = int(line_array[2])
+                        scale = PythagSeries(base_frequency)
+                    elif line_array[1] == 'EvenTemp':
+                        base_frequency = int(line_array[2])
+                        scale = EvenTempered(base_frequency)
+                    else:
+                        scale = None
+                    instrument = ScaleSynth(self.samplerate, self.buffersize, scale)
+                    instrument.set_tone(int(line_array[3]))
                     instruments.append(instrument)
 
             line = lines.pop(0)

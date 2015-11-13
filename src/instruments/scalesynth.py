@@ -13,7 +13,7 @@ class ScaleSynth(Oscilator):
         self.trigger_start = 0
         self.start()
 
-    def set_tone(self, tone)
+    def set_tone(self, tone):
         frequency = self.scale.get_interval_frequency(tone)
         self.setFreq(frequency)
 
