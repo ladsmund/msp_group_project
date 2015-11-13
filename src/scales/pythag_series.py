@@ -9,7 +9,7 @@ class PythagSeries(Scale):
 
   def __init__(self, base_frequency):
     Scale.__init__(self, base_frequency)
-    self.intervals = self.get_natural_intervals()
+    self.intervals = self.get_dodecaphonic_intervals()
   
   base = Fraction(3,2)
 
