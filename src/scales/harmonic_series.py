@@ -9,7 +9,14 @@ class HarmonicSeries(Scale):
   
   def __init__(self, base_frequency):
     self.base_frequency = base_frequency
+    intervals = self.get_fifth_octave_intervals()
     
+  def get_interval_frequency(self, interval):
+    interval = int(interval)
+    interval_adjusted = interval % 16
+    interval_octave = interval / 16
+    return self.intervals[interval_adjusted].frequency * 2**interval_octave
+
   def get_frequency(self, harmonic_degree):
     frequency = self.base_frequency * harmonic_degree
     return frequency
