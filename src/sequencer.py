@@ -14,22 +14,65 @@ from scales.even_tempered import EvenTempered
 
 
 class Sequencer(Mixer):
-    def __init__(self, buffersize=512, samplerate=44100):
-        print("Sequencer: __init__")
-        Mixer.__init__(self)
-        self.samplerate = samplerate
-        self.buffersize = buffersize
+    DEFAULT_SPEED = 120
 
-        self.tracks = []
+    def __init__(self,
+                 buffer_size=512,
+                 sample_rate=44100,
+                 speed=DEFAULT_SPEED):
+        Mixer.__init__(self)
+        self.sample_rate = sample_rate
+        self.buffer_size = buffer_size
+
+        self.speed = speed
+
+        self.running = False
+        self.loop = False
+        self._worker_thread = None
+
+        self.dac = DAC(self.buffer_size, self.sample_rate)
+        self.dac.connect(self.callback)
+        self.dac.start()
+
+    def set_speed(self, speed):
+        self.speed = speed
+
+    def _sleep(self, time):
+        sleep(time * 60. / float(self.speed))
+
+    def play(self, score=[]):
+        self.running = True
+
+        while self.running:
+            for (instrument, tone, on, time) in score:
+                if not self.running:
+                    break
+                if on:
+                    self.channels[instrument].device.on(tone)
+                else:
+                    self.channels[instrument].device.off(tone)
+                self._sleep(time)
+            if not self.loop:
+                break
+
+
+class GridSequencer(Mixer):
+    def __init__(self, buffer_size=512, sample_rate=44100):
+        print("GridSequencer: __init__")
+        Mixer.__init__(self)
+        self.sample_rate = sample_rate
+        self.buffer_size = buffer_size
+
         self.speed = None
         self.measure_resolution = None
         self.beats_per_measure = None
         self.sleep_interval = None
+
         self.running = False;
         self.loop = False
         self._worker_thread = None
 
-        self.dac = DAC(self.buffersize, self.samplerate)
+        self.dac = DAC(self.buffer_size, self.sample_rate)
         self.dac.connect(self.callback)
         self.dac.start()
 
@@ -121,7 +164,7 @@ class Sequencer(Mixer):
                     instrument = Sampler(line_array[1])
                     instruments.append(instrument)
                 elif line_array[0] == 'SineSynth':
-                    instrument = SineSynth(self.samplerate, self.buffersize)
+                    instrument = SineSynth(self.sample_rate, self.buffer_size)
                     instrument.setFreq(int(line_array[1]))
                     instruments.append(instrument)
                 elif line_array[0] == 'PerfectTriads':
@@ -133,7 +176,7 @@ class Sequencer(Mixer):
                         scale = EvenTempered(base_frequency)
                     else:
                         scale = None
-                    instrument = PerfectTriads(self.samplerate, self.buffersize, scale)
+                    instrument = PerfectTriads(self.sample_rate, self.buffer_size, scale)
                     instrument.set_tone(int(line_array[3]))
                     instruments.append(instrument)
                 elif line_array[0] == 'ScaleSynth':
@@ -148,7 +191,7 @@ class Sequencer(Mixer):
                         scale = EvenTempered(base_frequency)
                     else:
                         scale = None
-                    instrument = ScaleSynth(self.samplerate, self.buffersize, scale)
+                    instrument = ScaleSynth(self.sample_rate, self.buffer_size, scale)
                     instrument.set_tone(int(line_array[3]))
                     instruments.append(instrument)
 
@@ -192,3 +235,5 @@ class Track():
         self.rhythms = rhythms
         self.gains = gains
         self.id = id
+
+
