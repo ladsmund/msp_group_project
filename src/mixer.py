@@ -11,10 +11,13 @@ class Channel:
         self.gain = gain
 
     def callback(self, in_data, frame_count, time_info, status):
+        buffer = self.device.callback(in_data, frame_count, time_info, status)
+        if buffer is None:
+            return None
         if self.mute:
-            return 0 * self.device.callback(in_data, frame_count, time_info, status)
+            return 0 * buffer
         else:
-            return self.gain * self.device.callback(in_data, frame_count, time_info, status)
+            return self.gain * buffer
 
 
 class Mixer:
@@ -34,6 +37,8 @@ class Mixer:
         output_buffer = None
         for channel in self.channels:
             channel_buffer = channel.callback(in_data, frame_count, time_info, status)
+            if channel_buffer is None:
+                continue
 
             if output_buffer is None:
                 output_buffer = channel_buffer
