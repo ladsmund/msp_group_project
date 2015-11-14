@@ -1,4 +1,3 @@
-from mixer import Mixer
 from exceptions import NotImplementedError
 
 

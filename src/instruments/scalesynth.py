@@ -1,5 +1,6 @@
 import time
 
+from src.mixer import Mixer
 from oscilator import Oscilator
 from instrument import Instrument
 
