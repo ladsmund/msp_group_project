@@ -1,4 +1,3 @@
-__author__ = 'mads'
 
 import unittest
 from src.dac import DAC
@@ -31,8 +30,6 @@ class TestInstrument(unittest.TestCase):
         sleep(.1)
         instrument.on(1)
         sleep(.5)
-
-
 
 
 if __name__ == '__main__':
