@@ -19,7 +19,6 @@ class Channel:
 
 class Mixer:
     def __init__(self):
-        self.devices = []
         self.channels = []
         self.volume = 1
         pass
