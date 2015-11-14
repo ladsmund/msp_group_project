@@ -1,37 +1,23 @@
 import time
 
 from oscilator import Oscilator
+from instrument import Instrument
 
 
-class ScaleSynth(Oscilator):
-    def __init__(self, samplerate, bufferSize, scale):
+class ScaleSynth(Instrument):
+    def __init__(self, samplerate, buffer_size, scale):
+        Instrument.__init__(self)
         self.scale = scale
-        Oscilator.__init__(self, samplerate, bufferSize)
-        self.on = False
-        self.length = 0
-        self.trigger_start = 0
-        self.start()
+        self.oscillator = Oscilator(samplerate, buffer_size)
+        self.oscillator.start()
 
-    def set_tone(self, tone):
+    def on(self, tone):
         frequency = self.scale.get_interval_frequency(tone)
-        self.setFreq(frequency)
+        self.oscillator.setFreq(frequency)
+        Instrument.on(self, tone)
 
-    def trigger(self, note=1, length=.1):
-        self.on = True
-        self.length = length
-        print "trigger. Freq: %5.1fHz" % self.frequency
-        self.trigger_start = time.time()
-
-    def callback(self, in_data, frame_count, time_info, status):
-        output_buffer = Oscilator.callback(self, in_data, frame_count, time_info, status)
-
-        if time.time() - self.trigger_start > self.length:
-            self.on = False
-
-        if not self.on:
-            output_buffer *= 0
-
-        return output_buffer
+    def _callback(self, in_data, frame_count, time_info, status):
+        return self.oscillator.callback(in_data, frame_count, time_info, status)
 
     def __str__(self):
         string = "SineSynth\n  Frequency: %0.1f" % self.frequency
