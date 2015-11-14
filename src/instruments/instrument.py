@@ -23,10 +23,12 @@ class Instrument():
         else:
             return None
 
+#class PolyphonicInstrument(Mixer):
+#    def __init__(self):
+#        Mixer.__init__(self)
+#        self.sub_instruments = []
+#        self.active_instruments = []
+#
+#    def on(self, ):
+#        self.sub_instruments[0].on(tone)
 
-
-class PolyPhonicScaleSynth(Instrument):
-    def __init__(self):
-        Instrument.__init__(self)
-        self.active_notes = []
-        self.sub_instruments = []
