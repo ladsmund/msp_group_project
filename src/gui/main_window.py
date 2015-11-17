@@ -3,10 +3,7 @@
 from Tkinter import Tk, Button, Frame, Label, IntVar
 import tkFileDialog
 from ttk import Button, Frame, Label, Style, Checkbutton
-import ttk
 import os.path
-import instruments.sampler
-import sys
 
 _RHYTHM_BUTTON_WIDTH = 1
 _FILE_BUTTON_WIDTH = 3
@@ -89,6 +86,12 @@ class RhythmTrackFrame(TrackFrame):
 
         self.id_label = Label(self, text=str(track.id))
         self.id_label.pack(side='left')
+
+        self.instrument_label = Label(self, text=str(track.instrument_id))
+        self.instrument_label.pack(side='left')
+
+        self.instrument_label = Label(self, text=str(track.instrument_tone))
+        self.instrument_label.pack(side='left')
 
         mute_var = IntVar()
 

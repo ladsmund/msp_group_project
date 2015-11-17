@@ -162,7 +162,7 @@ class GridSequencer(Mixer):
                 rhythm = line.split(':')[1].split()[0:self.measure_resolution]
                 rhythm = [int(c) for c in rhythm]
 
-                track = Track(instrument_id, instrument_tone, rhythm, rhythm, 'name')
+                track = Track(instrument_id, instrument_tone, rhythm, rhythm, '')
                 self.add_track(track)
 
             line = lines.pop(0)

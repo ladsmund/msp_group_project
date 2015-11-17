@@ -1,8 +1,8 @@
 from exceptions import NotImplementedError
 from src.mixer import Mixer
 
-class Instrument:
 
+class Instrument:
     def __init__(self):
         self.tone = None
         self.enabled = False
@@ -25,7 +25,6 @@ class Instrument:
 
 
 class PolyphonicInstrument(Mixer):
-
     def __init__(self):
         Mixer.__init__(self)
         self.sub_instruments = {}

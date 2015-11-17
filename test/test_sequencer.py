@@ -21,11 +21,6 @@ class TestInstrument(unittest.TestCase):
         instrument = ScaleSynth(SAMPLE_RATE, BUFFER_SIZE, self.scale)
         self.sequencer.add_device(instrument)
 
-        # melody = [(0, t-64, on, time/1024.) for (i, t, on, time) in bach]
-        #
-        # print melody
-        #
-        # self.sequencer.play(melody)
 
         self.sequencer.play([(0,0,1,0),
                              # (0,4,1,1),
@@ -35,7 +30,6 @@ class TestInstrument(unittest.TestCase):
                              (0,3,0,1)],
                             block=True)
 
-        pass
 
 
 if __name__ == '__main__':
