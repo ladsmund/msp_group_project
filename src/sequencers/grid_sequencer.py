@@ -5,13 +5,7 @@ import threading
 
 from src.dac import DAC
 
-from src.instruments.sampler import SingleSoundSampler
-from src.instruments.sinesynth import SineSynth
-from src.instruments.scalesynth import ScaleSynth
-from src.instruments.perfect_triads import PerfectTriads
 from src import instruments
-from src.scales.pythag_series import PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
-from src.scales.even_tempered import EvenTempered
 
 
 class Track():

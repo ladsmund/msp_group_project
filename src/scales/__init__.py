@@ -1,5 +1,5 @@
 from even_tempered import EvenTempered
-from pythag_series import PythagSeries, PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
+from pythag_series import PythagSeries, PythagSeriesDodecaphonic, PythagSeriesSevenNoteScale
 from harmonic_series import HarmonicSeries
 
 from exceptions import Exception
