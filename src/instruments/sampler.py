@@ -14,7 +14,7 @@ class Sampler(Instrument):
         Instrument.__init__(self)
         self.filename = None
         self.audio_data = None
-        self.enabled = True
+        self.enabled = False
         self.offset = 0
         self.trigger_start = 0
 
@@ -22,7 +22,6 @@ class Sampler(Instrument):
 
     def load_file(self, filename):
         self.filename = filename
-        self.enabled = True
         (rate, audio_data) = scipy.io.wavfile.read(filename)
         if len(audio_data.shape) > 1:
             self.audio_data = numpy.array(audio_data[:, 0], dtype=float)
@@ -67,9 +66,11 @@ class Sampler(Instrument):
 
 class PolyphonicSampler(Mixer):
     
-    def __init__(self):
+    def __init__(self, file_list=[]):
         Mixer.__init__(self)
         self.sub_samples = {}
+        for sample_id, filename in enumerate(file_list):
+            self.add_sample(sample_id, filename)
 
     def add_sample(self, sample_id, filename):
         sample = Sampler(filename)
@@ -84,19 +85,3 @@ class PolyphonicSampler(Mixer):
         if sample_id in self.sub_samples:
             self.sub_samples[sample_id].off()
 
-#if __name__ == '__main__':
-#    from src.dac import DAC
-#    from src.instruments.sampler import Sampler, PolyphonicSampler
-#    from time import sleep
-#
-#    BASE_FREQUENCY = 528
-#    BUFFER_SIZE = 512
-#    SAMPLE_RATE = 44100
-#
-#    dac = DAC(BUFFER_SIZE, SAMPLE_RATE)
-#
-#    s = Sampler("./samples/anxious.wav")
-#    dac.connect(s.callback)
-#    dac.start()
-#    
-#    s.on()
