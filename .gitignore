@@ -65,3 +65,4 @@ src/instruments/samples
 src/scratch/__init__.py
 src/scratch/scratch.py
 src/scratch
+koshka/scratch

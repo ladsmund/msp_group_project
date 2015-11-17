@@ -33,20 +33,22 @@ class DAC():
         return self.rate
 
     def _callback(self, in_data, frame_count, time_info, status):
-        out_array = self.callback(in_data, frame_count, time_info, status)
 
-        if out_array is not None and len(out_array) == self.bufferSize:
-            '''Convert the data format for the audio interface'''
+        out_array_fmt = self.silenceBuffer
 
-            out_scale = self.npFormatVal.max * out_array
+        if self.callback is not None:
 
-            '''Limit withing depth'''
-            out_limit = np.clip(out_scale, self.npFormatVal.min, self.npFormatVal.max)
+            out_array = self.callback(in_data, frame_count, time_info, status)
 
-            out_array_fmt = np.array(out_limit, dtype=self.npFormat)
+            if out_array is not None and len(out_array) == self.bufferSize:
+                '''Convert the data format for the audio interface'''
 
-        else:
-            out_array_fmt = self.silenceBuffer
+                out_scale = self.npFormatVal.max * out_array
+
+                '''Limit withing depth'''
+                out_limit = np.clip(out_scale, self.npFormatVal.min, self.npFormatVal.max)
+
+                out_array_fmt = np.array(out_limit, dtype=self.npFormat)
 
         return (out_array_fmt.tostring(), pyaudio.paContinue)
 

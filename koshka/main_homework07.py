@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import sys
-
-from sequencer import Sequencer
 from time import sleep
+
+from koshka.sequencers.sequencer import Sequencer
 
 if __name__ == "__main__":
 

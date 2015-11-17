@@ -6,14 +6,11 @@ from scale import Scale
 from interval import Interval
 
 
-
-
 class PythagSeries(Scale):
     def __init__(self, base_frequency):
         Scale.__init__(self, base_frequency)
 
     base = Fraction(3, 2)
-
 
     # Returns the frequncy of the given interval
     def get_frequency(self, interval):
@@ -28,6 +25,35 @@ class PythagSeries(Scale):
             factor_adjusted = factor_adjusted * 2
         frequency = self.base_frequency * factor_adjusted
         return frequency
+
+    def get_ptolemy_ratio(self, interval):
+        # First get the pythagorean intervals
+        interval_ratio_str = self.get_adjusted_interval_ratio(interval)
+        ratio = Fraction(interval_ratio_str)
+
+        # We will be adjusting by using these
+        syntonic_comma = Fraction("81/80")
+        dim_fifth = Fraction("64/45")
+
+        if interval == -5:
+            ratio = ratio * syntonic_comma
+        elif interval == -3:
+            ratio = ratio * syntonic_comma
+        elif interval == 4:
+            ratio = ratio / syntonic_comma
+        elif interval == -4:
+            ratio = ratio * syntonic_comma
+        elif interval == 3:
+            ratio = ratio / syntonic_comma
+        elif interval == 5:
+            ratio = ratio / syntonic_comma
+        elif interval == 6:
+            ratio = dim_fifth
+
+        return ratio
+
+    def get_ptolemy_frequency(self, interval):
+        return float(self.base_frequency) * self.get_ptolemy_ratio(interval)
 
     # Returns the fractional ratio of the given interval
     def get_interval_ratio(self, interval):
@@ -94,6 +120,19 @@ class PythagSeries(Scale):
         scale.sort()
         return (scale)
 
+    def get_ptolemy_intervals(self):
+        scale = []
+        notes = ["Db/C#", "Ab/G#", "Eb/D#", "Bb/A#", \
+                 "F", "C", "G", "D", "A", "E", "B", "Gb/F#"]
+        intervals = ["m2", "m6", "m3", "m7", \
+                     "4", "1", "5", "M2", "M6", "M3", "M7", "b5"]
+        for i in range(-5, 7):
+            interval = Interval(self.get_ptolemy_frequency(i), notes.pop(0), \
+                                intervals.pop(0))
+            scale.append(interval)
+        scale.sort()
+        return (scale)
+
     # Returns the spacing between two given pythagorean natural intervals
     # as a fraction
     def get_spacing(self, low, high):
@@ -125,20 +164,17 @@ class PythagSeries(Scale):
             print(self.get_spacing(i, i + 1))
 
 
-
-
-class PythagSeriesDodecaphpnic(PythagSeries):
+class PythagSeriesDodecaphonic(PythagSeries):
     def __init__(self, base_frequency):
         PythagSeries.__init__(self, base_frequency)
         self.intervals = self.get_dodecaphonic_intervals()
-
 
     def get_interval_frequency(self, interval):
         interval = int(interval)
         interval_adjusted = interval % 13
         interval_octave = interval / 13
-        return self.intervals[interval_adjusted].frequency * 2 ** interval_octave
-
+        return self.intervals[interval_adjusted].frequency \
+               * 2 ** interval_octave
 
 
 class PythagSeriesSevenNoteScale(PythagSeries):
@@ -146,9 +182,22 @@ class PythagSeriesSevenNoteScale(PythagSeries):
         PythagSeries.__init__(self, base_frequency)
         self.intervals = self.get_natural_intervals()
 
-
     def get_interval_frequency(self, interval):
         interval = int(interval)
         interval_adjusted = interval % 8
         interval_octave = interval / 8
-        return self.intervals[interval_adjusted].frequency * 2 ** interval_octave
+        return self.intervals[interval_adjusted].frequency \
+               * 2 ** interval_octave
+
+
+class PtolemyNaturalChromatic(PythagSeries):
+    def __init__(self, base_frequency):
+        PythagSeries.__init__(self, base_frequency)
+        self.intervals = self.get_ptolemy_intervals()
+
+    def get_interval_frequency(self, interval):
+        interval = int(interval)
+        interval_adjusted = interval % 12
+        interval_octave = interval / 12
+        return self.intervals[interval_adjusted].frequency \
+               * 2 ** interval_octave
