@@ -33,9 +33,9 @@ class DAC():
         return self.rate
 
     def _callback(self, in_data, frame_count, time_info, status):
-        
+
         out_array_fmt = self.silenceBuffer
-        
+
         if self.callback is not None:
 
             out_array = self.callback(in_data, frame_count, time_info, status)

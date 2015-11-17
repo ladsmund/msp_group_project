@@ -1,7 +1,7 @@
 from sampler import Sampler
 
-class Drumset(Sampler):
 
+class Drumset(Sampler):
     name = 'Drumset'
 
     SAMPLEPATH = "samples/drumset/"
@@ -22,19 +22,19 @@ class Drumset(Sampler):
                  crash=CRASH,
                  ride=RIDE):
 
-        self.kick =  kick
+        self.kick = kick
         self.snare = snare
-        self.tom1 =  tom1
-        self.tom2 =  tom2
+        self.tom1 = tom1
+        self.tom2 = tom2
         self.hihat = hihat
         self.crash = crash
-        self.ride =  ride
+        self.ride = ride
 
-        drumset_files = [ self.kick, self.snare, self.tom1, self.tom2,\
-                            self.hihat, self.crash, self.ride ]
+        drumset_files = [self.kick, self.snare, self.tom1, self.tom2, \
+                         self.hihat, self.crash, self.ride]
 
         Sampler.__init__(self, drumset_files)
-        
+
     def play_all(self):
         for sample in self.sub_samples.itervalues():
             sample.on(0)
@@ -42,4 +42,3 @@ class Drumset(Sampler):
     def stop_all(self):
         for sample in self.sub_samples.itervalues():
             sample.off()
-        

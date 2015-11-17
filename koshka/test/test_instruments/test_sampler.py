@@ -8,13 +8,14 @@ BASE_FREQUENCY = 528
 BUFFER_SIZE = 512
 SAMPLE_RATE = 44100
 
-class TestSampler(unittest.TestCase):
 
+class TestSampler(unittest.TestCase):
     def test_instantiation(self):
         sample = SingleSoundSampler("./samples/anxious_16.wav")
         self.assertIsNotNone(sample)
 
-#    def test_polyphonic_play(self):
+
+# def test_polyphonic_play(self):
 #        dac = DAC(BUFFER_SIZE, SAMPLE_RATE)
 #        sampler = PolyphonicSampler()
 #        sampler.add_sample(0, "./samples/anxious_16.wav")

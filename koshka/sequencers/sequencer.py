@@ -5,6 +5,7 @@ import threading
 
 from dac import DAC
 
+
 class Sequencer(Mixer):
     DEFAULT_SPEED = 120
 

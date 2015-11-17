@@ -4,6 +4,7 @@ from harmonic_series import HarmonicSeries
 
 from exceptions import Exception
 
+
 def parse(args):
     name = args[0]
     base_frequency = int(args[1])

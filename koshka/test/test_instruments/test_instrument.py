@@ -9,10 +9,10 @@ BASE_FREQUENCY = 528
 BUFFER_SIZE = 512
 SAMPLE_RATE = 44100
 
+
 class TestInstrument(unittest.TestCase):
     def setUp(self):
         self.scale = PythagSeriesSevenNoteScale(BASE_FREQUENCY)
-
 
     def test_instantiation(self):
         instrument = MonophonicScaleSynth(SAMPLE_RATE, BUFFER_SIZE, self.scale)

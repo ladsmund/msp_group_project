@@ -77,8 +77,10 @@ class TrackFrame(Frame):
 
         self.config(style='Track.TFrame')
 
+
 def check_cmd(track, mute_var):
     track.mute = mute_var.get()
+
 
 class RhythmTrackFrame(TrackFrame):
     def __init__(self, master, track):
@@ -95,7 +97,7 @@ class RhythmTrackFrame(TrackFrame):
 
         mute_var = IntVar()
 
-        self.mute_toggle = Checkbutton(self, command=lambda:check_cmd(track, mute_var), variable=mute_var)
+        self.mute_toggle = Checkbutton(self, command=lambda: check_cmd(track, mute_var), variable=mute_var)
         self.mute_toggle.pack(side='left')
 
         mute_var.set(track.mute)

@@ -5,6 +5,7 @@ from fractions import Fraction
 from scale import Scale
 from interval import Interval
 
+
 class PythagSeries(Scale):
     def __init__(self, base_frequency):
         Scale.__init__(self, base_frequency)
@@ -163,33 +164,31 @@ class PythagSeries(Scale):
             print(self.get_spacing(i, i + 1))
 
 
-
-
 class PythagSeriesDodecaphonic(PythagSeries):
     def __init__(self, base_frequency):
         PythagSeries.__init__(self, base_frequency)
         self.intervals = self.get_dodecaphonic_intervals()
-
 
     def get_interval_frequency(self, interval):
         interval = int(interval)
         interval_adjusted = interval % 13
         interval_octave = interval / 13
         return self.intervals[interval_adjusted].frequency \
-                                * 2 ** interval_octave
+               * 2 ** interval_octave
+
 
 class PythagSeriesSevenNoteScale(PythagSeries):
     def __init__(self, base_frequency):
         PythagSeries.__init__(self, base_frequency)
         self.intervals = self.get_natural_intervals()
 
-
     def get_interval_frequency(self, interval):
         interval = int(interval)
         interval_adjusted = interval % 8
         interval_octave = interval / 8
         return self.intervals[interval_adjusted].frequency \
-                                * 2 ** interval_octave
+               * 2 ** interval_octave
+
 
 class PtolemyNaturalChromatic(PythagSeries):
     def __init__(self, base_frequency):
@@ -201,5 +200,4 @@ class PtolemyNaturalChromatic(PythagSeries):
         interval_adjusted = interval % 12
         interval_octave = interval / 12
         return self.intervals[interval_adjusted].frequency \
-                                * 2 ** interval_octave
-    
+               * 2 ** interval_octave
