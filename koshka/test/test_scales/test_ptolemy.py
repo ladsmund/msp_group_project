@@ -1,7 +1,7 @@
 import unittest
 from fractions import Fraction
 
-from koshka.test.test_scales import PythagSeries
+from scales import PythagSeries
 
 
 class TestPtolemy(unittest.TestCase):

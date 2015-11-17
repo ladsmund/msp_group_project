@@ -27,7 +27,7 @@ class ScaleSynth(PolyphonicInstrument):
 
     def _add_synth(self, tone):
         synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, self.scale)
-        self.add_device(self, synth)
+        self.add_device(synth)
         self.sub_instruments[tone] = synth
 
     def on(self, tone):

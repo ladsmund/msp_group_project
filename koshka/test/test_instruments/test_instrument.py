@@ -1,9 +1,9 @@
 import unittest
 from time import sleep
 
-from koshka.dac import DAC
-from koshka.test.test_scales import PythagSeriesSevenNoteScale
-from koshka.instruments.scalesynth import MonophonicScaleSynth, ScaleSynth
+from dac import DAC
+from scales import PythagSeriesSevenNoteScale
+from instruments.scalesynth import MonophonicScaleSynth, ScaleSynth
 
 BASE_FREQUENCY = 528
 BUFFER_SIZE = 512

@@ -2,7 +2,7 @@
 
 import unittest
 
-from koshka.test.instruments import SingleSoundSampler
+from instruments import SingleSoundSampler
 
 BASE_FREQUENCY = 528
 BUFFER_SIZE = 512
