@@ -88,14 +88,14 @@ class RhythmTrackFrame(TrackFrame):
         self.id_label = Label(self, text=str(track.id))
         self.id_label.pack(side='left')  # (row=0, column=0, stick='W')
 
-        if isinstance(track.instrument, instruments.sampler.Sampler):
-            instrument_frame = SamplerFrame(self, track.instrument)
-        elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
-            instrument_frame = SineSynthFrame(self, track.instrument)
-        else:
-            instrument_frame = Instrument(self, track.instrument)
-
-        instrument_frame.pack(side='left', expand=True)
+        # if isinstance(track.instrument, instruments.sampler.Sampler):
+        #     instrument_frame = SamplerFrame(self, track.instrument)
+        # elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
+        #     instrument_frame = SineSynthFrame(self, track.instrument)
+        # else:
+        #     instrument_frame = Instrument(self, track.instrument)
+        #
+        # instrument_frame.pack(side='left', expand=True)
 
         rhythm_frame = Frame(self)
         rhythm_frame.pack(side='right')
