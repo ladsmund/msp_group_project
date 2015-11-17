@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
-from Tkinter import Tk, Button, Frame, Label
+from Tkinter import Tk, Button, Frame, Label, IntVar
 import tkFileDialog
-from ttk import Button, Frame, Label, Style
+from ttk import Button, Frame, Label, Style, Checkbutton
 import ttk
 import os.path
 import instruments.sampler
 import sys
 
-_RHYTHM_BUTTON_WIDTH = 2
+_RHYTHM_BUTTON_WIDTH = 1
 _FILE_BUTTON_WIDTH = 3
 
 
@@ -80,22 +80,31 @@ class TrackFrame(Frame):
 
         self.config(style='Track.TFrame')
 
+def check_cmd(track, mute_var):
+    track.mute = mute_var.get()
 
 class RhythmTrackFrame(TrackFrame):
     def __init__(self, master, track):
         TrackFrame.__init__(self, master, track)
 
         self.id_label = Label(self, text=str(track.id))
-        self.id_label.pack(side='left')  # (row=0, column=0, stick='W')
+        self.id_label.pack(side='left')
 
-        if isinstance(track.instrument, instruments.sampler.Sampler):
-            instrument_frame = SamplerFrame(self, track.instrument)
-        elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
-            instrument_frame = SineSynthFrame(self, track.instrument)
-        else:
-            instrument_frame = Instrument(self, track.instrument)
+        mute_var = IntVar()
 
-        instrument_frame.pack(side='left', expand=True)
+        self.mute_toggle = Checkbutton(self, command=lambda:check_cmd(track, mute_var), variable=mute_var)
+        self.mute_toggle.pack(side='left')
+
+        mute_var.set(track.mute)
+
+        # if isinstance(track.instrument, instruments.sampler.Sampler):
+        #     instrument_frame = SamplerFrame(self, track.instrument)
+        # elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
+        #     instrument_frame = SineSynthFrame(self, track.instrument)
+        # else:
+        #     instrument_frame = Instrument(self, track.instrument)
+        #
+        # instrument_frame.pack(side='left', expand=True)
 
         rhythm_frame = Frame(self)
         rhythm_frame.pack(side='right')

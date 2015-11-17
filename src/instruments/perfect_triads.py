@@ -1,6 +1,6 @@
 
 from src.mixer import Mixer
-from scalesynth import ScaleSynth
+from scalesynth import MonophonicScaleSynth
 from sinesynth import SineSynth
 
 class PerfectTriads(Mixer):
@@ -8,7 +8,7 @@ class PerfectTriads(Mixer):
     def __init__(self, samplerate, bufferSize, scale):
         Mixer.__init__(self)
 
-        self.instrument01 = ScaleSynth(samplerate, bufferSize, scale)
+        self.instrument01 = MonophonicScaleSynth(samplerate, bufferSize, scale)
         self.instrument02 = SineSynth(samplerate, bufferSize)
         self.instrument03 = SineSynth(samplerate, bufferSize)
 

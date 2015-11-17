@@ -1,15 +1,13 @@
-
 import scipy.io.wavfile
-import time
 
 from src.mixer import Mixer
-from instrument import Instrument
+from instrument import Instrument, PolyphonicInstrument
 import numpy
 
 _DEFAULT_AUDIO_GAIN = 0.00005
 
 
-class Sampler(Instrument):
+class SingleSoundSampler(Instrument):
     def __init__(self, filename):
         Instrument.__init__(self)
         self.filename = None
@@ -55,7 +53,7 @@ class Sampler(Instrument):
 
         if audio_data_length >= frame_count:
             output_buffer = self.audio_data[
-                                self.offset:(frame_count + self.offset)]
+                            self.offset:(frame_count + self.offset)]
             self.offset += frame_count
 
         return output_buffer
@@ -64,24 +62,14 @@ class Sampler(Instrument):
         string = "Sampler\n  filename: %s" % (self.filename)
         return string
 
-class PolyphonicSampler(Mixer):
-    
+
+class Sampler(PolyphonicInstrument):
     def __init__(self, file_list=[]):
-        Mixer.__init__(self)
-        self.sub_samples = {}
+        PolyphonicInstrument.__init__(self)
         for sample_id, filename in enumerate(file_list):
             self.add_sample(sample_id, filename)
 
     def add_sample(self, sample_id, filename):
-        sample = Sampler(filename)
+        sample = SingleSoundSampler(filename)
         Mixer.add_device(self, sample)
-        self.sub_samples[sample_id] = sample
-
-    def on(self, sample_id):
-        if sample_id in self.sub_samples:
-            self.sub_samples[sample_id].on(0)
-
-    def off(self, sample_id):
-        if sample_id in self.sub_samples:
-            self.sub_samples[sample_id].off()
-
+        self.sub_instruments[sample_id] = sample

@@ -2,10 +2,10 @@ import time
 
 from src.mixer import Mixer
 from oscilator import Oscilator
-from instrument import Instrument
+from instrument import Instrument, PolyphonicInstrument
 
 
-class ScaleSynth(Instrument):
+class MonophonicScaleSynth(Instrument):
     def __init__(self, samplerate, buffer_size, scale):
         Instrument.__init__(self)
         self.scale = scale
@@ -20,29 +20,20 @@ class ScaleSynth(Instrument):
     def _callback(self, in_data, frame_count, time_info, status):
         return self.oscillator.callback(in_data, frame_count, time_info, status)
 
-    def __str__(self):
-        string = "SineSynth\n  Frequency: %0.1f" % self.frequency
-        return string
 
-class PolyphonicScaleSynth(Mixer):
-
+class ScaleSynth(PolyphonicInstrument):
     def __init__(self, sample_rate, buffer_size, scale):
-        Mixer.__init__(self)
+        PolyphonicInstrument.__init__(self)
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
         self.scale = scale
-        self.sub_synths = {}
-        
+
     def _add_synth(self, tone):
-        synth = ScaleSynth(self.sample_rate, self.buffer_size, self.scale)
+        synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, self.scale)
         Mixer.add_device(self, synth)
-        self.sub_synths[tone] = synth
+        self.sub_instruments[tone] = synth
 
     def on(self, tone):
-        if tone not in self.sub_synths:
+        if tone not in self.sub_instruments:
             self._add_synth(tone)
-        self.sub_synths[tone].on(tone)
-
-    def off(self, tone):
-        if tone in self.sub_synths:
-            self.sub_synths[tone].off()
+        PolyphonicInstrument.on(self, tone)

@@ -5,21 +5,23 @@ import threading
 
 from src.dac import DAC
 
-from src.instruments.sampler import Sampler
+from src.instruments.sampler import SingleSoundSampler
 from src.instruments.sinesynth import SineSynth
 from src.instruments.scalesynth import ScaleSynth
 from src.instruments.perfect_triads import PerfectTriads
+from src import instruments
 from src.scales.pythag_series import PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
 from src.scales.even_tempered import EvenTempered
 
 
-
 class Track():
-    def __init__(self, instrument, rhythms, gains, id):
-        self.instrument = instrument
-        self.rhythms = rhythms
+    def __init__(self, instrument_id, instrument_tone, rhythm, gains, id):
+        self.instrument_id = instrument_id
+        self.instrument_tone = instrument_tone
+        self.rhythms = rhythm
         self.gains = gains
         self.id = id
+        self.mute = False
 
 
 class GridSequencer(Mixer):
@@ -37,6 +39,8 @@ class GridSequencer(Mixer):
         self.loop = False
         self._worker_thread = None
 
+        self.instruments = []
+        self.instrument_id_counter = 0
         self.tracks = []
 
         self.dac = DAC(self.buffer_size, self.sample_rate)
@@ -50,6 +54,17 @@ class GridSequencer(Mixer):
     def __enter__(self):
         return self
 
+    def add_instrument(self, instrument, id=None):
+        if id is None:
+            id = len(self.instruments)
+            self.instruments.append(instrument)
+            self.add_device(instrument)
+        return id
+
+    def add_track(self, track):
+        self.tracks.append(track)
+        self.tracks.sort(lambda _, t: t.instrument_id)
+
     def _worker(self):
         i = 0
         while self.running:
@@ -60,9 +75,15 @@ class GridSequencer(Mixer):
 
                 gain = track.gains
                 rhythm = track.rhythms
+                tone = track.instrument_tone
+                instrument = self.instruments[track.instrument_id]
 
-                if rhythm[i] != 0:
-                    track.instrument.trigger(rhythm[i], self.sleep_interval)
+                if not track.mute and rhythm[i] != 0:
+                    instrument.on(tone)
+                    # track.instrument.on(rhythm[i])
+                else:
+                    # track.instrument.off()
+                    instrument.off(tone)
 
             sleep(self.sleep_interval)
 
@@ -87,6 +108,7 @@ class GridSequencer(Mixer):
             self.loop = False
             self._worker_thread.join()
             self._worker_thread = None
+            [i.off() for i in self.instruments]
 
     def load(self, file_name):
         file = open(file_name, 'r')
@@ -120,77 +142,27 @@ class GridSequencer(Mixer):
         else:
             raise Exception('This measure resolution has to be divisible with beeats_per_measure')
 
-
-        # Reading instrumnets
-        instruments = []
+        # Reading instruments
         line = lines.pop(0)
         while len(lines) > 0 and line != 'rhythm':
             if len(line) > 0 and line[0] != '#':
-                line_array = line.split(' ')
-                if line_array[0] == 'Sampler':
-                    instrument = Sampler(line_array[1])
-                    instruments.append(instrument)
-                elif line_array[0] == 'SineSynth':
-                    instrument = SineSynth(self.sample_rate, self.buffer_size)
-                    instrument.setFreq(int(line_array[1]))
-                    instruments.append(instrument)
-                elif line_array[0] == 'PerfectTriads':
-                    if line_array[1] == 'PythagDodecaphonic':
-                        base_frequency = int(line_array[2])
-                        scale = PythagSeriesDodecaphpnic(base_frequency)
-                    elif line_array[1] == 'EvenTemp':
-                        base_frequency = int(line_array[2])
-                        scale = EvenTempered(base_frequency)
-                    else:
-                        scale = None
-                    instrument = PerfectTriads(self.sample_rate, self.buffer_size, scale)
-                    instrument.set_tone(int(line_array[3]))
-                    instruments.append(instrument)
-                elif line_array[0] == 'ScaleSynth':
-                    if line_array[1] == 'Pythag':
-                        base_frequency = int(line_array[2])
-                        scale = PythagSeriesSevenNoteScale(base_frequency)
-                    elif line_array[1] == 'PythagDodecaphonic':
-                        base_frequency = int(line_array[2])
-                        scale = PythagSeriesDodecaphpnic(base_frequency)
-                    elif line_array[1] == 'EvenTemp':
-                        base_frequency = int(line_array[2])
-                        scale = EvenTempered(base_frequency)
-                    else:
-                        scale = None
-                    instrument = ScaleSynth(self.sample_rate, self.buffer_size, scale)
-                    instrument.set_tone(int(line_array[3]))
-                    instruments.append(instrument)
-
+                self.add_instrument(instruments.parse(line.split(' '), self.sample_rate, self.buffer_size))
             line = lines.pop(0)
 
-
-
         # Reading Rhythm pattern
-        rhythms = []
         line = lines.pop(0)
         while len(lines) > 0 and line != 'gains':
             if len(line) > 0 and line[0] != '#':
                 line = line.split('|')[-1]
-                line_array = line.split()[0:self.measure_resolution]
 
-                rhythms.append([int(c) for c in line_array])
+                instr_str = line.split(':')[0].split()
+                instrument_id = int(instr_str[0])
+                instrument_tone = int(instr_str[1])
+
+                rhythm = line.split(':')[1].split()[0:self.measure_resolution]
+                rhythm = [int(c) for c in rhythm]
+
+                track = Track(instrument_id, instrument_tone, rhythm, rhythm, 'name')
+                self.add_track(track)
 
             line = lines.pop(0)
-
-        # Reading gain pattern
-        gains = []
-        line = lines.pop(0)
-        while len(lines) > 0:
-            if len(line) > 0 and line[0] != '#':
-                line_array = line.split()
-                gains.append([float(c) for c in line_array])
-            line = lines.pop(0)
-
-        for i in range(0, len(instruments)):
-            track = Track(instruments[i], rhythms[i], gains[i], i)
-            self.add_track(track)
-
-    def add_track(self, track):
-        self.tracks.append(track)
-        self.add_device(track.instrument)
