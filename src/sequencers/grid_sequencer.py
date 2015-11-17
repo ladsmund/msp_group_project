@@ -1,64 +1,29 @@
-from mixer import Mixer
+from src.mixer import Mixer
 from time import sleep
 from exceptions import Exception
 import threading
 
-from dac import DAC
+from src.dac import DAC
 
-from instruments.sampler import Sampler
-from instruments.sinesynth import SineSynth
-from instruments.scalesynth import ScaleSynth
-from instruments.perfect_triads import PerfectTriads
-from scales.pythag_series import PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
-from scales.even_tempered import EvenTempered
+from src.instruments.sampler import Sampler
+from src.instruments.sinesynth import SineSynth
+from src.instruments.scalesynth import ScaleSynth
+from src.instruments.perfect_triads import PerfectTriads
+from src.scales.pythag_series import PythagSeriesDodecaphpnic, PythagSeriesSevenNoteScale
+from src.scales.even_tempered import EvenTempered
 
 
-class Sequencer(Mixer):
-    DEFAULT_SPEED = 120
 
-    def __init__(self,
-                 buffer_size=512,
-                 sample_rate=44100,
-                 speed=DEFAULT_SPEED):
-        Mixer.__init__(self)
-        self.sample_rate = sample_rate
-        self.buffer_size = buffer_size
-
-        self.speed = speed
-
-        self.running = False
-        self.loop = False
-        self._worker_thread = None
-
-        self.dac = DAC(self.buffer_size, self.sample_rate)
-        self.dac.connect(self.callback)
-        self.dac.start()
-
-    def set_speed(self, speed):
-        self.speed = speed
-
-    def _sleep(self, time):
-        sleep(time * 60. / float(self.speed))
-
-    def play(self, score=[]):
-        self.running = True
-
-        while self.running:
-            for (instrument, tone, on, time) in score:
-                if not self.running:
-                    break
-                if on:
-                    self.channels[instrument].device.on(tone)
-                else:
-                    self.channels[instrument].device.off(tone)
-                self._sleep(time)
-            if not self.loop:
-                break
+class Track():
+    def __init__(self, instrument, rhythms, gains, id):
+        self.instrument = instrument
+        self.rhythms = rhythms
+        self.gains = gains
+        self.id = id
 
 
 class GridSequencer(Mixer):
     def __init__(self, buffer_size=512, sample_rate=44100):
-        print("GridSequencer: __init__")
         Mixer.__init__(self)
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
@@ -71,6 +36,8 @@ class GridSequencer(Mixer):
         self.running = False;
         self.loop = False
         self._worker_thread = None
+
+        self.tracks = []
 
         self.dac = DAC(self.buffer_size, self.sample_rate)
         self.dac.connect(self.callback)
@@ -227,13 +194,3 @@ class GridSequencer(Mixer):
     def add_track(self, track):
         self.tracks.append(track)
         self.add_device(track.instrument)
-
-
-class Track():
-    def __init__(self, instrument, rhythms, gains, id):
-        self.instrument = instrument
-        self.rhythms = rhythms
-        self.gains = gains
-        self.id = id
-
-
