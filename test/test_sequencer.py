@@ -1,12 +1,7 @@
 import unittest
 
-<<<<<<< HEAD
 from src.scales.pythag_series import PythagSeriesDodecaphonic
-from src.instruments.scalesynth import PolyphonicScaleSynth
-=======
-from src.scales.pythag_series import PythagSeriesDodecaphpnic
 from src.instruments.scalesynth import ScaleSynth
->>>>>>> 7b40df0e4f5ca658e48ea8cf12f8fd0c78bb03a9
 from src.sequencers.sequencer import Sequencer
 
 BASE_FREQUENCY = 528
