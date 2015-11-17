@@ -2,16 +2,17 @@
 
 import sys
 
-from dac import DAC
-
-from sequencer import Sequencer
-
+from src.sequencers.grid_sequencer import GridSequencer
 from gui.main_window import MainWindow
-from Tkinter import Tk
 
 if __name__ == "__main__":
-    with Sequencer() as sequencer:
+    with GridSequencer() as sequencer:
+
+        print sys.argv
+
         sequencer.load(sys.argv[1])
+
+
 
         window = MainWindow(sequencer)
         window.mainloop()
