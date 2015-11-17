@@ -4,7 +4,7 @@ import threading
 
 from mixer import Mixer
 from dac import DAC
-from koshka.test import instruments
+import instruments
 
 
 class Track():
