@@ -3,7 +3,7 @@
 import sys
 from time import sleep
 
-from src.sequencers.sequencer import Sequencer
+from koshka.sequencers.sequencer import Sequencer
 
 if __name__ == "__main__":
 

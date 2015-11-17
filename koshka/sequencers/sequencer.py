@@ -1,4 +1,4 @@
-from src.mixer import Mixer
+from mixer import Mixer
 import time
 from exceptions import Exception
 import threading

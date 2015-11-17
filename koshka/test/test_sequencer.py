@@ -1,12 +1,19 @@
 import unittest
 
-from src.scales.pythag_series import PythagSeriesDodecaphonic
-from src.instruments.scalesynth import ScaleSynth
-from src.sequencers.sequencer import Sequencer
+# import sys
+# print "sys.path"
+# print(sys.path[0:3])
+# print "--------"
+# sys.stderr.write('\n')
+
+from scales.pythag_series import PythagSeriesDodecaphonic
+from instruments.scalesynth import ScaleSynth
+from sequencers.sequencer import Sequencer
 
 BASE_FREQUENCY = 528
 BUFFER_SIZE = 512
 SAMPLE_RATE = 44100
+
 
 class TestInstrument(unittest.TestCase):
     def setUp(self):
@@ -21,15 +28,13 @@ class TestInstrument(unittest.TestCase):
         instrument = ScaleSynth(SAMPLE_RATE, BUFFER_SIZE, self.scale)
         self.sequencer.add_device(instrument)
 
-
-        self.sequencer.play([(0,0,1,0),
+        self.sequencer.play([(0, 0, 1, 0),
                              # (0,4,1,1),
                              # (0,7,1,0),
                              # (0,4,0,1),
                              # (0,3,1,0),
-                             (0,3,0,1)],
+                             (0, 3, 0, 1)],
                             block=True)
-
 
 
 if __name__ == '__main__':

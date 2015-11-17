@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
 import unittest
-from src.dac import DAC
-from src.instruments.sampler import SingleSoundSampler, Sampler
-from time import sleep
+
+from koshka.test.instruments import SingleSoundSampler
 
 BASE_FREQUENCY = 528
 BUFFER_SIZE = 512
