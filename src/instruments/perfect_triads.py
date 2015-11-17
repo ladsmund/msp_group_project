@@ -1,5 +1,5 @@
 
-from src.mixer import Mixer
+from mixer import Mixer
 from scalesynth import MonophonicScaleSynth
 from sinesynth import SineSynth
 

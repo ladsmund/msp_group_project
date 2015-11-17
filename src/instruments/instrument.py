@@ -1,5 +1,5 @@
 from exceptions import NotImplementedError
-from src.mixer import Mixer
+from mixer import Mixer
 
 
 class Instrument:

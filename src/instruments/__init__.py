@@ -1,11 +1,10 @@
+from exceptions import Exception
+
 from scalesynth import ScaleSynth
 from perfect_triads import PerfectTriads
 from sampler import SingleSoundSampler, Sampler
 from drumset import Drumset
-
-from src import scales
-
-from exceptions import Exception
+from test import scales
 
 
 def parse(args, sample_rate, buffer_size):

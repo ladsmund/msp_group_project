@@ -1,6 +1,5 @@
 import scipy.io.wavfile
 
-from src.mixer import Mixer
 from instrument import Instrument, PolyphonicInstrument
 import numpy
 
@@ -71,5 +70,5 @@ class Sampler(PolyphonicInstrument):
 
     def add_sample(self, sample_id, filename):
         sample = SingleSoundSampler(filename)
-        Mixer.add_device(self, sample)
+        self.add_device(sample)
         self.sub_instruments[sample_id] = sample

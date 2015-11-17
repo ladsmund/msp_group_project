@@ -3,7 +3,7 @@ import time
 from exceptions import Exception
 import threading
 
-from src.dac import DAC
+from dac import DAC
 
 class Sequencer(Mixer):
     DEFAULT_SPEED = 120

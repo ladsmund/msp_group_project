@@ -1,11 +1,10 @@
-from src.mixer import Mixer
 from time import sleep
 from exceptions import Exception
 import threading
 
-from src.dac import DAC
-
-from src import instruments
+from mixer import Mixer
+from dac import DAC
+from test import instruments
 
 
 class Track():

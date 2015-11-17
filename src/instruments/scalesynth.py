@@ -1,6 +1,3 @@
-import time
-
-from src.mixer import Mixer
 from oscilator import Oscilator
 from instrument import Instrument, PolyphonicInstrument
 
@@ -30,7 +27,7 @@ class ScaleSynth(PolyphonicInstrument):
 
     def _add_synth(self, tone):
         synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, self.scale)
-        Mixer.add_device(self, synth)
+        self.add_device(self, synth)
         self.sub_instruments[tone] = synth
 
     def on(self, tone):
