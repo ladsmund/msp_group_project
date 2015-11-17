@@ -1,6 +1,6 @@
 __author__ = 'mads'
 
-from instruments.sampler import Sampler
+from instruments.sampler import SingleSoundSampler
 from instruments.sinesynth import SineSynth
 
 
@@ -46,7 +46,7 @@ def parse(file_path):
         if len(line) > 0 and line[0] != '#':
             line_array = line.split(' ')
             if line_array[0] == 'Sampler':
-                instruments.append(Sampler(line_array[1]))
+                instruments.append(SingleSoundSampler(line_array[1]))
             elif line_array[0] == 'SineSynth':
                 instrument = SineSynth(samplerate, buffersize)
                 instrument.setFreq(int(line_array[1]))

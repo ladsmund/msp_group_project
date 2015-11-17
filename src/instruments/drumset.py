@@ -1,6 +1,8 @@
-from sampler import PolyphonicSampler
+from sampler import Sampler
 
-class Drumset(PolyphonicSampler):
+class Drumset(Sampler):
+
+    name = 'Drumset'
 
     SAMPLEPATH = "samples/drumset/"
     KICK = SAMPLEPATH + "kick.wav"
@@ -11,8 +13,15 @@ class Drumset(PolyphonicSampler):
     CRASH = SAMPLEPATH + "crash.wav"
     RIDE = SAMPLEPATH + "ride.wav"
 
-    def __init__(self, kick=KICK, snare=SNARE, tom1=TOM1, tom2=TOM2, \
-                    hihat=HIHAT, crash=CRASH, ride=RIDE):
+    def __init__(self,
+                 kick=KICK,
+                 snare=SNARE,
+                 tom1=TOM1,
+                 tom2=TOM2,
+                 hihat=HIHAT,
+                 crash=CRASH,
+                 ride=RIDE):
+
         self.kick =  kick
         self.snare = snare
         self.tom1 =  tom1
@@ -24,7 +33,7 @@ class Drumset(PolyphonicSampler):
         drumset_files = [ self.kick, self.snare, self.tom1, self.tom2,\
                             self.hihat, self.crash, self.ride ]
 
-        PolyphonicSampler.__init__(self, drumset_files)
+        Sampler.__init__(self, drumset_files)
         
     def play_all(self):
         for sample in self.sub_samples.itervalues():

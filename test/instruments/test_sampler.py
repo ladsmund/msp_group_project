@@ -2,7 +2,7 @@
 
 import unittest
 from src.dac import DAC
-from src.instruments.sampler import Sampler, PolyphonicSampler
+from src.instruments.sampler import SingleSoundSampler, Sampler
 from time import sleep
 
 BASE_FREQUENCY = 528
@@ -12,7 +12,7 @@ SAMPLE_RATE = 44100
 class TestSampler(unittest.TestCase):
 
     def test_instantiation(self):
-        sample = Sampler("./samples/anxious_16.wav")
+        sample = SingleSoundSampler("./samples/anxious_16.wav")
         self.assertIsNotNone(sample)
 
 #    def test_polyphonic_play(self):
