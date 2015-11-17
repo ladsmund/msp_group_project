@@ -36,6 +36,8 @@ class TestInstrument(unittest.TestCase):
         instrument.off(1)
         sleep(.5)
 
+        dac.stop()
+
 
 if __name__ == '__main__':
     unittest.main()
