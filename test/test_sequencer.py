@@ -1,6 +1,6 @@
 import unittest
 
-from src.scales.pythag_series import PythagSeriesDodecaphpnic
+from src.scales.pythag_series import PythagSeriesDodecaphonic
 from src.instruments.scalesynth import ScaleSynth
 from src.sequencers.sequencer import Sequencer
 
@@ -10,7 +10,7 @@ SAMPLE_RATE = 44100
 
 class TestInstrument(unittest.TestCase):
     def setUp(self):
-        self.scale = PythagSeriesDodecaphpnic(BASE_FREQUENCY)
+        self.scale = PythagSeriesDodecaphonic(BASE_FREQUENCY)
         # self.scale = EvenTempered(BASE_FREQUENCY)
         self.sequencer = Sequencer(BUFFER_SIZE, SAMPLE_RATE)
 
