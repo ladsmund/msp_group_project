@@ -59,7 +59,7 @@ class RhythmTrackFrame(TrackFrame):
         # self.instrument_label = Label(self, text=str(track.instrument_id))
         # self.instrument_label.pack(side='left')
 
-        self.instrument_label = Label(self, text=str(track.instrument_tone), width=3)
+        self.instrument_label = Label(self, text=str(track.instrument_tone), width=3    )
         self.instrument_label.pack(side='left')
 
         mute_var = IntVar()
