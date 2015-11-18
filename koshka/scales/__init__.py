@@ -4,6 +4,7 @@ from harmonic_series import HarmonicSeries
 
 from exceptions import Exception
 
+SCALES = [EvenTempered, PythagSeries, PythagChromaticScale, PythagSeriesDodecaphonic]
 
 def parse(args):
     name = args[0]

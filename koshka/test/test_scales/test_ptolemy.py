@@ -20,7 +20,7 @@ class TestPtolemy(unittest.TestCase):
                          Fraction(5, 3),
                          Fraction(16, 9),
                          Fraction(15, 8)]
-        
+
         for i, interval in enumerate(static_ratios):
             generated_ratio = scale.get_ratio(i)
             self.assertEqual(static_ratios[i], generated_ratio)

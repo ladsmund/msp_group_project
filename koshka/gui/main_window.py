@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
-from Tkinter import Tk, Button, Frame, Label, IntVar
-import tkFileDialog
+from Tkinter import Tk, Button, Frame, Label, IntVar, RIDGE, CENTER
 from ttk import Button, Frame, Label, Style, Checkbutton
-import os.path
+from instrument_frame import get_instrument_frame
 
 _RHYTHM_BUTTON_WIDTH = 1
 _FILE_BUTTON_WIDTH = 3
@@ -26,41 +25,9 @@ class RhythmButton(Button):
 
     def toggle_visual(self):
         if self.track.rhythms[self.beat]:
-            self.config(text=str(self.track.rhythms[self.beat]))
+            self.config(text="X")
         else:
             self.config(text=" ")
-
-
-class Instrument(Frame):
-    def __init__(self, master, instrument):
-        Frame.__init__(self, master)
-        self.instrument = instrument
-        # self.config(width=200)
-
-
-class SineSynthFrame(Instrument):
-    def __init__(self, master, instrument):
-        Instrument.__init__(self, master, instrument)
-
-        self.frequency_label = Label(self, text=str(self.instrument.frequency))
-        self.frequency_label.grid(row=0, column=0)
-
-
-class SamplerFrame(Instrument):
-    def __init__(self, master, instrument):
-        Instrument.__init__(self, master, instrument)
-
-        file_name = os.path.basename(self.instrument.filename)
-        self.load_file_button = Button(self, text=file_name, command=self.load_file,
-                                       width=_FILE_BUTTON_WIDTH)
-        self.load_file_button.grid(row=0, column=1)
-
-    def load_file(self):
-        file_path = tkFileDialog.askopenfile(filetypes=[('audio files', '.wav')])
-        if file_path:
-            file_name = os.path.basename(file_path.name)
-            self.instrument.load_file(file_path.name)
-            self.load_file_button.config(text=file_name)
 
 
 class TrackFrame(Frame):
@@ -72,7 +39,7 @@ class TrackFrame(Frame):
         self.style_class.configure('Track.TFrame',
                                    background='black',
                                    borderwidth=2,
-                                   relief='raised',
+                                   # relief='raised',
                                    )
 
         self.config(style='Track.TFrame')
@@ -89,10 +56,10 @@ class RhythmTrackFrame(TrackFrame):
         self.id_label = Label(self, text=str(track.id))
         self.id_label.pack(side='left')
 
-        self.instrument_label = Label(self, text=str(track.instrument_id))
-        self.instrument_label.pack(side='left')
+        # self.instrument_label = Label(self, text=str(track.instrument_id))
+        # self.instrument_label.pack(side='left')
 
-        self.instrument_label = Label(self, text=str(track.instrument_tone))
+        self.instrument_label = Label(self, text=str(track.instrument_tone), width=3)
         self.instrument_label.pack(side='left')
 
         mute_var = IntVar()
@@ -101,15 +68,6 @@ class RhythmTrackFrame(TrackFrame):
         self.mute_toggle.pack(side='left')
 
         mute_var.set(track.mute)
-
-        # if isinstance(track.instrument, instruments.sampler.Sampler):
-        #     instrument_frame = SamplerFrame(self, track.instrument)
-        # elif isinstance(track.instrument, instruments.sinesynth.SineSynth):
-        #     instrument_frame = SineSynthFrame(self, track.instrument)
-        # else:
-        #     instrument_frame = Instrument(self, track.instrument)
-        #
-        # instrument_frame.pack(side='left', expand=True)
 
         rhythm_frame = Frame(self)
         rhythm_frame.pack(side='right')
@@ -126,15 +84,20 @@ class SequencerFrame(Frame):
         self.sequencer = sequencer
 
         row = 0
-        for track in sequencer.tracks:
-            RhythmTrackFrame(self, track).grid(row=row, column=0, sticky="EW")
-            # RhythmTrackFrame(self, track).pack(side='right', column=0, fill="both", expand=True)
-            row += 1
+        for id, instrument in enumerate(sequencer.instruments):
+            instrument_frame = get_instrument_frame(self, instrument)
+            instrument_frame.grid(row=id, column=0, sticky="NSEW")
+            track_frame = Frame(self)
+            track_frame.grid(row=id, column=1)
+
+            tracks = [track for track in sequencer.tracks if track.instrument_id == id]
+            for row, track in enumerate(tracks):
+                RhythmTrackFrame(track_frame, track).grid(row=row, column=0, sticky="EW")
 
 
 class MainWindow(Tk):
     def __init__(self, sequencer):
-        Tk.__init__(self)
+        Tk.__init__(self, className="Koshka")
         self.sequencer = sequencer
 
         self.control_panel = Frame(self)

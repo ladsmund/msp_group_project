@@ -3,6 +3,8 @@ from mixer import Mixer
 
 
 class Instrument:
+    name = "instrument"
+
     def __init__(self):
         self.tone = None
         self.enabled = False
@@ -25,6 +27,8 @@ class Instrument:
 
 
 class PolyphonicInstrument(Mixer):
+    name = "poly instrument"
+
     def __init__(self):
         Mixer.__init__(self)
         self.sub_instruments = {}

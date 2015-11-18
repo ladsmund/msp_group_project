@@ -56,12 +56,11 @@ class GridSequencer(Mixer):
 
     def add_track(self, track):
         self.tracks.append(track)
-        self.tracks.sort(lambda _, t: t.instrument_id)
+        self.tracks.sort(lambda i, j: i.instrument_id - j.instrument_id)
 
     def _worker(self):
         i = 0
         while self.running:
-            # print "Beat"
 
             oscilator_index = 0
             for track in self.tracks:

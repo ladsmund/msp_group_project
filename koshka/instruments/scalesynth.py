@@ -9,6 +9,9 @@ class MonophonicScaleSynth(Instrument):
         self.oscillator = Oscilator(samplerate, buffer_size)
         self.oscillator.start()
 
+    def set_scale(self, scale):
+        self.scale = scale
+
     def on(self, tone):
         frequency = self.scale.get_frequency(tone)
         self.oscillator.setFreq(frequency)
@@ -19,11 +22,18 @@ class MonophonicScaleSynth(Instrument):
 
 
 class ScaleSynth(PolyphonicInstrument):
+    name = "Scale Synth"
+
     def __init__(self, sample_rate, buffer_size, scale):
         PolyphonicInstrument.__init__(self)
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
         self.scale = scale
+
+    def set_scale(self, scale):
+        self.scale = scale
+        for i in self.sub_instruments.values():
+            i.set_scale(scale)
 
     def _add_synth(self, tone):
         synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, self.scale)
