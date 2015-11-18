@@ -1,10 +1,12 @@
 from even_tempered import EvenTempered
 from pythag_series import PythagSeries, PythagSeriesDodecaphonic, PythagChromaticScale
+from ptolemy_natural_chromatic import PtolemyNaturalChromatic
 from harmonic_series import HarmonicSeries
+
 
 from exceptions import Exception
 
-SCALES = [EvenTempered, PythagSeries, PythagChromaticScale, PythagSeriesDodecaphonic]
+SCALES = [EvenTempered, PythagSeries, PythagChromaticScale, PythagSeriesDodecaphonic, PtolemyNaturalChromatic]
 
 def parse(args):
     name = args[0]
