@@ -53,6 +53,8 @@ class Interval:
 
         # self.interval = interval
         # self.note = note
+    def copy(self):
+        return Interval(self.frequency, self.note, self.interval, self.ratio)
 
     def __cmp__(self, other):
         if self.frequency < other.frequency:

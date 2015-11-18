@@ -18,7 +18,7 @@ class Scale:
         index_adjusted = index % self.scale_size
         octave = index / self.scale_size
 
-        interval = self.intervals[index_adjusted]
+        interval = self.intervals[index_adjusted].copy()
         interval.frequency *= 2 ** octave
         interval.ratio *= 2 ** octave
         return interval
