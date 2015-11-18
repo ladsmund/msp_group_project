@@ -1,26 +1,38 @@
 #!/usr/bin/python
 
 import math
-from fractions import Fraction
 
 
 class Scale:
     def __init__(self, base_frequency):
         self.base_frequency = base_frequency
+        self.intervals = self.get_intervals()
+        self.scale_size = len(self.intervals)
 
-    # Given a ratio, returns an integer in cents
-    # Given a low and high interval, an interval lists, and a degree list,
-    # will find the proper ratio and call itself
-    def get_cents(self, ratio=None, low=None, high=None, \
-                  intervals=None, degrees=None):
-        if ratio:
-            f = Fraction(ratio)
-            c = (1200 * (math.log(f) / math.log(2)))
-            return (int(round(c)))
-        else:
-            d = dict(zip(intervals, degrees))
-            low = d[low]
-            high = d[high]
-            f = Fraction(self.get_spacing(low, high))
-            c = Scale.get_cents(self, f)
-            return (c)
+    # This function should be overridden by the sub-classes
+    def get_intervals(self):
+        return []
+
+    def get_interval(self, index):
+        index = int(index)
+        index_adjusted = index % self.scale_size
+        octave = index / self.scale_size
+
+        interval = self.intervals[index_adjusted]
+        interval.frequency *= 2 ** octave
+        interval.ratio *= 2 ** octave
+        return interval
+
+    def get_frequency(self, interval):
+        return self.get_interval(interval).frequency
+
+    def get_ratio(self, interval):
+        '''Returns the spacing between two given intervals as a fraction'''
+        return self.get_interval(interval).ratio
+
+    def get_spacing(self, low, high):
+        return self.get_ratio(high) / self.get_ratio(low)
+
+    def get_cents(self, interval):
+        ratio = self.get_ratio(interval)
+        return 1200 * math.log(ratio, 2)

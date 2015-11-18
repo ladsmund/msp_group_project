@@ -1,14 +1,13 @@
 __author__ = 'Mads Christian Lund (mcl574)'
 import unittest
-from scales.pythag_series import PythagSeriesSevenNoteScale, PythagSeriesDodecaphonic
+from scales.pythag_series import PythagSeries, PythagSeriesDodecaphonic
 from fractions import Fraction
-from scales.even_tempered import frequency_to_cents
 
 
 class TestPythagoranScale(unittest.TestCase):
     def setUp(self):
         self.base_frequency = 528
-        self.scale = PythagSeriesSevenNoteScale(self.base_frequency)
+        self.scale = PythagSeries(self.base_frequency)
 
     def test_get_spacing(self):
         '''
@@ -53,38 +52,38 @@ class TestPythagoranScale(unittest.TestCase):
     #                                        mode, tone, frequency, frequency_expected))
     #             tone += 1
 
-    def test_get_frequencies(self):
-        '''
-        This harness test is testing features related to Homework 2
-        '''
+    # def test_get_frequencies(self):
+    #     '''
+    #     This harness test is testing features related to Homework 2
+    #     '''
+    #
+    #     values = [(-1, 704.),
+    #               (0, 528.),
+    #               (1, 792.),
+    #               (2, 594.),
+    #               (3, 891.),
+    #               (4, 668.25),
+    #               (5, 1002.375),
+    #               (6, 751.78125),
+    #               (7, 563.8359375),
+    #               (8, 845.75390625),
+    #               (9, 634.3154296875),
+    #               (10, 951.47314453125),
+    #               (11, 713.604858398437),
+    #               (12, 535.203643798828)]
+    #
+    #     for (i, f) in values:
+    #         freq = self.scale.get_frequency(i)
+    #         self.assertAlmostEqual(freq, f, places=11)
 
-        values = [(-1, 704.),
-                  (0, 528.),
-                  (1, 792.),
-                  (2, 594.),
-                  (3, 891.),
-                  (4, 668.25),
-                  (5, 1002.375),
-                  (6, 751.78125),
-                  (7, 563.8359375),
-                  (8, 845.75390625),
-                  (9, 634.3154296875),
-                  (10, 951.47314453125),
-                  (11, 713.604858398437),
-                  (12, 535.203643798828)]
-
-        for (i, f) in values:
-            freq = self.scale.get_frequency(i)
-            self.assertAlmostEqual(freq, f, places=11)
-
-    def test_interval_frequecies(self):
+    def test_frequecies(self):
         # base_frequency = 528;
         # scale = Pythagorean7ToneScale(base_frequency)
-        interval_frequencies = [528, 594, 668, 704, 792, 891, 1002, 1056]
+        interval_frequencies = [528, 594, 668, 704, 792, 891, 1002]
 
         i = 0
         for f in interval_frequencies:
-            self.assertAlmostEqual(f, self.scale.get_interval_frequency(i), 0)
+            self.assertAlmostEqual(f, self.scale.get_frequency(i), 0)
             i += 1
 
     # def test_interval_names(self):
@@ -110,7 +109,7 @@ class TestPythagoranScale(unittest.TestCase):
                      Fraction(243, 128), Fraction(2, 1)]
         i = 0
         for fraction in fractions:
-            self.assertEqual(self.scale.get_adjusted_interval_ratio(i), fraction)
+            self.assertEqual(self.scale.get_ratio(i), fraction)
             i += 1
 
     def test_interval_cents(self):
@@ -118,8 +117,7 @@ class TestPythagoranScale(unittest.TestCase):
 
         i = 0
         for cents_goal in interval_cents:
-            frequency = self.scale.get_interval_frequency(i)
-            cents = frequency_to_cents(self.base_frequency, frequency)
+            cents = self.scale.get_cents(i)
             self.assertAlmostEqual(cents_goal, cents, 0)
             i += 1
 

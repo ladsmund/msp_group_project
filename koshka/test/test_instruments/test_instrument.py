@@ -2,7 +2,7 @@ import unittest
 from time import sleep
 
 from dac import DAC
-from scales import PythagSeriesSevenNoteScale
+from scales import PythagSeries
 from instruments.scalesynth import MonophonicScaleSynth, ScaleSynth
 
 BASE_FREQUENCY = 528
@@ -12,7 +12,7 @@ SAMPLE_RATE = 44100
 
 class TestInstrument(unittest.TestCase):
     def setUp(self):
-        self.scale = PythagSeriesSevenNoteScale(BASE_FREQUENCY)
+        self.scale = PythagSeries(BASE_FREQUENCY)
         self.dac = DAC(BUFFER_SIZE, SAMPLE_RATE)
         self.dac.start()
 

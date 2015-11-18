@@ -10,7 +10,7 @@ class MonophonicScaleSynth(Instrument):
         self.oscillator.start()
 
     def on(self, tone):
-        frequency = self.scale.get_interval_frequency(tone)
+        frequency = self.scale.get_frequency(tone)
         self.oscillator.setFreq(frequency)
         Instrument.on(self, tone)
 

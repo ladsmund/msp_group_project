@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
 class Interval:
-    def __init__(self, frequency, note, interval):
+    def __init__(self, frequency, note, interval, ratio):
 
         self.frequency = frequency
         self.note = note
         self.interval = interval
+        self.ratio = ratio
 
         # interval = None
         # note = None

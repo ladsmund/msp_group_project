@@ -1,13 +1,13 @@
 import unittest
 from fractions import Fraction
 
-from scales import PythagSeries
+from scales.ptolemy_natural_chromatic import PtolemyNaturalChromatic
 
 
 class TestPtolemy(unittest.TestCase):
     def test_interval_ratios(self):
         base_frequency = 528
-        scale = PythagSeries(base_frequency)
+        scale = PtolemyNaturalChromatic(base_frequency)
         static_ratios = [Fraction(1, 1),
                          Fraction(16, 15),
                          Fraction(9, 8),
@@ -20,12 +20,10 @@ class TestPtolemy(unittest.TestCase):
                          Fraction(5, 3),
                          Fraction(16, 9),
                          Fraction(15, 8)]
-        generated_ratios = []
-        for i in range(-5, 7):
-            generated_ratios.append(scale.get_ptolemy_ratio(i))
-        generated_ratios.sort()
+        
         for i, interval in enumerate(static_ratios):
-            self.assertEqual(generated_ratios[i], static_ratios[i])
+            generated_ratio = scale.get_ratio(i)
+            self.assertEqual(static_ratios[i], generated_ratio)
 
 
 if __name__ == '__main__':
