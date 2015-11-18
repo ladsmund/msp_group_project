@@ -23,10 +23,11 @@ class GridSequencer(Mixer):
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
 
-        self.speed = None
-        self.measure_resolution = None
-        self.beats_per_measure = None
+        self.speed = 60
+        self.measure_resolution = 8
+        self.beats_per_measure = 4
         self.sleep_interval = None
+        self._update_sleep_interval()
 
         self.running = False;
         self.loop = False
@@ -58,6 +59,19 @@ class GridSequencer(Mixer):
         self.tracks.append(track)
         self.tracks.sort(lambda i, j: i.instrument_id - j.instrument_id)
 
+    def set_speed(self, speed):
+        self.speed = speed
+        self._update_sleep_interval()
+
+    def _update_sleep_interval(self):
+        if self.measure_resolution % self.beats_per_measure == 0:
+            self.sleep_interval = 60. / (self.speed * self.measure_resolution / self.beats_per_measure)
+        else:
+            raise Exception('This measure resolution has to be divisible with beeats_per_measure')
+
+    def _sleep(self):
+        sleep(self.sleep_interval)
+
     def _worker(self):
         i = 0
         while self.running:
@@ -77,7 +91,7 @@ class GridSequencer(Mixer):
                     # track.instrument.off()
                     instrument.off(tone)
 
-            sleep(self.sleep_interval)
+            self._sleep()
 
             i += 1
             i %= self.measure_resolution
@@ -128,11 +142,8 @@ class GridSequencer(Mixer):
                 elif line_array[0] == 'beats_per_measure':
                     self.beats_per_measure = int(line_array[1])
             line = lines.pop(0)
+        self._update_sleep_interval()
 
-        if self.measure_resolution % self.beats_per_measure == 0:
-            self.sleep_interval = 60. / (self.speed * self.measure_resolution / self.beats_per_measure)
-        else:
-            raise Exception('This measure resolution has to be divisible with beeats_per_measure')
 
         # Reading instruments
         line = lines.pop(0)

@@ -6,6 +6,7 @@ import instruments
 import scales
 
 _INSTRUMENT_LABEL_WIDTH = 25
+_FILE_BUTTON_WIDTH = 3
 
 
 class Instrument(Frame):
