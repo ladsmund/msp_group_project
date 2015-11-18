@@ -8,6 +8,7 @@ from dac import DAC
 
 class Sequencer(Mixer):
     DEFAULT_SPEED = 120
+    INFINIT_LOOP = -1
 
     def __init__(self,
                  buffer_size=512,
@@ -23,7 +24,7 @@ class Sequencer(Mixer):
         self.tick_resolution = tick_resolution
 
         self.running = False
-        self.loop = False
+        self.loop = 0
         self._worker_threads = []
         self._active_threads = 0
 
@@ -55,6 +56,7 @@ class Sequencer(Mixer):
                     self.channels[instrument].device.off(tone)
             if not self.loop:
                 break
+            self.loop -= 1
 
         self._active_threads -= 1
 

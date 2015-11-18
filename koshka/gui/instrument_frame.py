@@ -98,10 +98,6 @@ class ScaleSynthFrame(Instrument):
         freq_update.pack(side='left')
 
 
-        # w = apply(OptionMenu, (master, variable) + tuple(OPTIONS))
-        # w.pack()
-
-
 def get_instrument_frame(master, instrument):
     # if isinstance(instrument, instruments.sampler.Sampler):
     #     return SamplerFrame(master, instrument)

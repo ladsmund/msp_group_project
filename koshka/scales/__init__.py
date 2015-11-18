@@ -20,5 +20,8 @@ def parse(args):
         return PythagChromaticScale(base_frequency)
     elif name == 'PythagDodecaphonic':
         return PythagSeriesDodecaphonic(base_frequency)
+    elif name == 'PtolemyNaturalChromatic':
+        return PtolemyNaturalChromatic(base_frequency)
+
 
     raise Exception('Unknown scale: %s' % name)

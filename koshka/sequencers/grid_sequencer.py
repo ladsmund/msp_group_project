@@ -18,6 +18,8 @@ class Track():
 
 
 class GridSequencer(Mixer):
+    INFINIT_LOOP = -1
+
     def __init__(self, buffer_size=512, sample_rate=44100):
         Mixer.__init__(self)
         self.sample_rate = sample_rate
@@ -30,7 +32,7 @@ class GridSequencer(Mixer):
         self._update_sleep_interval()
 
         self.running = False;
-        self.loop = False
+        self.loop = 0
         self._worker_thread = None
 
         self.instruments = []
@@ -95,11 +97,14 @@ class GridSequencer(Mixer):
 
             i += 1
             i %= self.measure_resolution
-            if not self.loop and not i:
-                self.running = False
-                break
+            if not i:
+                if not self.loop:
+                    self.running = False
+                    break
+                else:
+                    self.loop -= 1
 
-    def play(self, loop=True):
+    def play(self, loop=INFINIT_LOOP):
         print("Sequencer: Play")
         if self._worker_thread is None:
             self.running = True
@@ -111,7 +116,7 @@ class GridSequencer(Mixer):
         print("Sequencer: Stop")
         if self.running:
             self.running = False
-            self.loop = False
+            self.loop = 0
             self._worker_thread.join()
             self._worker_thread = None
             [i.off() for i in self.instruments]
