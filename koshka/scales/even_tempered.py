@@ -5,32 +5,25 @@ import fractions
 from scale import Scale
 from interval import Interval
 
+def frequency_to_cents(base_frequency, frequency):
+    ratio = 1. * frequency / base_frequency
+    return 1200 * math.log(ratio,2)
 
 class EvenTempered(Scale):
-    def __init__(self, base_frequency):
-        Scale.__init__(self, base_frequency)
-        self.intervals = self.get_chromatic_intervals()
 
     exponent = fractions.Fraction("1/12")
     semitone_factor = pow(2, exponent)
 
-    def get_interval_frequency(self, interval):
-        interval = int(interval)
-        interval_adjusted = interval % 12
-        interval_octave = interval / 12
-        return self.intervals[interval_adjusted].frequency * 2 ** interval_octave
-
     def get_scaletone_frequency(self, interval):
         frequency = self.base_frequency
-        for i in range(0, interval):
-            frequency = frequency * self.semitone_factor
+        frequency *= self.semitone_factor ** interval
         return frequency
 
     def get_chromatic_scale(self):
         frequency = self.base_frequency
         frequency_list = [frequency]
         for i in range(0, 12):
-            frequency_list.append(frequency_list[i] * self.semitone_factor)
+            frequency_list.append(self.get_scaletone_frequency(i))
         return frequency_list
 
     # Return list of Interval objects for chromatic even tempered scale
@@ -67,3 +60,17 @@ class EvenTempered(Scale):
             low = d[low]
             high = d[high]
             return (100 * (high - low))
+
+
+class EvenTemperedScale(EvenTempered):
+
+    def __init__(self, base_frequency):
+        Scale.__init__(self, base_frequency)
+        self.intervals = self.get_chromatic_intervals()
+
+    def get_interval_frequency(self, interval):
+        interval = int(interval)
+        interval_adjusted = interval % 12
+        interval_octave = interval / 12
+        return self.intervals[interval_adjusted].frequency \
+               * 2 ** interval_octave
