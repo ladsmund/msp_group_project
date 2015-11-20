@@ -1,7 +1,6 @@
 # Koshka - Group project for MPS 2015
 ##Homework 8
-
-### Overview
+By Mads Lund and Aric Werner
 
 ### Excecution
 The current version of our project, Koshka, is able to play Ptolemy's scale and the Bembe Wheel described in score files located in teh folder ./scores/
@@ -20,7 +19,7 @@ Alternatively the solutions can also be played using the GUI:
 ./koshka/koshka.py scores/bembe_wheel.txt
 ```
 
-#### Unit test
+#### Unit test / Harness test
 The unit test for homework 8 can be executed using the command:
 ```
 python -m unittest discover -p *ptolemy* koshka/
