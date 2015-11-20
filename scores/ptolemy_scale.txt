@@ -1,5 +1,5 @@
 parameters
-speed 160
+speed 60
 measure_resolution 13
 beats_per_measure 13
 samplerate 44100
