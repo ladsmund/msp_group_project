@@ -4,7 +4,6 @@ from Tkinter import Tk, RIDGE, IntVar
 from ttk import Button, Frame, Label, Scale
 from instrument_frame import get_instrument_frame
 from track_frame import RhythmTrackFrame
-from knob_button import Knob
 
 
 class SequencerFrame(Frame):
