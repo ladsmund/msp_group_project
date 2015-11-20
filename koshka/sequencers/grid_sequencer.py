@@ -105,7 +105,7 @@ class GridSequencer(Mixer):
                     self.loop -= 1
 
     def play(self, loop=INFINIT_LOOP):
-        print("Sequencer: Play")
+        # print("Sequencer: Play")
         if self._worker_thread is None:
             self.running = True
             self.loop = loop
@@ -113,7 +113,7 @@ class GridSequencer(Mixer):
             self._worker_thread.start()
 
     def stop(self):
-        print("Sequencer: Stop")
+        # print("Sequencer: Stop")
         if self.running:
             self.running = False
             self.loop = 0

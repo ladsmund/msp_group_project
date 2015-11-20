@@ -14,7 +14,6 @@ if __name__ == "__main__":
     parser.add_argument('-l','--loop', type=int, default=0, const=GridSequencer.INFINIT_LOOP, nargs='?')
     namespace = parser.parse_args()
 
-    print namespace
     with GridSequencer() as sequencer:
         sequencer.load(namespace.score)
 
