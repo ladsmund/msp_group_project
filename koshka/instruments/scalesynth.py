@@ -8,6 +8,7 @@ class MonophonicScaleSynth(Instrument):
         self.scale = scale
         self.oscillator = Oscilator(samplerate, buffer_size)
         self.oscillator.start()
+        self._callback = self.oscillator.callback
 
     def set_scale(self, scale):
         self.scale = scale
@@ -16,9 +17,6 @@ class MonophonicScaleSynth(Instrument):
         frequency = self.scale.get_frequency(tone)
         self.oscillator.setFreq(frequency)
         Instrument.on(self, tone)
-
-    def _callback(self, in_data, frame_count, time_info, status):
-        return self.oscillator.callback(in_data, frame_count, time_info, status)
 
 
 class ScaleSynth(PolyphonicInstrument):

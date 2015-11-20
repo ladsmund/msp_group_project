@@ -6,69 +6,28 @@ samplerate 44100
 buffersize 512
 
 instruments
-ScaleSynth PythagDodecaphonic 528 19 # F#
-ScaleSynth PythagDodecaphonic 528 18 # F
-ScaleSynth PythagDodecaphonic 528 17 # E
-ScaleSynth PythagDodecaphonic 528 16 # Eb
-ScaleSynth PythagDodecaphonic 528 15 # D
-ScaleSynth PythagDodecaphonic 528 14 # C#
-ScaleSynth PythagDodecaphonic 528 13 # C
-ScaleSynth PythagDodecaphonic 528 12 # B
-ScaleSynth PythagDodecaphonic 528 11 # Bb
-ScaleSynth PythagDodecaphonic 528 10 # A
-ScaleSynth PythagDodecaphonic 528 9  # Ab
-ScaleSynth PythagDodecaphonic 528 8  # G
-ScaleSynth PythagDodecaphonic 528 7  # F#+
-ScaleSynth PythagDodecaphonic 528 6  # Gb-
-ScaleSynth PythagDodecaphonic 528 5  # F
-ScaleSynth PythagDodecaphonic 528 4  # E
-ScaleSynth PythagDodecaphonic 528 3  # Eb
-ScaleSynth PythagDodecaphonic 528 2  # D
-ScaleSynth PythagDodecaphonic 528 1  # C#
-ScaleSynth PythagDodecaphonic 528 0  # C
+ScaleSynth PythagDodecaphonic 528
 
 rhythm
-BBB|  0  0  0  0  0  0  0 
----|  0  0  1  0  0  0  0 
----|  0  0  0  0  0  0  0 
-BBB|  0  0  0  0  1  0  0 
----|  0  0  1  0  0  0  0 
-BBB|  0  0  0  0  0  0  1 
----|  0  1  0  0  1  0  0 
----|  0  0  0  0  0  0  0 
-BBB|  0  0  1  1  0  0  1 
----|  0  1  0  0  0  0  0 
-BBB|  0  0  0  0  1  1  0 
----|  1  0  0  1  0  0  0 
-BBB|  0  0  0  0  0  0  0  # F#+  
-BBB|  0  0  0  0  0  0  1  # Gb-
----|  0  1  0  0  0  1  0 
----|  1  0  0  0  0  0  0 
-BBB|  0  0  0  1  0  0  0 
----|  0  0  0  0  0  0  0 
-BBB|  0  0  0  0  0  1  0 
----|  1  0  0  0  0  0  0 
-##  C  F  Bb Eb Ab Db Gb
-
-gains
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
-0.5 0.5 0.5 0.5 0.5 0.5 0.5 
+0 19:  0  0  0  0  0  0  0
+0 18:  0  0  1  0  0  0  0
+0 17:  0  0  0  0  0  0  0
+0 16:  0  0  0  0  1  0  0
+0 15:  0  0  1  0  0  0  0
+0 14:  0  0  0  0  0  0  1
+0 13:  0  1  0  0  1  0  0
+0 12:  0  0  0  0  0  0  0
+0 11:  0  0  1  1  0  0  1
+0 10:  0  1  0  0  0  0  0
+0  9:  0  0  0  0  1  1  0
+0  8:  1  0  0  1  0  0  0
+0  7:  0  0  0  0  0  0  0  # F#+
+0  6:  0  0  0  0  0  0  1  # Gb-
+0  5:  0  1  0  0  0  1  0
+0  4:  1  0  0  0  0  0  0
+0  3:  0  0  0  1  0  0  0
+0  2:  0  0  0  0  0  0  0
+0  1:  0  0  0  0  0  1  0
+0  0:  1  0  0  0  0  0  0
+##     C  F  Bb Eb Ab Db Gb
 
