@@ -7,11 +7,13 @@ from sequencers.grid_sequencer import GridSequencer
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Kosha - MSP project')
+    parser = argparse.ArgumentParser(description='Koshka - MSP project')
 
     parser.add_argument('score', type=str)
-    parser.add_argument('--no_gui', type=bool, default=False, const=True, nargs='?')
-    parser.add_argument('-l','--loop', type=int, default=0, const=GridSequencer.INFINIT_LOOP, nargs='?')
+    parser.add_argument('--no_gui', type=bool, default=False, const=True, 
+                        nargs='?')
+    parser.add_argument('-l','--loop', type=int, default=0, 
+                        const=GridSequencer.INFINIT_LOOP, nargs='?')
     namespace = parser.parse_args()
 
     with GridSequencer() as sequencer:

@@ -3,6 +3,7 @@ from instrument import Instrument, PolyphonicInstrument
 
 
 class MonophonicScaleSynth(Instrument):
+
     def __init__(self, samplerate, buffer_size, scale):
         Instrument.__init__(self)
         self.scale = scale
@@ -20,6 +21,7 @@ class MonophonicScaleSynth(Instrument):
 
 
 class ScaleSynth(PolyphonicInstrument):
+
     name = "Scale Synth"
 
     def __init__(self, sample_rate, buffer_size, scale):
@@ -34,7 +36,8 @@ class ScaleSynth(PolyphonicInstrument):
             i.set_scale(scale)
 
     def _add_synth(self, tone):
-        synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, self.scale)
+        synth = MonophonicScaleSynth(self.sample_rate, self.buffer_size, 
+                                     self.scale)
         self.add_device(synth)
         self.sub_instruments[tone] = synth
 
