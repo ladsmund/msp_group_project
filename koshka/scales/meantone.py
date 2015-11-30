@@ -31,7 +31,7 @@ class Meantone(PythagSeriesDodecaphonic):
         scale = []
         notes = [ "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", 
                   "A", "E", "B", "F#", "C#", "G#", "D#", "A#" ]
-        intervals = [ "b5 (-)", "m2 (+)", "m6 (+)", "m3 (+)", "m7 (+)", 
+        intervals = [ "b5 (+)", "m2 (+)", "m6 (+)", "m3 (+)", "m7 (+)", 
                       "4", "1", "5", "2", "M6", "M3", "M7", "b5 (-)", "m2 (-)", 
                       "m6 (-)", "m3 (-)", "m7 (-)" ]
         for i in range(-6, 11):
