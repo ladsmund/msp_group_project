@@ -2,11 +2,11 @@ from even_tempered import EvenTempered
 from pythag_series import PythagSeries, PythagSeriesDodecaphonic, PythagChromaticScale
 from ptolemy_natural_chromatic import PtolemyNaturalChromatic
 from harmonic_series import HarmonicSeries
-
+from meantone import Meantone
 
 from exceptions import Exception
 
-SCALES = [EvenTempered, PythagSeries, PythagChromaticScale, PythagSeriesDodecaphonic, PtolemyNaturalChromatic]
+SCALES = [EvenTempered, PythagSeries, PythagChromaticScale, PythagSeriesDodecaphonic, PtolemyNaturalChromatic, Meantone]
 
 def parse(args):
     name = args[0]
@@ -22,6 +22,8 @@ def parse(args):
         return PythagSeriesDodecaphonic(base_frequency)
     elif name == 'PtolemyNaturalChromatic':
         return PtolemyNaturalChromatic(base_frequency)
+    elif name == 'Meantone':
+        return Meantone(base_frequency)
 
 
     raise Exception('Unknown scale: %s' % name)
