@@ -74,7 +74,7 @@ class PythagChromaticScale(PythagSeries):
         return (scale)
 
 
-class PythagSeriesDodecaphonic(PythagSeries):
+class PythagDodecaphonic(PythagSeries):
     def get_intervals(self):
         scale = []
         notes = ["Gb/F+", "Db/C#", "Ab/G#", "Eb/D#", "Bb/A#", \
