@@ -32,6 +32,14 @@ class Sequencer(Mixer):
         self.dac.connect(self.callback)
         self.dac.start()
 
+        self.instruments = []
+
+    def add_instrument(self, instrument):
+        id = len(self.instruments)
+        self.instruments.append(instrument)
+        self.add_device(instrument)
+        return id
+
     def set_speed(self, speed):
         self.speed = speed
 
@@ -42,18 +50,19 @@ class Sequencer(Mixer):
         worker_time = 0
         self._active_threads += 1
         while self.running:
-            for (instrument, tone, on, wait_time) in score:
+            for (instrument_id, tone, on, wait_time) in score:
                 if not self.running:
                     break
 
+                print(instrument_id, tone, on, wait_time)
                 worker_time += wait_time
                 while (worker_time > self._get_time()):
-                    time.sleep(0.5)
+                    time.sleep(0.01)
 
                 if on:
-                    self.channels[instrument].device.on(tone)
+                    self.instruments[instrument_id].on(tone)
                 else:
-                    self.channels[instrument].device.off(tone)
+                    self.instruments[instrument_id].off(tone)
             if not self.loop:
                 break
             self.loop -= 1
