@@ -186,7 +186,7 @@ class GridSequencer(Mixer):
 
         file.write('\nrhythm\n')
         for id, track in enumerate(self.tracks):
-            file.write("%i %i: " %
+            file.write("%2i %3i: " %
                        (track.instrument_id,
                         track.instrument_tone)
                        )

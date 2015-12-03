@@ -2,12 +2,12 @@ parameters
 speed 180
 measure_resolution 12
 beats_per_measure 12
-samplerate 44100
-buffersize 512
+samplerate 48000
+buffersize 1024
 
 instruments
 Drumset
-ScaleSynth EvenTemp 528 #
+ScaleSynth EvenTempered 528
 
 rhythm
 0 0: 1  0  1  0  1  1  0  1  0  1  0  1
@@ -17,5 +17,3 @@ rhythm
 0 4: 1  0  1  1  0  1  0  1  0  1  1  0
 0 5: 1  0  1  1  0  1  0  1  1  0  1  0
 0 6: 1  1  0  1  0  1  1  0  1  0  1  0
-
-

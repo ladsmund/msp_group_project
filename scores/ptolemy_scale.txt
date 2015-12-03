@@ -6,8 +6,8 @@ samplerate 44100
 buffersize 512
 
 instruments
-ScaleSynth PtolemyNaturalChromatic 528 #
-Drumset #
+ScaleSynth PtolemyNaturalChromatic 528
+Drumset
 
 rhythm
 0 12: 0  0  0  0  0  0  0  0  0  0  0  0  1

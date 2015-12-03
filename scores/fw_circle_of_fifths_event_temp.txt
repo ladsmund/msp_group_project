@@ -6,7 +6,7 @@ samplerate 44100
 buffersize 512
 
 instruments
-ScaleSynth EvenTemp 528 18 # F#
+ScaleSynth EvenTempered 528 18 # F#
 
 rhythm
 0 18:  0  0  0  0  0  0  0
