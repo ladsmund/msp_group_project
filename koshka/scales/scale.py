@@ -3,7 +3,7 @@
 import math
 
 
-class Scale:
+class Scale(object):
     def __init__(self, base_frequency):
         self.base_frequency = base_frequency
         self.intervals = self.get_intervals()
@@ -36,3 +36,6 @@ class Scale:
     def get_cents(self, interval):
         ratio = self.get_ratio(interval)
         return 1200 * math.log(ratio, 2)
+
+    def __str__(self):
+        return "%s %s" % (type(self).__name__, self.base_frequency)
