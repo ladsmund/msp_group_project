@@ -89,3 +89,4 @@ class PythagSeriesDodecaphonic(PythagSeries):
             scale.append(interval)
         scale.sort()
         return (scale)
+
