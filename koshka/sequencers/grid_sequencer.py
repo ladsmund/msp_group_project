@@ -26,8 +26,8 @@ class GridSequencer(Mixer):
         self.buffer_size = buffer_size
 
         self.speed = 60
-        self.measure_resolution = 8
-        self.beats_per_measure = 4
+        self.measure_resolution = 8 # total number of beats in sequence?
+        self.beats_per_measure = 4  # number of beats in a measure?
         self.sleep_interval = None
         self._update_sleep_interval()
 
@@ -64,6 +64,13 @@ class GridSequencer(Mixer):
     def set_speed(self, speed):
         self.speed = speed
         self._update_sleep_interval()
+
+    # Add num measures to the sequencer (extend the right hand side by num * measure_resolution)
+    def add_measures(self, num):
+        extend_by = num * self.beats_per_measure
+        self.measure_resolution += extend_by
+        for t in tracks:
+            t.rhythm.extend([0])
 
     def _update_sleep_interval(self):
         if self.measure_resolution % self.beats_per_measure == 0:
