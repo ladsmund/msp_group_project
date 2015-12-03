@@ -6,7 +6,6 @@ from mixer import Mixer
 from dac import DAC
 import instruments
 
-
 class Track():
     def __init__(self, instrument_id, instrument_tone, rhythm, gains, id):
         self.instrument_id = instrument_id
@@ -19,15 +18,18 @@ class Track():
 
 class GridSequencer(Mixer):
     INFINIT_LOOP = -1
+    DEFAULT_SPEED = 60
+    DEFAULT_MEASURE_RESOLUTION = 8
+    DEFAULT_BEATS_PER_MEASURE = 4
 
-    def __init__(self, buffer_size=512, sample_rate=44100):
+    def __init__(self, file_name, buffer_size=512, sample_rate=44100):
         Mixer.__init__(self)
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
 
-        self.speed = 60
-        self.measure_resolution = 8
-        self.beats_per_measure = 4
+        self.speed = self.DEFAULT_SPEED
+        self.measure_resolution = self.DEFAULT_MEASURE_RESOLUTION
+        self.beats_per_measure = self.DEFAULT_BEATS_PER_MEASURE
         self.sleep_interval = None
         self._update_sleep_interval()
 
@@ -39,16 +41,9 @@ class GridSequencer(Mixer):
         self.instrument_id_counter = 0
         self.tracks = []
 
-        self.dac = DAC(self.buffer_size, self.sample_rate)
-        self.dac.connect(self.callback)
-        self.dac.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
-        self.dac.stop()
-
-    def __enter__(self):
-        return self
+        # Load score file
+        data = open(file_name, 'r').read()
+        self._parse(data)
 
     def add_instrument(self, instrument, id=None):
         if id is None:
@@ -120,13 +115,6 @@ class GridSequencer(Mixer):
             self._worker_thread.join()
             self._worker_thread = None
             [i.off() for i in self.instruments]
-
-    def load(self, file_name):
-        file = open(file_name, 'r')
-        data = file.read()
-        file.close()
-        self._parse(data)
-        pass
 
     def _parse(self, data):
         lines = data.split("\n")
