@@ -1,10 +1,11 @@
+from os import path
 from time import sleep
 from exceptions import Exception
 import threading
 
 from mixer import Mixer
-from dac import DAC
 import instruments
+
 
 class Track():
     def __init__(self, instrument_id, instrument_tone, rhythm, gains, id):
@@ -22,8 +23,9 @@ class GridSequencer(Mixer):
     DEFAULT_MEASURE_RESOLUTION = 8
     DEFAULT_BEATS_PER_MEASURE = 4
 
-    def __init__(self, file_name, buffer_size=512, sample_rate=44100):
+    def __init__(self, score_path, buffer_size=512, sample_rate=44100):
         Mixer.__init__(self)
+
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
 
@@ -42,7 +44,7 @@ class GridSequencer(Mixer):
         self.tracks = []
 
         # Load score file
-        data = open(file_name, 'r').read()
+        data = open(score_path, 'r').read()
         self._parse(data)
 
     def add_instrument(self, instrument, id=None):
@@ -162,3 +164,34 @@ class GridSequencer(Mixer):
                 self.add_track(track)
 
             line = lines.pop(0)
+
+    def save(self, score_path):
+        print "Saving to %s" % score_path
+
+        folder, file = path.split(score_path)
+
+        file = open(path.join(folder, file), 'w')
+
+        file.write('parameters\n')
+        file.write('speed %i\n' % self.speed)
+        file.write('measure_resolution %i\n' % self.measure_resolution)
+        file.write('beats_per_measure %i\n' % self.beats_per_measure)
+        file.write('samplerate %i\n' % self.sample_rate)
+        file.write('buffersize %i\n' % self.buffer_size)
+
+        file.write('\ninstruments\n')
+        for id, instrument in enumerate(self.instruments):
+            file.write(str(instrument))
+            file.write("\n")
+
+        file.write('\nrhythm\n')
+        for id, track in enumerate(self.tracks):
+            file.write("%i %i: " %
+                       (track.instrument_id,
+                        track.instrument_tone)
+                       )
+            file.write("  ".join(map(str,track.rhythms)))
+            file.write("\n")
+
+        file.flush()
+        file.close()

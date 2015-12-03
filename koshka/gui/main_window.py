@@ -78,8 +78,10 @@ class MainWindow(Tk):
         self.dac = DAC()
         self.dac.start()
 
+        self.score_path = namespace.score
+
         self.sequencer_frame = None
-        self._open_sequencer(namespace.score)
+        self._open_sequencer(self.score_path)
 
         menu = Menu(self)
         self.config(menu=menu)
@@ -87,23 +89,29 @@ class MainWindow(Tk):
         menu.add_cascade(label="File", menu=filemenu)
         filemenu.add_command(label="Open...", command=self.open, accelerator="meta-o")
         filemenu.add_command(label="Save", command=self.save, accelerator="meta-s")
+        filemenu.add_command(label="Save As...", command=self.save_as, accelerator="meta-shift-s")
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.quit)
 
         # Note: This is only implemented and tested for Mac OS
         self.bind_all("<Command-o>", self.open)
         self.bind_all("<Command-s>", self.save)
+        self.bind_all("<Command-Shift-s>", self.save_as)
         self.bind_all("<Meta-o>", self.open)
         self.bind_all("<Meta-s>", self.save)
+        self.bind_all("<Meta-Shift-s>", self.save_as)
+
+        # self.wm_attributes("-titlepath",'What is this?')
 
     def _quit(self):
         self.destroy()
         self.dac.stop()
         self.quit()
 
-    def _open_sequencer(self, score):
+    def _open_sequencer(self, score_path):
+        self.score_path = score_path
         self.dac.stop()
-        self.sequencer = GridSequencer(score,
+        self.sequencer = GridSequencer(score_path,
                                        buffer_size=self.dac.bufferSize,
                                        sample_rate=self.dac.getSamplerate())
         self.dac.connect(self.sequencer.callback)
@@ -116,10 +124,14 @@ class MainWindow(Tk):
         self.dac.start()
 
     def open(self, val=Tkinter.Event()):
-        file_path = tkFileDialog.askopenfilename(filetypes=[('Text file', '.txt')])
-        if file_path:
-            self._open_sequencer(file_path)
+        score_path = tkFileDialog.askopenfilename(filetypes=[('Text file', '.txt')])
+        if score_path:
+            self._open_sequencer(score_path)
 
     def save(self, val=None):
-        print "save, val: %s" % str(val)
-        pass
+        self.sequencer.save(self.score_path)
+        # self.wm_attributes("-modified", 0)
+
+    def save_as(self, val=None):
+        self.score_path = tkFileDialog.asksaveasfilename(filetypes=[('Text file', '.txt')])
+        self.save()
