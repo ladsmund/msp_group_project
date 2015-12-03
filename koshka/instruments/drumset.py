@@ -22,18 +22,27 @@ class Drumset(Sampler):
                  crash=CRASH,
                  ride=RIDE):
 
-        self.kick = kick
-        self.snare = snare
-        self.tom1 = tom1
-        self.tom2 = tom2
-        self.hihat = hihat
-        self.crash = crash
-        self.ride = ride
+        self.kick_file = kick
+        self.snare_file = snare
+        self.tom1_file = tom1
+        self.tom2_file = tom2
+        self.hihat_file = hihat
+        self.crash_file = crash
+        self.ride_file = ride
 
-        drumset_files = [self.kick, self.snare, self.tom1, self.tom2, \
-                         self.hihat, self.crash, self.ride]
+        drumset_files = [self.kick_file, self.snare_file, self.tom1_file, self.tom2_file, \
+                         self.hihat_file, self.crash_file, self.ride_file]
 
         Sampler.__init__(self, drumset_files)
+
+        self.kick = self[0]
+        self.snare = self[1]
+        self.tom1 = self[2]
+        self.tom2 = self[3]
+        self.hihat = self[4]
+        self.crash = self[5]
+        self.ride = self[6]
+
 
     def play_all(self):
         for sample in self.sub_samples.itervalues():

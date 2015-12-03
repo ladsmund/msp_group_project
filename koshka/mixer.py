@@ -20,9 +20,10 @@ class Channel:
             return self.gain * buffer
 
 
-class Mixer:
+class Mixer(list):
     def __init__(self):
-        self.channels = []
+        list.__init__(self, [])
+        self.channels = self
         self.volume = 1
         pass
 

@@ -2,7 +2,7 @@ from exceptions import NotImplementedError
 from mixer import Mixer
 
 
-class Instrument:
+class Instrument(object):
     name = "instrument"
 
     def __init__(self):
@@ -25,6 +25,9 @@ class Instrument:
         else:
             return None
 
+    def __str__(self):
+        return self.name
+
 
 class PolyphonicInstrument(Mixer):
     name = "poly instrument"
@@ -42,3 +45,6 @@ class PolyphonicInstrument(Mixer):
             [s.off() for s in self.sub_instruments.values()]
         elif tone in self.sub_instruments:
             self.sub_instruments[tone].off()
+
+    def __str__(self):
+        return type(self).__name__

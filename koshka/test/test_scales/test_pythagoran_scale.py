@@ -1,6 +1,6 @@
 __author__ = 'Mads Christian Lund (mcl574)'
 import unittest
-from scales.pythag_series import PythagSeries, PythagSeriesDodecaphonic
+from scales.pythag_series import PythagSeries, PythagDodecaphonic
 from fractions import Fraction
 
 
@@ -125,7 +125,7 @@ class TestPythagoranScale(unittest.TestCase):
 class TestPythagoranDodecaphinicScale(unittest.TestCase):
     def setUp(self):
         self.base_frequency = 528
-        self.scale = PythagSeriesDodecaphonic(self.base_frequency)
+        self.scale = PythagDodecaphonic(self.base_frequency)
 
     def test_interval_frequecies(self):
         interval_frequencies = [528, 556, 594, 626, 668, 704, 742, 752, 792, 834, 891, 939, 1002]

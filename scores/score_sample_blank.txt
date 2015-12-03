@@ -6,7 +6,7 @@ samplerate 44100
 buffersize 512
 
 instruments
-ScaleSynth EvenTemp 528 #
+ScaleSynth EvenTempered 528 #
 ScaleSynth PythagChromaticScale 528 #
 Drumset #
 

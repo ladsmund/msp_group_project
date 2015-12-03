@@ -7,6 +7,8 @@ _DEFAULT_AUDIO_GAIN = 0.00005
 
 
 class SingleSoundSampler(Instrument):
+    name = "Single Sound Sampler"
+
     def __init__(self, filename):
         Instrument.__init__(self)
         self.filename = None
@@ -63,6 +65,8 @@ class SingleSoundSampler(Instrument):
 
 
 class Sampler(PolyphonicInstrument):
+    name = "Sampler"
+
     def __init__(self, file_list=[]):
         PolyphonicInstrument.__init__(self)
         for sample_id, filename in enumerate(file_list):

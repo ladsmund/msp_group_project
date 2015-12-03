@@ -2,15 +2,15 @@
 
 from fractions import Fraction
 from interval import Interval
-from pythag_series import PythagSeriesDodecaphonic
+from pythag_series import PythagDodecaphonic
 import math
 
-class Meantone(PythagSeriesDodecaphonic):
+class Meantone(PythagDodecaphonic):
 # This class builds a meantone scale based on the "reduced 5th" method,
 # resulting in a quarter-comma meantone scale
 
     def _get_ratio(self, interval):
-        interval_ratio_str = PythagSeriesDodecaphonic._get_ratio(self, interval)
+        interval_ratio_str = PythagDodecaphonic._get_ratio(self, interval)
         ratio = Fraction(interval_ratio_str)
         
         syntonic_comma = Fraction(81, 80)

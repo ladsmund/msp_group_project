@@ -6,8 +6,8 @@ samplerate 44100
 buffersize 512
 
 instruments
-ScaleSynth EvenTemp 300 #
-ScaleSynth PythagChromaticScale 300 #
+ScaleSynth EvenTempered 300
+ScaleSynth PythagChromaticScale 300
 
 rhythm
 0 12: 0  0  0  0  0  0  0  0  0  0  0  0

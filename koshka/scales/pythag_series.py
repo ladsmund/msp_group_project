@@ -22,7 +22,7 @@ class PythagSeries(Scale):
             # If the interval is negative, treat it as positive
             # and then return the reciprocal
             inverted_fraction = Fraction(math.pow(base_ratio, -interval))
-            fraction = Fraction(inverted_fraction.denominator, \
+            fraction = Fraction(inverted_fraction.denominator,
                                 inverted_fraction.numerator)
         else:
             fraction = Fraction(math.pow(base_ratio, interval))
@@ -74,7 +74,7 @@ class PythagChromaticScale(PythagSeries):
         return (scale)
 
 
-class PythagSeriesDodecaphonic(PythagSeries):
+class PythagDodecaphonic(PythagSeries):
     def get_intervals(self):
         scale = []
         notes = ["Gb/F+", "Db/C#", "Ab/G#", "Eb/D#", "Bb/A#", \

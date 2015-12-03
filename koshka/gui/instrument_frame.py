@@ -28,6 +28,7 @@ class SineSynthFrame(Instrument):
         self.frequency_label.grid(row=0, column=0)
 
 
+
 class SamplerFrame(Instrument):
     def __init__(self, master, instrument):
         Instrument.__init__(self, master, instrument)
@@ -43,6 +44,18 @@ class SamplerFrame(Instrument):
             file_name = os.path.basename(file_path.name)
             self.instrument.load_file(file_path.name)
             self.load_file_button.config(text=file_name)
+
+class DrumsetFrame(Instrument):
+    def __init__(self, master, instrument = instruments.Drumset()):
+        Instrument.__init__(self, master, instrument)
+
+        row = 1
+        for ch in instrument:
+            ch_frame = SamplerFrame(self,ch.device).grid(row=row, padx=3)
+            # Label(self,text="%s"%ch.device.filename).grid(row=row, padx=3)
+            row += 1
+
+
 
 
 class ScaleSynthFrame(Instrument):
@@ -103,5 +116,7 @@ def get_instrument_frame(master, instrument):
     #     return SamplerFrame(master, instrument)
     if isinstance(instrument, instruments.ScaleSynth):
         return ScaleSynthFrame(master, instrument)
+    elif isinstance(instrument, instruments.Drumset):
+        return DrumsetFrame(master, instrument)
     else:
         return Instrument(master, instrument)

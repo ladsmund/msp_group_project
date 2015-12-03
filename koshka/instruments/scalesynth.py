@@ -19,6 +19,9 @@ class MonophonicScaleSynth(Instrument):
         self.oscillator.setFreq(frequency)
         Instrument.on(self, tone)
 
+    def __str__(self):
+        return "MonophonicScaleSynth %s" % str(self.scale)
+
 
 class ScaleSynth(PolyphonicInstrument):
 
@@ -45,3 +48,6 @@ class ScaleSynth(PolyphonicInstrument):
         if tone not in self.sub_instruments:
             self._add_synth(tone)
         PolyphonicInstrument.on(self, tone)
+
+    def __str__(self):
+        return "ScaleSynth %s" % str(self.scale)
