@@ -27,3 +27,6 @@ class PerfectTriads(Mixer):
             self.instrument01.off()
             self.instrument02.off()
             self.instrument03.off()
+
+    def __str__(self):
+        return "%s %s" % (type(self).__name__, str(self.instrument01.scale))
