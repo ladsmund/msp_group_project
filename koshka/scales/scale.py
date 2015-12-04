@@ -9,6 +9,9 @@ class Scale(object):
         self.intervals = self.get_intervals()
         self.scale_size = len(self.intervals)
 
+    def __len__(self):
+        return self.scale_size
+
     # This function should be overridden by the sub-classes
     def get_intervals(self):
         return []
