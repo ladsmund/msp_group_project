@@ -38,4 +38,3 @@ if __name__ == "__main__":
         sequencer.stop()
     finally:
         dac.stop()
-
