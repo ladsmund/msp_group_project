@@ -11,14 +11,21 @@ try:
     dac.connect(sequencer.callback)
     
     # Format: instrument id, tone, on, wait time (in "ticks")
-    score = [(0, 0, 1, 0),
-             (0, 0, 0, 1),
-             (0, 1, 1, 0),
-             (0, 1, 0, 1),
+    score = [(0, 4, 1, 0),
+             (0, 4, 0, 1),
+             (0, 2, 1, 0),
+             (0, 2, 0, 1),
              (0, 0, 1, 0),
              (0, 0, 0, 1),
-             (0, 1, 1, 0),
-             (0, 1, 0, 1),
+             (0, 2, 1, 0),
+             (0, 2, 0, 1),
+             (0, 4, 1, 0),
+             (0, 4, 0, 3),
+             (0, 0, 0, 1),
+             (0, 2, 1, 0),
+             (0, 2, 0, 3),
+             (0, 4, 1, 0),
+             (0, 4, 0, 3),
             ]
 
     instrument = instruments.parse("ScaleSynth EvenTempered 1000".split(), 
