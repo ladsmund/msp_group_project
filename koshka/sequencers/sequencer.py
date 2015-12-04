@@ -40,7 +40,7 @@ class Sequencer(Mixer):
 
     def play(self, score=[]):
         for (instrument_id, tone, on, wait_time) in score:
-            print(instrument_id, tone, on, wait_time)
+            # print(instrument_id, tone, on, wait_time)
             if wait_time:
                 time.sleep(wait_time * 60. / (self.speed))
             if on:

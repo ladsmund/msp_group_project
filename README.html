@@ -1017,22 +1017,46 @@ body .markdown-body
 </style><title>README</title></head><body><article class="markdown-body"><h1 id="koshka-group-project-for-msp-2015"><a name="user-content-koshka-group-project-for-msp-2015" href="#koshka-group-project-for-msp-2015" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Koshka - Group project for MSP 2015</h1>
 <h2 id="homework-9"><a name="user-content-homework-9" href="#homework-9" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Homework 9</h2>
 <p>By Mads Lund and Aric Werner</p>
-<h3 id="execution"><a name="user-content-execution" href="#execution" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Execution</h3>
-<pre><code>./homework9.sh
-</code></pre>
-
+<p>The homework solution is implemented with the two Python programs and the required deliverables and be executed with the command: <code>./homework9.sh</code>.</p>
 <h4 id="unit-test-harness-test"><a name="user-content-unit-test-harness-test" href="#unit-test-harness-test" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Unit test / Harness test</h4>
-<p>The unit test for homework 8 can be executed using the command:<br />
+<p>The unit test for homework 9 can be executed using the command:<br />
 <pre><code>python -m unittest discover -p *meantone* koshka/
 </code></pre></p>
+<p>There is no explicit unit test for interval comparison since the correctness of the interval are already tested and the comparisons are only differences.</p>
+<h3 id="melody-playback"><a name="user-content-melody-playback" href="#melody-playback" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Melody playback</h3>
+<p><code>homework9.py</code> is a program able to play a monophonic melody encoded with a simple file format. The melody <em>Mary had a little lamb</em> is encoded in this format in the file <code>scores/mary.mscore</code>.</p>
+<h3 id="interval-comparison"><a name="user-content-interval-comparison" href="#interval-comparison" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Interval Comparison</h3>
+<p><code>homework9_scale.py</code> is a program for comparing frequencies and cents between different intervals and between tuning systems.</p>
+<pre><code>usage: homework9_scales.py [-h] [-f BASEFREQ] [-i INTERVALS0] [-i1 INTERVALS1]
+                           scale0 scale1
+
+MSP homework 9 scale interval comparison
+
+positional arguments:
+  scale0                The supported scales are: EvenTempered, PythagSeries,
+                        PythagChromaticScale, PythagDodecaphonic,
+                        PtolemyNaturalChromatic, Meantone, Meantone12Tone
+  scale1                Same as scale0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f BASEFREQ, --basefreq BASEFREQ
+  -i INTERVALS0, -i0 INTERVALS0, --intervals0 INTERVALS0
+                        List of interval for scale0. Default: all interval in
+                        an octave.
+  -i1 INTERVALS1, --intervals1 INTERVALS1
+                        List of interval for scale1. Default: the same as
+                        intervals0
+</code></pre>
+
 <h2 id="homework-8"><a name="user-content-homework-8" href="#homework-8" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Homework 8</h2>
 <p>By Mads Lund and Aric Werner</p>
 <p>The current version of our project, Koshka, is able to play Ptolemy&rsquo;s scale and the Bembe Wheel described in score files located in the folder ./scores/</p>
-<h3 id="execution_1"><a name="user-content-execution_1" href="#execution_1" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Execution</h3>
+<h3 id="execution"><a name="user-content-execution" href="#execution" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Execution</h3>
 <p>The two parts of the homework and the harness test for Ptolemy&rsquo;s scale can be run using the shell script:<br />
 <pre><code>./homework8.sh
 </code></pre></p>
-<p>Alternatively, the pars can be runned seperatly using the commands:<br />
+<p>Alternatively, the parts can be runned seperatly using the commands:<br />
 <pre><code>./koshka/koshka.py scores/ptolemy_scale.txt --no_gui
 ./koshka/koshka.py scores/bembe_wheel.txt --no_gui --loop 1
 </code></pre></p>
