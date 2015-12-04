@@ -1,37 +1,29 @@
+import sys
+
 from mixer import Mixer
 import time
-from exceptions import Exception
-import threading
 
-from dac import DAC
+
+
+
+def read_monophonic_score(score):
+    for (tone, length) in score:
+        yield (0, tone, 1, 0)
+        yield (0, tone, 0, length)
 
 
 class Sequencer(Mixer):
     DEFAULT_SPEED = 120
-    INFINIT_LOOP = -1
 
     def __init__(self,
                  buffer_size=512,
                  sample_rate=44100,
-                 speed=DEFAULT_SPEED,
-                 tick_resolution=1024):
+                 speed=DEFAULT_SPEED):
         Mixer.__init__(self)
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
-
         self.start_time = 0
         self.speed = speed
-        self.tick_resolution = tick_resolution
-
-        self.running = False
-        self.loop = 0
-        self._worker_threads = []
-        self._active_threads = 0
-
-        self.dac = DAC(self.buffer_size, self.sample_rate)
-        self.dac.connect(self.callback)
-        self.dac.start()
-
         self.instruments = []
 
     def add_instrument(self, instrument):
@@ -43,53 +35,29 @@ class Sequencer(Mixer):
     def set_speed(self, speed):
         self.speed = speed
 
-    def _get_time(self):
-        return self.speed * (time.time() - self.start_time) / 60
+    def play_monophonic(self, score=[]):
+        self.play(self, read_monophonic_score(score))
 
-    def _worker(self, score):
-        worker_time = 0
-        self._active_threads += 1
-        while self.running:
-            for (instrument_id, tone, on, wait_time) in score:
-                if not self.running:
-                    break
+    def play(self, score=[]):
+        for (instrument_id, tone, on, wait_time) in score:
+            print(instrument_id, tone, on, wait_time)
+            if wait_time:
+                time.sleep(60. / (self.speed * wait_time))
+            if on:
+                self.instruments[instrument_id].on(tone)
+            else:
+                self.instruments[instrument_id].off(tone)
 
-                print(instrument_id, tone, on, wait_time)
-                worker_time += wait_time
-                while (worker_time > self._get_time()):
-                    time.sleep(0.01)
+    @staticmethod
+    def parse_mono_score(score_string):
+        for line in score_string.splitlines():
+            if len(line) > 0:
+                tone, length = line.split()
+                yield (0, tone, 1, 0)
+                yield (0, tone, 0, length)
 
-                if on:
-                    self.instruments[instrument_id].on(tone)
-                else:
-                    self.instruments[instrument_id].off(tone)
-            if not self.loop:
-                break
-            self.loop -= 1
-
-        self._active_threads -= 1
-
-    def play(self, score=[], block=False):
-
-        if not self.running:
-
-            self.running = True
-
-            thread = threading.Thread(target=self._worker, args=(score,))
-            self._worker_threads.append(thread)
-
-            self.start_time = time.time()
-            [t.start() for t in self._worker_threads]
-        else:
-            raise Exception('Already playing')
-
-        if block:
-            while self._active_threads > 0:
-                time.sleep(.1)
-            self.stop()
-
-    def stop(self):
-        self.running = False
-        print "stopping"
-        [t.join() for t in self._worker_threads]
-        self._worker_threads = []
+    @staticmethod
+    def parse_score(score_string):
+        for line in score_string.splitlines():
+            if len(line) > 0:
+                return line.split()
