@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#scales=( PythagDodecaphonic Meantone EvenTempered )
-scales=( Meantone EvenTempered )
+scales=( PythagDodecaphonic Meantone12Tone EvenTempered )
 inst=ScaleSynth
 basefreq=528
 score=scores/mary.mscore
