@@ -42,7 +42,7 @@ class Sequencer(Mixer):
         for (instrument_id, tone, on, wait_time) in score:
             print(instrument_id, tone, on, wait_time)
             if wait_time:
-                time.sleep(60. / (self.speed * wait_time))
+                time.sleep(wait_time * 60. / (self.speed))
             if on:
                 self.instruments[instrument_id].on(tone)
             else:
