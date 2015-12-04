@@ -14,7 +14,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MSP homework 9')
     parser.add_argument('score', type=str)
     parser.add_argument('-i', '--instrument', type=str, default=DEFAULT_INSTRUMENT)
-    parser.add_argument('-s', '--speed', type=str, default=DEFAULT_INSTRUMENT)
+    parser.add_argument('-s', '--speed', type=int, default=DEFAULT_SPEED)
     namespace = parser.parse_args()
 
     dac = DAC(bufferSize=2 ** 10, rate=44100)
