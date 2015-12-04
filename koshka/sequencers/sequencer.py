@@ -53,11 +53,16 @@ class Sequencer(Mixer):
         for line in score_string.splitlines():
             if len(line) > 0:
                 tone, length = line.split()
-                yield (0, tone, 1, 0)
-                yield (0, tone, 0, length)
+                if not tone == '-':
+                    yield (0, int(tone), 1, 0)
+                    yield (0, int(tone), 0, float(length))
+                else:
+                    yield (0, 0, 0, float(length))
+
 
     @staticmethod
     def parse_score(score_string):
         for line in score_string.splitlines():
             if len(line) > 0:
-                return line.split()
+                instrument_id, tone, on, wait_time = line.split()
+                return int(instrument_id), int(tone), int(on), float(wait_time)
