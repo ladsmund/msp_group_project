@@ -35,6 +35,6 @@ if __name__ == "__main__":
         score = Sequencer.parse_mono_score(score_string)
 
         sequencer.play(score=score)
-        sequencer.stop()
+
     finally:
         dac.stop()
