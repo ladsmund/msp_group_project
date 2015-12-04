@@ -7,20 +7,21 @@ import instruments
 import argparse
 
 DEFAULT_INSTRUMENT = "ScaleSynth EvenTempered 528"
+DEFAULT_SPEED = 120
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='MSP homework 9')
     parser.add_argument('score', type=str)
     parser.add_argument('-i', '--instrument', type=str, default=DEFAULT_INSTRUMENT)
+    parser.add_argument('-s', '--speed', type=str, default=DEFAULT_INSTRUMENT)
     namespace = parser.parse_args()
 
     dac = DAC(bufferSize=2 ** 10, rate=44100)
     dac.start()
 
     try:
-
-        sequencer = Sequencer(buffer_size=dac.bufferSize, sample_rate=dac.getSamplerate())
+        sequencer = Sequencer(buffer_size=dac.bufferSize, sample_rate=dac.getSamplerate(), speed=namespace.speed)
         dac.connect(sequencer.callback)
 
         instrument = instruments.parse(namespace.instrument.split(),
