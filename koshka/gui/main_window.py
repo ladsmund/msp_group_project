@@ -7,6 +7,7 @@ from ttk import Button, Frame, Label, Scale
 from instrument_frame import get_instrument_frame
 from track_frame import RhythmTrackFrame
 from sequencers.grid_sequencer import GridSequencer
+import mixer_gui
 
 from dac import DAC
 
@@ -64,6 +65,9 @@ class MainControlFrame(Frame):
         tempo_scale.set(self.sequencer.speed)
         tempo_scale.pack()
 
+        # master_fader = mixer_frame.AudioFader(self, sequencer.getVolume, sequencer.setVolume)
+        # master_fader.pack()
+
     def start_stop(self, event=None):
         if self.sequencer.running:
             self.sequencer.play()
@@ -81,6 +85,7 @@ class MainWindow(Tk):
         self.score_path = namespace.score
 
         self.sequencer_frame = None
+        self.mixer_window = None
         self._open_sequencer(self.score_path)
 
         menu = Menu(self)
@@ -103,9 +108,19 @@ class MainWindow(Tk):
 
         # self.wm_attributes("-titlepath",'What is this?')
 
+    def __delete__(self, instance):
+        print "__delete__"
+        self._quit()
+
+    def quit(self):
+        print "tk quit"
+        Tk.quit(self)
+        pass
+
     def _quit(self):
-        self.destroy()
+        print "_quit"
         self.dac.stop()
+        self.destroy()
         self.quit()
 
     def _open_sequencer(self, score_path):
@@ -120,6 +135,10 @@ class MainWindow(Tk):
             self.sequencer_frame.destroy()
         self.sequencer_frame = SequencerFrame(self, self.sequencer)
         self.sequencer_frame.pack()
+
+        if self.mixer_window:
+            self.mixer_window.destroy()
+        self.mixer_window = mixer_gui.MixerWindow(self, self.sequencer)
 
         self.dac.start()
 

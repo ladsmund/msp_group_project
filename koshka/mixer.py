@@ -10,6 +10,9 @@ class Channel:
     def set_gain(self, gain):
         self.gain = gain
 
+    def get_gain(self):
+        return self.gain
+
     def callback(self, in_data, frame_count, time_info, status):
         buffer = self.device.callback(in_data, frame_count, time_info, status)
         if buffer is None:
