@@ -8,7 +8,7 @@ class Key:
     OCTAVE_KEYS = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
     KEY_HEIGHT = 70
     KEY_WIDTH = 10
-    SLEEP_TIME = 1
+    SLEEP_TIME = .04
 
     def __init__(self, tone, instrument, canvas, x0, y0):
         self.tone = tone
@@ -24,20 +24,38 @@ class Key:
             activeoutline=self.active_outline)
 
         self.pressed = False
+        self.press_time = 0
+        self.release_time = time.time()
+
+    def __del__(self):
+        self.release()
+        self.pressed = False
+
+    def _press(self):
+
+        self.instrument.on(self.tone)
+        self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
+        self.pressed = True
+
+        while self.pressed:
+            # print (self.release_time - self.press_time)
+            if self.release_time > self.press_time and (time.time() - self.release_time) > Key.SLEEP_TIME:
+                break
+            # time.sleep(.4)
+
+        self.instrument.off(self.tone)
+        self.canvas.itemconfigure(self.widget, fill=self.color)
+        self.pressed = False
 
     def press(self, event):
-        if not self.pressed:
-            # print "key_pressed: %i" % self.tone
-            self.instrument.on(self.tone)
-            self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
-            self.pressed = True
+        self.press_time = time.time()
+        if self.pressed:
+            return
+        threading.Thread(target=self._press).start()
 
     def release(self, event):
-        if self.pressed:
-            # print "key_release: %i" % self.tone
-            self.instrument.off(self.tone)
-            self.canvas.itemconfigure(self.widget, fill=self.color)
-            self.pressed = False
+        self.release_time = time.time()
+        # self.pressed = False
 
     @staticmethod
     def get_key_color(tone):
