@@ -7,7 +7,9 @@ class DAC():
         (self.paFormat, self.npFormat) = self._depth2format(depth)
         self.npFormatVal = np.iinfo(self.npFormat)
         self.rate = rate
+        self.sample_rate = rate
         self.bufferSize = bufferSize
+        self.buffer_size = bufferSize
         self.channels = channels
         self.callback = None
         self.silenceBuffer = np.zeros(self.bufferSize, dtype=self.npFormat)
