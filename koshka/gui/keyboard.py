@@ -1,5 +1,6 @@
 from Tkinter import Tk, Button, Frame, Label, IntVar, RIDGE, CENTER, StringVar, Canvas
 from ttk import Button, Frame, Label, Style, Checkbutton, OptionMenu, Entry
+from instrument_frame import get_instrument_frame
 import time
 import threading
 
@@ -7,8 +8,8 @@ import threading
 class Key:
     OCTAVE_KEYS = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
     KEY_HEIGHT = 70
-    KEY_WIDTH = 10
-    SLEEP_TIME = .04
+    KEY_WIDTH = 20
+    MIN_UPDATE_TIME = .04
 
     def __init__(self, tone, instrument, canvas, x0, y0):
         self.tone = tone
@@ -24,34 +25,36 @@ class Key:
             activeoutline=self.active_outline)
 
         self.pressed = False
+        self.running = True
         self.press_time = 0
         self.release_time = time.time()
+        self.worker_thread = threading.Thread(target=self._worker)
+        self.worker_thread.daemon = True
+        self.worker_thread.start()
 
-    def __del__(self):
-        self.release()
-        self.pressed = False
+    def terminate(self):
+        self.running = False
+        self.worker_thread.join()
 
-    def _press(self):
+    def _worker(self):
 
-        self.instrument.on(self.tone)
-        self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
-        self.pressed = True
+        while self.running:
+            active_press = self.release_time < self.press_time
+            if active_press:
+                if not self.pressed and time.time() - self.press_time:
+                    self.instrument.on(self.tone)
+                    self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
+                    self.pressed = True
+            else:
+                if self.pressed and time.time() - self.release_time:
+                    self.instrument.off(self.tone)
+                    self.canvas.itemconfigure(self.widget, fill=self.color)
+                    self.pressed = False
 
-        while self.pressed:
-            # print (self.release_time - self.press_time)
-            if self.release_time > self.press_time and (time.time() - self.release_time) > Key.SLEEP_TIME:
-                break
-            # time.sleep(.4)
-
-        self.instrument.off(self.tone)
-        self.canvas.itemconfigure(self.widget, fill=self.color)
-        self.pressed = False
+            time.sleep(.1)
 
     def press(self, event):
         self.press_time = time.time()
-        if self.pressed:
-            return
-        threading.Thread(target=self._press).start()
 
     def release(self, event):
         self.release_time = time.time()
@@ -69,9 +72,9 @@ class Key:
         return color, active_outline, pressed_fill
 
 
-class Keyboard_view(Frame):
+class KeyboardView(Frame):
     INPUT_KEYS = 'q2w3er5t6y7ui9o0pzsxdcfvbhnjm'
-    HEIGHT = 100
+    HEIGHT = Key.KEY_HEIGHT+10
     WIDTH = 37 * Key.KEY_WIDTH
     MIN_TONE = 0
     MAX_TONE = 37
@@ -94,13 +97,20 @@ class Keyboard_view(Frame):
         for tone in range(self.MIN_TONE, self.MAX_TONE):
             self.keyboard_keys[tone] = self.create_key(tone)
 
+    def terminate(self):
+        for t in self.keyboard_keys.values():
+            t.terminate()
+        print "All keyes terminated"
+
+    def destroy(self):
+        print "Destroy"
+        Frame.destroy(self)
+        self.terminate()
+
     def create_key(self, tone):
 
         x0 = tone * Key.KEY_WIDTH
         y0 = 0
-
-        x_line = int(x0 + Key.KEY_WIDTH / 2)
-        self.canvas.create_line(x_line, 0, x_line, self.HEIGHT, fill='gray52')
 
         key = Key(tone, self.instrument, self.canvas, x0, y0)
 
@@ -109,14 +119,13 @@ class Keyboard_view(Frame):
 
         if 0 <= tone < len(self.INPUT_KEYS):
             input_key = self.INPUT_KEYS[tone]
-            self.bind_all("<Key-%s>" % input_key, key.press)
-            self.bind_all("<KeyRelease-%s>" % input_key, key.release)
+            self.master.bind_all("<Key-%s>" % input_key, key.press)
+            self.master.bind_all("<KeyRelease-%s>" % input_key, key.release)
 
         return key
 
 
 if __name__ == '__main__':
-    import time
     from dac import DAC
     import instruments
 
@@ -128,15 +137,26 @@ if __name__ == '__main__':
                                    dac.buffer_size)
 
     dac.connect(instrument.callback)
-    keyboard = Keyboard_view(root, instrument)
-    keyboard.grid(column=0, row=0, sticky='nesw')
 
+    instrument_frame = get_instrument_frame(root,instrument)
+    instrument_frame.grid(column=0, row=0, sticky='nesw')
+
+    keyboard = KeyboardView(root, instrument)
+    keyboard.grid(column=0, row=1, sticky='nesw')
     keyboard.focus_set()
 
-    dac.start()
-    root.mainloop()
+    from scale_plot import ScalePlot
+    scale_plot = ScalePlot(root, Key.KEY_WIDTH)
+    scale_plot.draw_scale(instrument.scale)
+    scale_plot.grid(column=0, row=2, sticky='nesw')
 
-    dac.stop()
-    time.sleep(.1)
+    dac.start()
+
+    try:
+        root.mainloop()
+    finally:
+        print "Closing"
+        dac.stop()
+        print "terminated"
 
     exit(0)
