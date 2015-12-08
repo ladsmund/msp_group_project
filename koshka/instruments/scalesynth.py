@@ -1,6 +1,11 @@
 from oscilator import Oscilator
-from instrument import Instrument, PolyphonicInstrument
+from instrument import Instrument, PolyphonicInstrument, InstrumentEvent
 
+class NewScaleEvent(InstrumentEvent):
+    def __init__(self, instrument, new_scale, old_scale):
+        InstrumentEvent.__init__(self, instrument)
+        self.old_scale = old_scale
+        self.new_scale = new_scale
 
 class MonophonicScaleSynth(Instrument):
 
@@ -34,6 +39,7 @@ class ScaleSynth(PolyphonicInstrument):
         self.scale = scale
 
     def set_scale(self, scale):
+        self.notify_observers(NewScaleEvent(self, scale, self.scale))
         self.scale = scale
         for i in self.sub_instruments.values():
             i.set_scale(scale)
