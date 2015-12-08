@@ -182,6 +182,7 @@ class ScalePlot(Canvas):
         if type(scale) in self.scales:
             for l in self.scales[type(scale)]:
                 self.delete(l)
+            del self.scales[type(scale)]
 
     def draw_scale(self, scale, color=SCALE_COLOR, width=2, add_to_scales=True):
         if not type(scale) in self.scales:
