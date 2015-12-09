@@ -34,6 +34,7 @@ if __name__ == "__main__":
     else:
         from gui.main_window import MainWindow
         window = MainWindow(namespace)
+
         window.mainloop()
         window = None
 

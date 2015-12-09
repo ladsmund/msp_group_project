@@ -5,7 +5,7 @@ import os.path
 import instruments
 import scales
 
-_INSTRUMENT_LABEL_WIDTH = 25
+_INSTRUMENT_LABEL_WIDTH = 20
 _FILE_BUTTON_WIDTH = 3
 
 
@@ -14,10 +14,17 @@ class Instrument(Frame):
         Frame.__init__(self, master, relief=RIDGE)
         self.instrument = instrument
 
-        Label(self,
-              text=instrument.name,
-              width=_INSTRUMENT_LABEL_WIDTH,
-              ).grid(row=0, padx=3, pady=3)
+        if instrument.id_variable is None:
+            Label(self,
+                  text=instrument.name,
+                  width=_INSTRUMENT_LABEL_WIDTH,
+                  ).grid(row=0, padx=3, pady=3)
+        else:
+
+            Entry(self,
+                  textvar=instrument.id_variable,
+                  width=_INSTRUMENT_LABEL_WIDTH,
+                  ).grid(row=0, padx=3, pady=3)
 
 
 class SineSynthFrame(Instrument):
@@ -90,10 +97,9 @@ class ScaleSynthFrame(Instrument):
         Instrument.__init__(self, master, instrument)
 
         scale_name = [s.__name__ for s in scales.SCALES]
-        scale_name = [scale_name[0]] + scale_name
+        scale_name = [type(instrument.scale).__name__] + scale_name
 
         variable = StringVar(self)
-        # variable.set()  # default value
 
         w = OptionMenu(self, variable, *scale_name, command=self.set_scale)
         w.grid(row=1, sticky="W", padx=3)

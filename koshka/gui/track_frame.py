@@ -1,11 +1,22 @@
-from Tkinter import IntVar
-from ttk import Button, Frame, Label, Style, Checkbutton
+from Tkinter import IntVar, Button, Canvas
+from ttk import Frame, Label, Style, Checkbutton, Button
 
 _RHYTHM_BUTTON_WIDTH = 1
 
-class RhythmButton(Button):
+COLOR_ACTIVE = 'green'
+COLOR_INACTIVE = 'gray30'
+
+class RhythmButton(Canvas):
     def __init__(self, master, track, beat):
-        Button.__init__(self, master, text="--", command=self.command, width=_RHYTHM_BUTTON_WIDTH)
+
+        Canvas.__init__(self,
+                        master,
+                        width=20,
+                        height=20,
+                        highlightthickness=0)
+
+        self.bind('<Button-1>', lambda _: self.command())
+
         self.track = track
         self.beat = beat
         self.toggle_visual()
@@ -20,9 +31,9 @@ class RhythmButton(Button):
 
     def toggle_visual(self):
         if self.track.rhythms[self.beat]:
-            self.config(text="X")
+            self.config(bg=COLOR_ACTIVE)
         else:
-            self.config(text=" ")
+            self.config(bg=COLOR_INACTIVE)
 
 
 class TrackFrame(Frame):
@@ -70,4 +81,4 @@ class RhythmTrackFrame(TrackFrame):
         for b in range(0, len(self.track.rhythms)):
             button = RhythmButton(rhythm_frame, track, b)
             # self.buttons.append(button)
-            button.grid(row=0, column=b)
+            button.grid(row=0, column=b, padx=1)

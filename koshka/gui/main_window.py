@@ -3,7 +3,7 @@
 import Tkinter
 from Tkinter import Tk, RIDGE, IntVar, Menu, StringVar
 import tkFileDialog
-from ttk import Button, Frame, Label, Scale, Entry
+from ttk import Button, Frame, Label, Scale, Entry, Style
 from instrument_frame import get_instrument_frame
 from track_frame import RhythmTrackFrame
 from sequencers.grid_sequencer import GridSequencer
@@ -164,6 +164,10 @@ class MainWindow(Tk):
         self.dac.stop()
         self.sequencer = sequencer
         self.dac.connect(self.sequencer.callback)
+
+        for i in sequencer.instruments:
+            i.id_variable = StringVar()
+            i.id_variable.set(i.name_id)
 
         if self.sequencer_frame:
             self.sequencer_frame.destroy()

@@ -171,7 +171,8 @@ class GridSequencer(Mixer):
         line = lines.pop(0)
         while len(lines) > 0 and line != 'rhythm':
             if len(line) > 0 and line[0] != '#':
-                self.add_instrument(instruments.parse(line.split(' '), self.sample_rate, self.buffer_size))
+                instrument = instruments.parse(line.split(' '), self.sample_rate, self.buffer_size)
+                self.add_instrument(instrument)
             line = lines.pop(0)
 
         # Reading Rhythm pattern

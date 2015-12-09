@@ -24,9 +24,11 @@ class ToneOffEvent(ToneEvent):
 class Instrument(object):
     name = "instrument"
 
-    def __init__(self):
+    def __init__(self, id_variable = None):
         self.tone = None
         self.enabled = False
+        self.id_variable = id_variable
+        self.name_id = self.name
 
     def on(self, tone):
         self.tone = tone
@@ -51,10 +53,13 @@ class Instrument(object):
 class PolyphonicInstrument(Mixer):
     name = "poly instrument"
 
-    def __init__(self):
+    def __init__(self, id_variable = None):
         Mixer.__init__(self)
         self.sub_instruments = {}
         self.observers = set()
+        self.id_variable = id_variable
+        self.name_id = self.name
+
 
     def add_observer(self, observer):
         self.observers.add(observer)

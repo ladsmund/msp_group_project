@@ -61,11 +61,11 @@ class Key:
     def work(self):
         active_press = self.release_time < self.press_time
         if active_press:
-            if not self.pressed and time.time() - self.press_time:
+            if not self.pressed and time.time() - self.press_time > self.MIN_UPDATE_TIME:
                 self.pressed = True
                 self.keyboard.event_generate(self.press_tag, when='head')
         else:
-            if self.pressed and time.time() - self.release_time:
+            if self.pressed and time.time() - self.release_time > self.MIN_UPDATE_TIME:
                 self.pressed = False
                 self.keyboard.event_generate(self.release_tag, when='head')
 
@@ -277,34 +277,38 @@ class ScaleWindow(Toplevel):
         instrument = self.instruments[indx]
         self.keyboard_view.set_instrument(instrument)
 
-    def add_instrument(self, instrument_value):
-
-        if not isinstance(instrument_value, ScaleSynth):
+    def add_instrument(self, instrument):
+        if not isinstance(instrument, ScaleSynth):
             return
 
+        index = len(self.instruments)
+        self.instruments.append(instrument)
+
         scale_plot = ScalePlot(self)
-        scale_plot.draw_scale(instrument_value.scale)
+        scale_plot.draw_scale(instrument.scale)
         scale_plot.grid(column=1, row=self.row, sticky='nesw')
+        self.scale_plots.append(scale_plot)
+        instrument.add_observer(scale_plot)
 
         control_frame = Frame(self)
+        self.control_frames.append(control_frame)
 
-        indx = len(self.instruments)
         activate_button = Radiobutton(control_frame,
-                                      text=str(instrument_value.name),
+                                      # text=str(instrument.name),
+                                      textvar=instrument.id_variable,
                                       variable=self.radio_btn_var,
-                                      value=indx,
+                                      value=index,
                                       command=self.activate_instrument,
+                                      width=15,
                                       )
         activate_button.pack()
+
+        self.radio_btn_var.set(index)
+        self.activate_instrument()
 
         control_frame.grid(column=0, row=self.row, sticky='nesw')
 
         self.row += 1
-        instrument_value.add_observer(scale_plot)
-
-        self.instruments.append(instrument_value)
-        self.control_frames.append(control_frame)
-        self.scale_plots.append(scale_plot)
 
 
 if __name__ == '__main__':
