@@ -69,6 +69,25 @@ class GridSequencer(Mixer):
         for t in tracks:
             t.rhythm.extend([0])
 
+    def remove_measures(self, num):
+        remove_amt = num * self.beats_per_measure
+        self.measure_resolution -= remove_amt
+        for t in tracks: 
+            del t.rhythm[-remove_amt:]
+
+    def change_measures(self, beats_per_measure, measure_resolution):
+        if measure_resolution % beats_per_measure == 0:
+            self.beats_per_measure = beats_per_measure
+            self.measure_resolution = measure_resolution
+            for t in tracks:
+                if len(t.rhythm) < self.measure_resolution:
+                    t.rhythm.extend([0]*(self.measure_resolution - len(t.rhythm)))
+                else:
+                    t.rhythm = t.rhythm[0:self.measure_resolution]
+            self._update_sleep_interval()
+        else:
+            raise Exception('This measure resolution has to be divisible with beeats_per_measure')
+
     def _update_sleep_interval(self):
         if self.measure_resolution % self.beats_per_measure == 0:
             self.sleep_interval = 60. / (self.speed * self.measure_resolution / self.beats_per_measure)
