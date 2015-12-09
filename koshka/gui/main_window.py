@@ -53,9 +53,9 @@ class MainControlFrame(Frame):
         self.start_button.pack()
         self.stop_button.pack()
 
-        scale_window = keyboard.ScaleWindow(self)
-        for i in sequencer.instruments:
-            scale_window.add_instrument(i)
+        # scale_window = keyboard.ScaleWindow(self)
+        # for i in sequencer.instruments:
+        #     scale_window.add_instrument(i)
 
         Label(self, text='Tempo').pack()
         self.tempo_label = Label(self)
