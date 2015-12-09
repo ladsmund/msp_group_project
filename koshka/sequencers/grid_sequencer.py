@@ -133,6 +133,7 @@ class GridSequencer(Mixer):
             self.running = True
             self.loop = loop
             self._worker_thread = threading.Thread(target=self._worker)
+            self._worker_thread.daemon = True
             self._worker_thread.start()
 
     def stop(self):
