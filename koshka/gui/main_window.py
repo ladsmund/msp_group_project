@@ -70,18 +70,24 @@ class MainControlFrame(Frame):
         tempo_scale.set(self.sequencer.speed)
         tempo_scale.pack()
 
+        measure_control_frame = Frame(self)
+        measure_control_frame.pack()
 
-        self.measure_resolution = StringVar(self)
+        self.measure_resolution = StringVar(measure_control_frame)
         self.measure_resolution.set(self.sequencer.measure_resolution)
-        self.beats_per_measure = StringVar(self)
+        self.beats_per_measure = StringVar(measure_control_frame)
         self.beats_per_measure.set(self.sequencer.beats_per_measure)
 
-        measure_resolution_entry = Entry(self, textvariable=self.measure_resolution, width=3)
-        beats_per_measure_entry = Entry(self, textvariable=self.beats_per_measure, width=3)
-        measure_resolution_entry.pack()
-        beats_per_measure_entry.pack()
-        change_measure_update = Button(self, text='Update', command=self.change_measures)
-        change_measure_update.pack()
+        Label(measure_control_frame, text='Resolution').grid(row=0, column=0, sticky='E')
+        measure_resolution_entry = Entry(measure_control_frame, textvariable=self.measure_resolution, width=3)
+        measure_resolution_entry.grid(row=0, column=1)
+
+        Label(measure_control_frame, text='Beats').grid(row=1, column=0, sticky='E')
+        beats_per_measure_entry = Entry(measure_control_frame, textvariable=self.beats_per_measure, width=3)
+        beats_per_measure_entry.grid(row=1, column=1)
+
+        change_measure_update = Button(measure_control_frame, text='Update Measure', command=self.change_measures)
+        change_measure_update.grid(row=2, columnspan=2)
 
         # master_fader = mixer_frame.AudioFader(self, sequencer.getVolume, sequencer.setVolume)
         # master_fader.pack()
@@ -108,7 +114,6 @@ class MainControlFrame(Frame):
             self.measure_resolution.set(old_measure_resolution)
             self.beats_per_measure.set(old_beats_per_measure)
             pass
-
 
 
 class MainWindow(Tk):
