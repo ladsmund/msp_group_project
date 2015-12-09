@@ -73,13 +73,13 @@ class MainControlFrame(Frame):
 
         self.measure_resolution = StringVar(self)
         self.measure_resolution.set(self.sequencer.measure_resolution)
-        self.beats_per_mesure = StringVar(self)
-        self.beats_per_mesure.set(self.sequencer.beats_per_measure)
+        self.beats_per_measure = StringVar(self)
+        self.beats_per_measure.set(self.sequencer.beats_per_measure)
 
         measure_resolution_entry = Entry(self, textvariable=self.measure_resolution, width=3)
-        beats_per_mesure_entry = Entry(self, textvariable=self.beats_per_mesure, width=3)
+        beats_per_measure_entry = Entry(self, textvariable=self.beats_per_measure, width=3)
         measure_resolution_entry.pack()
-        beats_per_mesure_entry.pack()
+        beats_per_measure_entry.pack()
         change_measure_update = Button(self, text='Update', command=self.change_measures)
         change_measure_update.pack()
 
@@ -95,14 +95,18 @@ class MainControlFrame(Frame):
     def change_measures(self):
 
         old_measure_resolution = self.sequencer.measure_resolution
-        old_beats_per_mesure = self.sequencer.beats_per_measure
+        old_beats_per_measure = self.sequencer.beats_per_measure
 
         try:
             measure_resolution = int(self.measure_resolution.get())
-            beats_per_mesure = int(self.beats_per_mesure.get())
-        except:
+            beats_per_measure = int(self.beats_per_measure.get())
+            self.sequencer.change_measures(beats_per_measure, measure_resolution)
+            print "ready to reload seq"
+            self.master.master._open_sequencer(self.sequencer)
+        except Exception as e:
+            print e
             self.measure_resolution.set(old_measure_resolution)
-            self.beats_per_mesure.set(old_beats_per_mesure)
+            self.beats_per_measure.set(old_beats_per_measure)
             pass
 
 
