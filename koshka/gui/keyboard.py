@@ -63,11 +63,11 @@ class Key:
         if active_press:
             if not self.pressed and time.time() - self.press_time:
                 self.pressed = True
-                self.keyboard.event_generate(self.press_tag)
+                self.keyboard.event_generate(self.press_tag, when='head')
         else:
             if self.pressed and time.time() - self.release_time:
                 self.pressed = False
-                self.keyboard.event_generate(self.release_tag)
+                self.keyboard.event_generate(self.release_tag, when='head')
 
     def _press(self, event=None):
 
@@ -183,18 +183,32 @@ class ScalePlot(Canvas):
 
         self.tones = {}
         self.events = []
-        self.bind("<<notify>>", self._notify)
+
+        self.running = True
+        self.worker_thread = threading.Thread(target=self._worker)
+        self.worker_thread.daemon = True
+        self.worker_thread.start()
+
+        self.bind("<<update>>", self._update)
+
+    def __del__(self):
+        self.running = False
 
     def notify(self, event):
-        # print "notify: %s" % str(threading._get_ident())
         self.events.append(event)
-        self.event_generate("<<notify>>")
 
-    def _notify(self, _):
+    def _worker(self):
+        while self.running:
+            if len(self.events) > 0:
+                self.event_generate("<<update>>", when='tail')
+            time.sleep(.04)
+
+    def _update(self, _):
 
         # print "_notify: %s" % str(threading._get_ident())
         while len(self.events):
             event = self.events.pop()
+            # continue
             if isinstance(event, ToneOnEvent):
                 if isinstance(event.instrument, ScaleSynth):
                     cents = event.instrument.scale.get_cents(event.tone)
@@ -256,13 +270,11 @@ class ScaleWindow(Toplevel):
 
     def activate_instrument(self):
         indx = self.radio_btn_var.get()
-        print "activate_instrument %i" % indx
-        print self.instruments
         for cf in self.control_frames:
             cf.config(style='Inactive.TFrame')
         self.control_frames[indx].config(style='Active.TFrame')
 
-        # instrument = self.instruments[indx]
+        instrument = self.instruments[indx]
         self.keyboard_view.set_instrument(instrument)
 
     def add_instrument(self, instrument_value):
@@ -275,10 +287,6 @@ class ScaleWindow(Toplevel):
         scale_plot.grid(column=1, row=self.row, sticky='nesw')
 
         control_frame = Frame(self)
-
-        # label = Label(control_frame, text=str(instrument_value))
-        # label.grid(column=0)
-
 
         indx = len(self.instruments)
         activate_button = Radiobutton(control_frame,
@@ -319,27 +327,7 @@ if __name__ == '__main__':
     scale_window = ScaleWindow(root)
     scale_window.add_instrument(instrument)
     scale_window.add_instrument(instrument2)
-    # scale_window.add_instrument(instrument2)
 
-
-    # instrument_frame = get_instrument_frame(root, instrument)
-    # instrument_frame.grid(column=0, row=0, sticky='nesw')
-    #
-    # keyboard = KeyboardView(root, instrument)
-    # keyboard.grid(column=0, row=1, sticky='nesw')
-    # keyboard.focus_set()
-    #
-    # scale_plot = ScalePlot(root, KEY_WIDTH)
-    # scale_plot.draw_scale(instrument.scale)
-    # scale_plot.grid(column=0, row=2, sticky='nesw')
-    #
-    # instrument.add_observer(scale_plot)
-    #
-    # scale_plot2 = ScalePlot(root, KEY_WIDTH)
-    # scale_plot2.draw_scale(instrument2.scale)
-    # scale_plot2.grid(column=0, row=3, sticky='nesw')
-    #
-    # instrument2.add_observer(scale_plot2)
 
     dac.start()
 

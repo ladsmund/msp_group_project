@@ -74,8 +74,9 @@ class PolyphonicInstrument(Mixer):
 
     def off(self, tone=None):
         if tone is None:
-            [s.off() for s in self.sub_instruments.values()]
-            self.notify_observers(ToneOffEvent(self, tone))
+            for s in self.sub_instruments.values():
+                s.off()
+                self.notify_observers(ToneOffEvent(self, s.tone))
         elif tone in self.sub_instruments:
             self.sub_instruments[tone].off()
             self.notify_observers(ToneOffEvent(self, tone))
