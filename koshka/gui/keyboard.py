@@ -1,38 +1,40 @@
-from Tkinter import Tk, Button, Frame, Label, IntVar, RIDGE, CENTER, StringVar, Canvas
-from ttk import Button, Frame, Label, Style, Checkbutton, OptionMenu, Entry
+from Tkinter import Tk, Button, Frame, Label, IntVar, RIDGE, CENTER, StringVar, Canvas, Toplevel
+from ttk import Button, Frame, Label, Style, Checkbutton, OptionMenu, Entry, Radiobutton
 import scales
-from instruments import instrument, ScaleSynth
+from instruments import ScaleSynth
 from instruments.instrument import ToneOnEvent, ToneOffEvent
 from instruments.scalesynth import NewScaleEvent
 from instrument_frame import get_instrument_frame
 import time
 import threading
 
-
 MIN_TONE = 0
-MAX_TONE = 17
+MAX_TONE = 29
 
 KEY_HEIGHT = 120
-KEY_WIDTH = 80
+KEY_WIDTH = 30
 KEYBOARD_HEIGHT = KEY_HEIGHT + 1
-KEYBOARD_WIDTH = (MAX_TONE-MIN_TONE) * KEY_WIDTH
+KEYBOARD_WIDTH = (MAX_TONE - MIN_TONE) * KEY_WIDTH
 
 SCALE_COLOR = 'dark red'
-SCALE_PLOT_HEIGHT = 100
+SCALE_PLOT_HEIGHT = 50
 TONE_RADIUS = 10
-TONE_Y = 50
+TONE_Y = 25
 TONE_COLOR = 'green'
 
+CONTROL_FRAME_ACTIVE = 'light blue'
+CONTROL_FRAME_INACTIVE = 'gray'
 
 
 class Key:
     OCTAVE_KEYS = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
     MIN_UPDATE_TIME = .04
 
-    def __init__(self, tone, instrument, canvas, x0, y0):
+    def __init__(self, tone, keyboard, canvas, x0, y0):
         self.tone = tone
         self.canvas = canvas
-        self.instrument = instrument
+        self.keyboard = keyboard
+        # self.instrument = instrument
         self.color, self.active_outline, self.pressed_fill = Key.get_key_color(tone)
 
         x = x0 + KEY_WIDTH
@@ -55,26 +57,28 @@ class Key:
         self.worker_thread.join()
 
     def _worker(self):
-
         while self.running:
             active_press = self.release_time < self.press_time
             if active_press:
                 if not self.pressed and time.time() - self.press_time:
-                    self.instrument.on(self.tone)
+
+                    if self.keyboard.instrument is not None:
+                        self.keyboard.instrument.on(self.tone)
                     self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
                     self.pressed = True
             else:
                 if self.pressed and time.time() - self.release_time:
-                    self.instrument.off(self.tone)
+                    if self.keyboard.instrument is not None:
+                        self.keyboard.instrument.off(self.tone)
                     self.canvas.itemconfigure(self.widget, fill=self.color)
                     self.pressed = False
 
             time.sleep(.1)
 
-    def press(self, event):
+    def press(self, event=None):
         self.press_time = time.time()
 
-    def release(self, event):
+    def release(self, event=None):
         self.release_time = time.time()
 
     @staticmethod
@@ -92,7 +96,7 @@ class Key:
 class KeyboardView(Frame):
     INPUT_KEYS = 'q2w3er5t6y7ui9o0pzsxdcfvbhnjm'
 
-    def __init__(self, master, instrument):
+    def __init__(self, master, instrument=None):
         Frame.__init__(self, master)
         self.instrument = instrument
 
@@ -109,21 +113,26 @@ class KeyboardView(Frame):
         for tone in range(MIN_TONE, MAX_TONE):
             self.keyboard_keys[tone] = self.create_key(tone)
 
+    def set_instrument(self, new_instrument):
+        print "set_instrument: %s" %str(new_instrument)
+        for key in self.keyboard_keys.values():
+            key.release()
+        old_instrument = self.instrument
+        self.instrument = new_instrument
+
+        if not old_instrument is None:
+            old_instrument.off()
+
     def terminate(self):
         for t in self.keyboard_keys.values():
             t.terminate()
         print "All keyes terminated"
 
-    # def destroy(self):
-    #     print "Destroy"
-    #     Frame.destroy(self)
-    #     self.terminate()
-
     def create_key(self, tone):
         x0 = tone * KEY_WIDTH
         y0 = 0
 
-        key = Key(tone, self.instrument, self.canvas, x0, y0)
+        key = Key(tone, self, self.canvas, x0, y0)
 
         self.canvas.tag_bind(key.widget, "<Button-1>", key.press)
         self.canvas.tag_bind(key.widget, "<ButtonRelease-1>", key.release)
@@ -137,8 +146,7 @@ class KeyboardView(Frame):
 
 
 class ScalePlot(Canvas):
-
-    def __init__(self, master, tone_width):
+    def __init__(self, master, tone_width=KEY_WIDTH):
         Canvas.__init__(self,
                         master,
                         background='gray',
@@ -150,8 +158,8 @@ class ScalePlot(Canvas):
         self.max_tone = MAX_TONE
 
         self.scales = {}
-        for width in range(13,1,-2):
-            color = "gray%i"%(30 + 3*width)
+        for width in range(13, 1, -2):
+            color = "gray%i" % (30 + 3 * width)
             self.draw_scale(scales.EvenTempered(528), color=color, width=width, add_to_scales=False)
 
         self.tones = {}
@@ -198,43 +206,113 @@ class ScalePlot(Canvas):
                 self.scales[type(scale)] = lines
 
 
+class ScaleWindow(Toplevel):
+    def __init__(self, master):
+        Toplevel.__init__(self, master)
+        self.keyboard_view = KeyboardView(self)
+        self.keyboard_view.grid(column=1, row=0, sticky='nesw')
+        self.keyboard_view.focus_set()
+        self.row = 1
+        self.instruments = []
+        self.scale_plots = []
+        self.control_frames = []
+        self.activate_buttons = []
+
+        self.radio_btn_var = IntVar()
+
+        self.control_frames_style = Style()
+        self.control_frames_style.configure('Active.TFrame', background=CONTROL_FRAME_ACTIVE)
+        self.control_frames_style.configure('Inactive.TFrame', background=CONTROL_FRAME_INACTIVE)
+
+    def activate_instrument(self):
+        indx = self.radio_btn_var.get()
+        print "activate_instrument %i" % indx
+        print self.instruments
+        for cf in self.control_frames:
+            cf.config(style='Inactive.TFrame')
+        self.control_frames[indx].config(style='Active.TFrame')
+
+        instrument = self.instruments[indx]
+        self.keyboard_view.set_instrument(instrument)
+
+    def add_instrument(self, instrument_value):
+
+        if not isinstance(instrument_value, ScaleSynth):
+            return
+
+        scale_plot = ScalePlot(self)
+        scale_plot.draw_scale(instrument_value.scale)
+        scale_plot.grid(column=1, row=self.row, sticky='nesw')
+
+
+        control_frame = Frame(self)
+
+        # label = Label(control_frame, text=str(instrument_value))
+        # label.grid(column=0)
+
+
+        indx = len(self.instruments)
+        activate_button = Radiobutton(control_frame,
+                                      text=str(instrument_value.name),
+                                      variable=self.radio_btn_var,
+                                      value=indx,
+                                      command=self.activate_instrument,
+                                      )
+        activate_button.pack()
+
+        control_frame.grid(column=0, row=self.row, sticky='nesw')
+
+
+
+        self.row += 1
+        instrument_value.add_observer(scale_plot)
+
+        self.instruments.append(instrument_value)
+        self.control_frames.append(control_frame)
+        self.scale_plots.append(scale_plot)
+
+
 if __name__ == '__main__':
     from dac import DAC
+
     import instruments
 
-    root = Tk()
-
     dac = DAC()
-
-
 
     instrument = instruments.parse(['ScaleSynth', 'EvenTempered', '264'],
                                    dac.sample_rate,
                                    dac.buffer_size)
     instrument2 = instruments.parse(['ScaleSynth', 'EvenTempered', '264'],
-                                   dac.sample_rate,
-                                   dac.buffer_size)
+                                    dac.sample_rate,
+                                    dac.buffer_size)
 
     dac.connect(instrument.callback)
 
-    instrument_frame = get_instrument_frame(root, instrument)
-    instrument_frame.grid(column=0, row=0, sticky='nesw')
+    root = Tk()
+    scale_window = ScaleWindow(root)
+    scale_window.add_instrument(instrument)
+    scale_window.add_instrument(instrument2)
+    # scale_window.add_instrument(instrument2)
 
-    keyboard = KeyboardView(root, instrument)
-    keyboard.grid(column=0, row=1, sticky='nesw')
-    keyboard.focus_set()
 
-    scale_plot = ScalePlot(root, KEY_WIDTH)
-    scale_plot.draw_scale(instrument.scale)
-    scale_plot.grid(column=0, row=2, sticky='nesw')
-
-    instrument.add_observer(scale_plot)
-
-    scale_plot2 = ScalePlot(root, KEY_WIDTH)
-    scale_plot2.draw_scale(instrument2.scale)
-    scale_plot2.grid(column=0, row=3, sticky='nesw')
-
-    instrument2.add_observer(scale_plot2)
+    # instrument_frame = get_instrument_frame(root, instrument)
+    # instrument_frame.grid(column=0, row=0, sticky='nesw')
+    #
+    # keyboard = KeyboardView(root, instrument)
+    # keyboard.grid(column=0, row=1, sticky='nesw')
+    # keyboard.focus_set()
+    #
+    # scale_plot = ScalePlot(root, KEY_WIDTH)
+    # scale_plot.draw_scale(instrument.scale)
+    # scale_plot.grid(column=0, row=2, sticky='nesw')
+    #
+    # instrument.add_observer(scale_plot)
+    #
+    # scale_plot2 = ScalePlot(root, KEY_WIDTH)
+    # scale_plot2.draw_scale(instrument2.scale)
+    # scale_plot2.grid(column=0, row=3, sticky='nesw')
+    #
+    # instrument2.add_observer(scale_plot2)
 
     dac.start()
 
