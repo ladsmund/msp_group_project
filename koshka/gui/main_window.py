@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import Tkinter
-from Tkinter import Tk, RIDGE, IntVar, Menu
+from Tkinter import Tk, RIDGE, IntVar, Menu, StringVar
 import tkFileDialog
-from ttk import Button, Frame, Label, Scale
+from ttk import Button, Frame, Label, Scale, Entry
 from instrument_frame import get_instrument_frame
 from track_frame import RhythmTrackFrame
 from sequencers.grid_sequencer import GridSequencer
@@ -70,6 +70,19 @@ class MainControlFrame(Frame):
         tempo_scale.set(self.sequencer.speed)
         tempo_scale.pack()
 
+
+        self.measure_resolution = StringVar(self)
+        self.measure_resolution.set(self.sequencer.measure_resolution)
+        self.beats_per_mesure = StringVar(self)
+        self.beats_per_mesure.set(self.sequencer.beats_per_measure)
+
+        measure_resolution_entry = Entry(self, textvariable=self.measure_resolution, width=3)
+        beats_per_mesure_entry = Entry(self, textvariable=self.beats_per_mesure, width=3)
+        measure_resolution_entry.pack()
+        beats_per_mesure_entry.pack()
+        change_measure_update = Button(self, text='Update', command=self.change_measures)
+        change_measure_update.pack()
+
         # master_fader = mixer_frame.AudioFader(self, sequencer.getVolume, sequencer.setVolume)
         # master_fader.pack()
 
@@ -78,6 +91,20 @@ class MainControlFrame(Frame):
             self.sequencer.play()
         else:
             self.sequencer.stop()
+
+    def change_measures(self):
+
+        old_measure_resolution = self.sequencer.measure_resolution
+        old_beats_per_mesure = self.sequencer.beats_per_measure
+
+        try:
+            measure_resolution = int(self.measure_resolution.get())
+            beats_per_mesure = int(self.beats_per_mesure.get())
+        except:
+            self.measure_resolution.set(old_measure_resolution)
+            self.beats_per_mesure.set(old_beats_per_mesure)
+            pass
+
 
 
 class MainWindow(Tk):
@@ -91,7 +118,7 @@ class MainWindow(Tk):
 
         self.sequencer_frame = None
         self.mixer_window = None
-        self._open_sequencer(self.score_path)
+        self._open_score(self.score_path)
 
         menu = Menu(self)
         self.config(menu=menu)
@@ -128,12 +155,10 @@ class MainWindow(Tk):
         self.destroy()
         self.quit()
 
-    def _open_sequencer(self, score_path):
-        self.score_path = score_path
+    def _open_sequencer(self, sequencer):
+
         self.dac.stop()
-        self.sequencer = GridSequencer(score_path,
-                                       buffer_size=self.dac.bufferSize,
-                                       sample_rate=self.dac.getSamplerate())
+        self.sequencer = sequencer
         self.dac.connect(self.sequencer.callback)
 
         if self.sequencer_frame:
@@ -146,11 +171,20 @@ class MainWindow(Tk):
         self.mixer_window = mixer_gui.MixerWindow(self, self.sequencer)
 
         self.dac.start()
+        pass
+
+    def _open_score(self, score_path):
+        self.score_path = score_path
+        sequencer = GridSequencer(score_path,
+                                  buffer_size=self.dac.bufferSize,
+                                  sample_rate=self.dac.getSamplerate())
+
+        self._open_sequencer(sequencer)
 
     def open(self, val=Tkinter.Event()):
         score_path = tkFileDialog.askopenfilename(filetypes=[('Text file', '.txt')])
         if score_path:
-            self._open_sequencer(score_path)
+            self._open_score(score_path)
 
     def save(self, val=None):
         self.sequencer.save(self.score_path)
