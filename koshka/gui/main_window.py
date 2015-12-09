@@ -9,6 +9,7 @@ from track_frame import RhythmTrackFrame
 from sequencers.grid_sequencer import GridSequencer
 import mixer_gui
 import keyboard
+import threading
 
 from dac import DAC
 
@@ -24,6 +25,8 @@ class SequencerFrame(Frame):
         self.instrument_panel = Frame(self)
         self.instrument_panel.grid(row=0, column=1)
 
+        self.rythm_track_frames = []
+
         for id, instrument in enumerate(sequencer.instruments):
             instrument_frame = get_instrument_frame(self.instrument_panel, instrument)
             instrument_frame.grid(row=id, column=0, sticky="NSEW")
@@ -33,7 +36,45 @@ class SequencerFrame(Frame):
 
             tracks = [track for track in sequencer.tracks if track.instrument_id == id]
             for row, track in enumerate(tracks):
-                RhythmTrackFrame(instrument_track_frame, track, sequencer).grid(row=row, column=0, sticky="EW")
+                rt_frame = RhythmTrackFrame(instrument_track_frame, track, sequencer)
+                rt_frame.grid(row=row, column=0, sticky="EW")
+                self.rythm_track_frames.append(rt_frame)
+
+        self.bind('<<New-Time>>', self.consume)
+        self.event_condition = threading.Condition()
+        self.events = []
+        self.running = True
+        self.thread = threading.Thread(target=self._worker)
+        self.thread.daemon = True
+        self.thread.start()
+
+        sequencer.add_observer(self)
+
+
+    def consume(self, _):
+        while len(self.events) > 0:
+            time = self.events.pop().time
+            for rt in self.rythm_track_frames:
+                rt.set_time(time)
+
+    def _worker(self):
+        while self.running:
+            self.event_condition.acquire()
+            self.event_condition.wait(.5)
+            if len(self.events) > 0:
+                self.event_generate('<<New-Time>>')
+            self.event_condition.release()
+
+    def notify(self, event):
+        self.event_condition.acquire()
+        self.events.append(event)
+        self.event_condition.notify_all()
+        self.event_condition.release()
+
+    def destroy(self):
+        self.running = False
+        self.thread.join()
+        return Frame.destroy(self)
 
 
 class MainControlFrame(Frame):
@@ -52,10 +93,6 @@ class MainControlFrame(Frame):
         self.control_label.pack()
         self.start_button.pack()
         self.stop_button.pack()
-
-        scale_window = keyboard.ScaleWindow(self)
-        for i in sequencer.instruments:
-            scale_window.add_instrument(i)
 
         Label(self, text='Tempo').pack()
         self.tempo_label = Label(self)
@@ -125,8 +162,10 @@ class MainWindow(Tk):
 
         self.score_path = namespace.score
 
+        self.sequencer = None
         self.sequencer_frame = None
         self.mixer_window = None
+        self.scale_window = None
         self._open_score(self.score_path)
 
         menu = Menu(self)
@@ -167,6 +206,13 @@ class MainWindow(Tk):
     def _open_sequencer(self, sequencer):
 
         self.dac.stop()
+
+        if self.sequencer is not None:
+            self.sequencer.stop()
+            self.sequencer.remove_all_observers()
+            for i in self.sequencer.instruments:
+                i.remove_all_observers()
+
         self.sequencer = sequencer
         self.dac.connect(self.sequencer.callback)
 
@@ -182,6 +228,12 @@ class MainWindow(Tk):
         if self.mixer_window:
             self.mixer_window.destroy()
         self.mixer_window = mixer_gui.MixerWindow(self, self.sequencer)
+
+        if self.scale_window is not None:
+            self.scale_window.destroy()
+        self.scale_window = keyboard.ScaleWindow(self)
+        for i in sequencer.instruments:
+            self.scale_window.add_instrument(i)
 
         self.dac.start()
         pass

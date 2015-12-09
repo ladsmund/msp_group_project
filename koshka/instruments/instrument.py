@@ -68,6 +68,9 @@ class PolyphonicInstrument(Mixer):
         if observer in self.observers:
             self.observers.remove(observer)
 
+    def remove_all_observers(self):
+        self.observers = set()
+
     def notify_observers(self, event):
         for observer in self.observers:
             observer.notify(event)

@@ -4,8 +4,6 @@ from mixer import Mixer
 import time
 
 
-
-
 def read_monophonic_score(score):
     for (tone, length) in score:
         yield (0, tone, 1, 0)

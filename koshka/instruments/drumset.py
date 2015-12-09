@@ -35,6 +35,8 @@ class Drumset(Sampler):
 
         Sampler.__init__(self, drumset_files)
 
+
+
         self.kick = self[0]
         self.snare = self[1]
         self.tom1 = self[2]

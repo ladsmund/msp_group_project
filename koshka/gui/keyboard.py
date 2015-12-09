@@ -71,7 +71,6 @@ class Key:
 
     def _press(self, event=None):
 
-        # print "_press: %s" % str(threading._get_ident())
         if self.keyboard.instrument is not None:
             self.keyboard.instrument.on(self.tone)
             self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
@@ -84,7 +83,6 @@ class Key:
         pass
 
     def press(self, event=None):
-        # print "press: %s" % str(threading._get_ident())
         self.press_time = time.time()
 
     def release(self, event=None):
@@ -163,6 +161,11 @@ class KeyboardView(Frame):
 
         return key
 
+    def destroy(self):
+        self.running = False
+        self.worker_thread.join()
+        Frame.destroy(self)
+
 
 class ScalePlot(Canvas):
     def __init__(self, master, tone_width=KEY_WIDTH):
@@ -191,8 +194,12 @@ class ScalePlot(Canvas):
 
         self.bind("<<update>>", self._update)
 
-    def __del__(self):
+
+
+    def destroy(self):
         self.running = False
+        self.worker_thread.join()
+        return Canvas.destroy(self)
 
     def notify(self, event):
         self.events.append(event)
@@ -205,7 +212,6 @@ class ScalePlot(Canvas):
 
     def _update(self, _):
 
-        # print "_notify: %s" % str(threading._get_ident())
         while len(self.events):
             event = self.events.pop()
             # continue
@@ -309,37 +315,3 @@ class ScaleWindow(Toplevel):
         control_frame.grid(column=0, row=self.row, sticky='nesw')
 
         self.row += 1
-
-
-if __name__ == '__main__':
-    from dac import DAC
-
-    import instruments
-
-    dac = DAC()
-
-    instrument = instruments.parse(['ScaleSynth', 'EvenTempered', '264'],
-                                   dac.sample_rate,
-                                   dac.buffer_size)
-    instrument2 = instruments.parse(['ScaleSynth', 'EvenTempered', '264'],
-                                    dac.sample_rate,
-                                    dac.buffer_size)
-
-    dac.connect(instrument.callback)
-
-    root = Tk()
-    scale_window = ScaleWindow(root)
-    scale_window.add_instrument(instrument)
-    scale_window.add_instrument(instrument2)
-
-
-    dac.start()
-
-    try:
-        root.mainloop()
-    finally:
-        print "Closing"
-        dac.stop()
-        print "terminated"
-
-    exit(0)

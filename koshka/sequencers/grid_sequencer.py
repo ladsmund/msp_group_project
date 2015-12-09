@@ -7,6 +7,11 @@ from mixer import Mixer
 import instruments
 
 
+class TimeEvent:
+    def __init__(self, time):
+        self.time = time
+
+
 class Track():
     def __init__(self, instrument_id, instrument_tone, rhythm, gains, id):
         self.instrument_id = instrument_id
@@ -22,6 +27,8 @@ class GridSequencer(Mixer):
     DEFAULT_SPEED = 60
     DEFAULT_MEASURE_RESOLUTION = 8
     DEFAULT_BEATS_PER_MEASURE = 4
+    DEFAULT_STRESS_GAIN = 1.
+    DEFAULT_NON_STRESS_GAIN = .7
 
     def __init__(self, score_path, buffer_size=512, sample_rate=44100):
         Mixer.__init__(self)
@@ -35,7 +42,11 @@ class GridSequencer(Mixer):
         self.sleep_interval = None
         self._update_sleep_interval()
 
-        self.running = False;
+        self.stress_gain = self.DEFAULT_STRESS_GAIN
+        self.non_stress_gain = self.DEFAULT_NON_STRESS_GAIN
+        self.current_gain = 1.
+
+        self.running = False
         self.loop = 0
         self._worker_thread = None
 
@@ -46,6 +57,18 @@ class GridSequencer(Mixer):
         # Load score file
         data = open(score_path, 'r').read()
         self._parse(data)
+
+        self.observers = set()
+
+    def add_observer(self, observer):
+        self.observers.add(observer)
+
+    def remove_observer(self, observer):
+        if observer in self.observers:
+            self.observers.remove(observer)
+
+    def remove_all_observers(self):
+        self.observers = set()
 
     def add_instrument(self, instrument, id=None):
         if id is None:
@@ -62,26 +85,18 @@ class GridSequencer(Mixer):
         self.speed = speed
         self._update_sleep_interval()
 
-    # Add num measures to the sequencer (extend the right hand side by num * measure_resolution)
-    def add_measures(self, num):
-        extend_by = num * self.beats_per_measure
-        self.measure_resolution += extend_by
-        for t in tracks:
-            t.rhythm.extend([0])
-
-    def remove_measures(self, num):
-        remove_amt = num * self.beats_per_measure
-        self.measure_resolution -= remove_amt
-        for t in tracks: 
-            del t.rhythm[-remove_amt:]
+    def notify_observers(self, event):
+        for observer in self.observers:
+            observer.notify(event)
 
     def change_measures(self, beats_per_measure, measure_resolution):
+        self.stop()
         if measure_resolution % beats_per_measure == 0:
             self.beats_per_measure = beats_per_measure
             self.measure_resolution = measure_resolution
             for t in self.tracks:
                 if len(t.rhythms) < self.measure_resolution:
-                    t.rhythms.extend([0]*(self.measure_resolution - len(t.rhythms)))
+                    t.rhythms.extend([0] * (self.measure_resolution - len(t.rhythms)))
                 else:
                     t.rhythms = t.rhythms[0:self.measure_resolution]
             self._update_sleep_interval()
@@ -100,8 +115,12 @@ class GridSequencer(Mixer):
     def _worker(self):
         i = 0
         while self.running:
-
+            self.notify_observers(TimeEvent(i))
             oscilator_index = 0
+
+            is_stressed = not i % (self.measure_resolution / self.beats_per_measure)
+            self.current_gain = self.stress_gain if is_stressed else self.non_stress_gain
+
             for track in self.tracks:
 
                 gain = track.gains
@@ -116,7 +135,8 @@ class GridSequencer(Mixer):
                     # track.instrument.off()
                     instrument.off(tone)
 
-            self._sleep()
+            # self._sleep()
+            sleep(self.sleep_interval)
 
             i += 1
             i %= self.measure_resolution
@@ -126,6 +146,14 @@ class GridSequencer(Mixer):
                     break
                 else:
                     self.loop -= 1
+
+    def callback(self, in_data, frame_count, time_info, status):
+        res = Mixer.callback(self, in_data, frame_count, time_info, status)
+        if res is None:
+            return res
+        else:
+            return res * self.current_gain
+            # return Mixer.callback(self, in_data * self.gain, frame_count, time_info, status)
 
     def play(self, loop=INFINIT_LOOP):
         # print("Sequencer: Play")
@@ -218,7 +246,7 @@ class GridSequencer(Mixer):
                        (track.instrument_id,
                         track.instrument_tone)
                        )
-            file.write("  ".join(map(str,track.rhythms)))
+            file.write("  ".join(map(str, track.rhythms)))
             file.write("\n")
 
         file.flush()
