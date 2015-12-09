@@ -25,6 +25,9 @@ TONE_COLOR = 'green'
 CONTROL_FRAME_ACTIVE = 'light blue'
 CONTROL_FRAME_INACTIVE = 'gray'
 
+KEY_ON_TAG = "<<KEY_ON>>"
+KEY_OFF_TAG = "<<KEY_OFF>>"
+
 
 class Key:
     OCTAVE_KEYS = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
@@ -45,37 +48,43 @@ class Key:
             activeoutline=self.active_outline)
 
         self.pressed = False
-        self.running = True
+        # self.running = True
         self.press_time = 0
         self.release_time = time.time()
-        self.worker_thread = threading.Thread(target=self._worker)
-        self.worker_thread.daemon = True
-        self.worker_thread.start()
 
-    def terminate(self):
-        self.running = False
-        self.worker_thread.join()
+        self.press_tag = "<<Tone-%i>>" % tone
+        self.release_tag = "<<ToneRelease-%i>>" % tone
 
-    def _worker(self):
-        while self.running:
-            active_press = self.release_time < self.press_time
-            if active_press:
-                if not self.pressed and time.time() - self.press_time:
+        self.keyboard.bind(self.press_tag, self._press)
+        self.keyboard.bind(self.release_tag, self._release)
 
-                    if self.keyboard.instrument is not None:
-                        self.keyboard.instrument.on(self.tone)
-                    self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
-                    self.pressed = True
-            else:
-                if self.pressed and time.time() - self.release_time:
-                    if self.keyboard.instrument is not None:
-                        self.keyboard.instrument.off(self.tone)
-                    self.canvas.itemconfigure(self.widget, fill=self.color)
-                    self.pressed = False
+    def work(self):
+        active_press = self.release_time < self.press_time
+        if active_press:
+            if not self.pressed and time.time() - self.press_time:
+                self.pressed = True
+                self.keyboard.event_generate(self.press_tag)
+        else:
+            if self.pressed and time.time() - self.release_time:
+                self.pressed = False
+                self.keyboard.event_generate(self.release_tag)
 
-            time.sleep(.1)
+    def _press(self, event=None):
+
+        # print "_press: %s" % str(threading._get_ident())
+        if self.keyboard.instrument is not None:
+            self.keyboard.instrument.on(self.tone)
+            self.canvas.itemconfigure(self.widget, fill=self.pressed_fill)
+        pass
+
+    def _release(self, event=None):
+        if self.keyboard.instrument is not None:
+            self.keyboard.instrument.off(self.tone)
+            self.canvas.itemconfigure(self.widget, fill=self.color)
+        pass
 
     def press(self, event=None):
+        # print "press: %s" % str(threading._get_ident())
         self.press_time = time.time()
 
     def release(self, event=None):
@@ -113,8 +122,19 @@ class KeyboardView(Frame):
         for tone in range(MIN_TONE, MAX_TONE):
             self.keyboard_keys[tone] = self.create_key(tone)
 
+        self.running = True
+        self.worker_thread = threading.Thread(target=self._worker)
+        self.worker_thread.daemon = True
+        self.worker_thread.start()
+
+    def _worker(self):
+        while self.running:
+            for k in self.keyboard_keys.values():
+                k.work()
+            time.sleep(.01)
+
     def set_instrument(self, new_instrument):
-        print "set_instrument: %s" %str(new_instrument)
+        # print "set_instrument: %s" % str(new_instrument)
         for key in self.keyboard_keys.values():
             key.release()
         old_instrument = self.instrument
@@ -124,9 +144,8 @@ class KeyboardView(Frame):
             old_instrument.off()
 
     def terminate(self):
-        for t in self.keyboard_keys.values():
-            t.terminate()
-        print "All keyes terminated"
+        self.running = False
+        self.worker_thread.join()
 
     def create_key(self, tone):
         x0 = tone * KEY_WIDTH
@@ -163,28 +182,39 @@ class ScalePlot(Canvas):
             self.draw_scale(scales.EvenTempered(528), color=color, width=width, add_to_scales=False)
 
         self.tones = {}
+        self.events = []
+        self.bind("<<notify>>", self._notify)
 
     def notify(self, event):
-        if isinstance(event, ToneOnEvent):
-            if isinstance(event.instrument, ScaleSynth):
-                cents = event.instrument.scale.get_cents(event.tone)
-                x = int(self.tone_width * cents / 100.) + self.offset
-                id = self.create_oval(
-                    x - TONE_RADIUS,
-                    TONE_Y - TONE_RADIUS,
-                    x + TONE_RADIUS,
-                    TONE_Y + TONE_RADIUS,
-                    fill=TONE_COLOR)
+        # print "notify: %s" % str(threading._get_ident())
+        self.events.append(event)
+        self.event_generate("<<notify>>")
 
+    def _notify(self, _):
+
+        # print "_notify: %s" % str(threading._get_ident())
+        while len(self.events):
+            event = self.events.pop()
+            if isinstance(event, ToneOnEvent):
+                if isinstance(event.instrument, ScaleSynth):
+                    cents = event.instrument.scale.get_cents(event.tone)
+                    x = int(self.tone_width * cents / 100.) + self.offset
+                    id = self.create_oval(
+                        x - TONE_RADIUS,
+                        TONE_Y - TONE_RADIUS,
+                        x + TONE_RADIUS,
+                        TONE_Y + TONE_RADIUS,
+                        fill=TONE_COLOR)
+
+                    if event.tone in self.tones:
+                        self.delete(self.tones[event.tone])
+                    self.tones[event.tone] = id
+            elif isinstance(event, ToneOffEvent):
                 if event.tone in self.tones:
                     self.delete(self.tones[event.tone])
-                self.tones[event.tone] = id
-        elif isinstance(event, ToneOffEvent):
-            if event.tone in self.tones:
-                self.delete(self.tones[event.tone])
-        elif isinstance(event, NewScaleEvent):
-            self.delete_scale(event.old_scale)
-            self.draw_scale(event.new_scale)
+            elif isinstance(event, NewScaleEvent):
+                self.delete_scale(event.old_scale)
+                self.draw_scale(event.new_scale)
 
     def delete_scale(self, scale):
         if type(scale) in self.scales:
@@ -232,7 +262,7 @@ class ScaleWindow(Toplevel):
             cf.config(style='Inactive.TFrame')
         self.control_frames[indx].config(style='Active.TFrame')
 
-        instrument = self.instruments[indx]
+        # instrument = self.instruments[indx]
         self.keyboard_view.set_instrument(instrument)
 
     def add_instrument(self, instrument_value):
@@ -243,7 +273,6 @@ class ScaleWindow(Toplevel):
         scale_plot = ScalePlot(self)
         scale_plot.draw_scale(instrument_value.scale)
         scale_plot.grid(column=1, row=self.row, sticky='nesw')
-
 
         control_frame = Frame(self)
 
@@ -261,8 +290,6 @@ class ScaleWindow(Toplevel):
         activate_button.pack()
 
         control_frame.grid(column=0, row=self.row, sticky='nesw')
-
-
 
         self.row += 1
         instrument_value.add_observer(scale_plot)
