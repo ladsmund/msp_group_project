@@ -57,3 +57,6 @@ class Mixer(list):
         channel = Channel(device)
         self.channels.append(channel)
         return channel
+
+    def __repr__(self):
+        return str(self)
