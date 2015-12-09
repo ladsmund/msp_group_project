@@ -4,10 +4,12 @@ from ttk import Frame, Label, Style, Checkbutton, Button
 _RHYTHM_BUTTON_WIDTH = 1
 
 COLOR_ACTIVE = 'green'
+COLOR_ACTIVE_STRESS = 'dark green'
 COLOR_INACTIVE = 'gray30'
+COLOR_INACTIVE_STRESS = 'gray15'
 
 class RhythmButton(Canvas):
-    def __init__(self, master, track, beat):
+    def __init__(self, master, track, beat, is_stressed):
 
         Canvas.__init__(self,
                         master,
@@ -19,6 +21,7 @@ class RhythmButton(Canvas):
 
         self.track = track
         self.beat = beat
+        self.is_stressed = is_stressed
         self.toggle_visual()
 
     def command(self):
@@ -31,9 +34,16 @@ class RhythmButton(Canvas):
 
     def toggle_visual(self):
         if self.track.rhythms[self.beat]:
-            self.config(bg=COLOR_ACTIVE)
+            if self.is_stressed:
+                self.config(bg=COLOR_ACTIVE_STRESS)
+            else:
+                self.config(bg=COLOR_ACTIVE)
         else:
-            self.config(bg=COLOR_INACTIVE)
+            if self.is_stressed:
+                self.config(bg=COLOR_INACTIVE_STRESS)
+            else:
+                self.config(bg=COLOR_INACTIVE)
+
 
 
 class TrackFrame(Frame):
@@ -56,7 +66,7 @@ def check_cmd(track, mute_var):
 
 
 class RhythmTrackFrame(TrackFrame):
-    def __init__(self, master, track):
+    def __init__(self, master, track, sequencer):
         TrackFrame.__init__(self, master, track)
 
         self.id_label = Label(self, text=str(track.id))
@@ -78,7 +88,9 @@ class RhythmTrackFrame(TrackFrame):
         rhythm_frame = Frame(self)
         rhythm_frame.pack(side='right')
 
+        subdivision = sequencer.measure_resolution / sequencer.beats_per_measure
+
         for b in range(0, len(self.track.rhythms)):
-            button = RhythmButton(rhythm_frame, track, b)
+            button = RhythmButton(rhythm_frame, track, b, not b % subdivision)
             # self.buttons.append(button)
             button.grid(row=0, column=b, padx=1)

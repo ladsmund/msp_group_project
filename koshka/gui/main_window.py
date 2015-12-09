@@ -33,7 +33,7 @@ class SequencerFrame(Frame):
 
             tracks = [track for track in sequencer.tracks if track.instrument_id == id]
             for row, track in enumerate(tracks):
-                RhythmTrackFrame(instrument_track_frame, track).grid(row=row, column=0, sticky="EW")
+                RhythmTrackFrame(instrument_track_frame, track, sequencer).grid(row=row, column=0, sticky="EW")
 
 
 class MainControlFrame(Frame):

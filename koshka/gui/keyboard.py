@@ -16,7 +16,7 @@ KEY_WIDTH = 30
 KEYBOARD_HEIGHT = KEY_HEIGHT + 1
 KEYBOARD_WIDTH = (MAX_TONE - MIN_TONE) * KEY_WIDTH
 
-SCALE_COLOR = 'dark red'
+SCALE_COLOR = 'blue'
 SCALE_PLOT_HEIGHT = 50
 TONE_RADIUS = 10
 TONE_Y = 25
@@ -177,8 +177,8 @@ class ScalePlot(Canvas):
         self.max_tone = MAX_TONE
 
         self.scales = {}
-        for width in range(13, 1, -2):
-            color = "gray%i" % (30 + 3 * width)
+        for width in range(16, 1, -2):
+            color = "gray%i" % (20 + 3 * width)
             self.draw_scale(scales.EvenTempered(528), color=color, width=width, add_to_scales=False)
 
         self.tones = {}
@@ -236,7 +236,7 @@ class ScalePlot(Canvas):
                 self.delete(l)
             del self.scales[type(scale)]
 
-    def draw_scale(self, scale, color=SCALE_COLOR, width=2, add_to_scales=True):
+    def draw_scale(self, scale, color=SCALE_COLOR, width=3, add_to_scales=True):
         if not type(scale) in self.scales:
             lines = []
 
