@@ -31,9 +31,9 @@ class SingleSoundSampler(Instrument):
         self.offset = 0
         self.trigger_start = 0
 
-    def on(self, tone):
+    def on(self, tone, time=0):
         self.offset = 0
-        Instrument.on(self, tone)
+        Instrument.on(self, tone, time=0)
 
     def _callback(self, in_data, frame_count, time_info, status):
         output_buffer = numpy.zeros(frame_count)

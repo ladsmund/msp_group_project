@@ -164,7 +164,7 @@ class KeyboardView(Frame):
     def destroy(self):
         self.running = False
         self.worker_thread.join()
-        Frame.destroy(self)
+        return Frame.destroy(self)
 
 
 class ScalePlot(Canvas):
@@ -198,7 +198,7 @@ class ScalePlot(Canvas):
 
     def destroy(self):
         self.running = False
-        self.worker_thread.join()
+        self.worker_thread.join(1)
         return Canvas.destroy(self)
 
     def notify(self, event):
@@ -207,7 +207,9 @@ class ScalePlot(Canvas):
     def _worker(self):
         while self.running:
             if len(self.events) > 0:
-                self.event_generate("<<update>>", when='tail')
+                # self.event_generate("<<update>>", when='tail')
+                self._update(None)
+                pass
             time.sleep(.04)
 
     def _update(self, _):
@@ -315,3 +317,8 @@ class ScaleWindow(Toplevel):
         control_frame.grid(column=0, row=self.row, sticky='nesw')
 
         self.row += 1
+
+    def destroy(self):
+        for sp in self.scale_plots:
+            sp.destroy()
+        return Toplevel.destroy(self)

@@ -39,7 +39,6 @@ class GridSequencer(Mixer):
         self.speed = self.DEFAULT_SPEED
         self.measure_resolution = self.DEFAULT_MEASURE_RESOLUTION
         self.beats_per_measure = self.DEFAULT_BEATS_PER_MEASURE
-        self.sleep_interval = None
         self._update_sleep_interval()
 
         self.stress_gain = self.DEFAULT_STRESS_GAIN
@@ -48,7 +47,9 @@ class GridSequencer(Mixer):
 
         self.running = False
         self.loop = 0
-        self._worker_thread = None
+        self.sleep_interval = None
+        self.total_frame_count = 0
+        self.sleep_frames = 0
 
         self.instruments = []
         self.instrument_id_counter = 0
@@ -90,6 +91,7 @@ class GridSequencer(Mixer):
             observer.notify(event)
 
     def change_measures(self, beats_per_measure, measure_resolution):
+        print "grid sequencer: change_measures"
         self.stop()
         if measure_resolution % beats_per_measure == 0:
             self.beats_per_measure = beats_per_measure
@@ -105,18 +107,22 @@ class GridSequencer(Mixer):
 
     def _update_sleep_interval(self):
         if self.measure_resolution % self.beats_per_measure == 0:
-            self.sleep_interval = 60. / (self.speed * self.measure_resolution / self.beats_per_measure)
+            sleep_time = 60. / (self.speed * self.measure_resolution / self.beats_per_measure)
+            # print sleep_time
+            self.sleep_interval = self.sample_rate * sleep_time
         else:
             raise Exception('This measure resolution has to be divisible with beeats_per_measure')
 
-    def _sleep(self):
-        sleep(self.sleep_interval)
+    def update(self, frame_count):
+        self.total_frame_count += frame_count
+        self.sleep_frames -= frame_count
+        if self.sleep_frames <= 0:
+            i = int(self.total_frame_count // self.sleep_interval)
+            i %= self.measure_resolution
 
-    def _worker(self):
-        i = 0
-        while self.running:
-            self.notify_observers(TimeEvent(i))
-            oscilator_index = 0
+            # self.notify_observers(TimeEvent(i))
+
+            offset = -self.sleep_frames
 
             is_stressed = not i % (self.measure_resolution / self.beats_per_measure)
             self.current_gain = self.stress_gain if is_stressed else self.non_stress_gain
@@ -129,49 +135,34 @@ class GridSequencer(Mixer):
                 instrument = self.instruments[track.instrument_id]
 
                 if not track.mute and rhythm[i] != 0:
-                    instrument.on(tone)
+                    instrument.on(tone, time=offset)
                     # track.instrument.on(rhythm[i])
                 else:
                     # track.instrument.off()
-                    instrument.off(tone)
+                    instrument.off(tone, time=offset)
 
-            # self._sleep()
-            sleep(self.sleep_interval)
+            self.sleep_frames += self.sleep_interval
 
-            i += 1
-            i %= self.measure_resolution
-            if not i:
-                if not self.loop:
-                    self.running = False
-                    break
-                else:
-                    self.loop -= 1
+        pass
 
     def callback(self, in_data, frame_count, time_info, status):
+        # time = time_info['output_buffer_dac_time']
+        if self.running:
+            self.update(frame_count)
         res = Mixer.callback(self, in_data, frame_count, time_info, status)
         if res is None:
             return res
         else:
             return res * self.current_gain
-            # return Mixer.callback(self, in_data * self.gain, frame_count, time_info, status)
 
     def play(self, loop=INFINIT_LOOP):
-        # print("Sequencer: Play")
-        if self._worker_thread is None:
-            self.running = True
-            self.loop = loop
-            self._worker_thread = threading.Thread(target=self._worker)
-            self._worker_thread.daemon = True
-            self._worker_thread.start()
+        self.total_frame_count = 0
+        self.sleep_frames = 0
+        self.running = True
 
     def stop(self):
-        # print("Sequencer: Stop")
-        if self.running:
-            self.running = False
-            self.loop = 0
-            self._worker_thread.join()
-            self._worker_thread = None
-            [i.off() for i in self.instruments]
+        self.running = False
+        [i.off() for i in self.instruments]
 
     def _parse(self, data):
         lines = data.split("\n")

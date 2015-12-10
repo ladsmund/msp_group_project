@@ -16,17 +16,17 @@ class PerfectTriads(Mixer):
         self.add_device(self.instrument03)
         self.tone = None
 
-    def on(self, tone):
+    def on(self, tone, time=0):
         base_frequency = self.instrument01.scale.get_frequency(tone)
-        self.instrument01.on(tone)
-        self.instrument02.on(base_frequency * 5. / 4)
-        self.instrument03.on(base_frequency * 3. / 2)
+        self.instrument01.on(tone, time=time)
+        self.instrument02.on(base_frequency * 5. / 4, time=time)
+        self.instrument03.on(base_frequency * 3. / 2, time=time)
 
-    def off(self, tone=None):
+    def off(self, tone=None, time=0):
         if tone is None or tone == self.tone:
-            self.instrument01.off()
-            self.instrument02.off()
-            self.instrument03.off()
+            self.instrument01.off(time=time)
+            self.instrument02.off(time=time)
+            self.instrument03.off(time=time)
 
     def __str__(self):
         return "%s %s" % (type(self).__name__, str(self.instrument01.scale))

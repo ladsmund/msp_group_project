@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import sys
 import Tkinter
 from Tkinter import Tk, RIDGE, IntVar, Menu, StringVar
 import tkFileDialog
@@ -143,6 +144,7 @@ class MainControlFrame(Frame):
         try:
             measure_resolution = int(self.measure_resolution.get())
             beats_per_measure = int(self.beats_per_measure.get())
+
             self.sequencer.change_measures(beats_per_measure, measure_resolution)
             print "ready to reload seq"
             self.master.master._open_sequencer(self.sequencer)
@@ -204,33 +206,43 @@ class MainWindow(Tk):
         self.quit()
 
     def _open_sequencer(self, sequencer):
+        print "\nMainWindow: _open_sequencer"
 
+        print("Stop DAC...")
         self.dac.stop()
+        print("Stop DAC...done")
 
+
+        if self.sequencer_frame:
+            self.sequencer_frame.destroy()
+        if self.mixer_window:
+            self.mixer_window.destroy()
+        if self.scale_window is not None:
+            self.scale_window.destroy()
+
+
+        print("Reset sequencer...")
         if self.sequencer is not None:
             self.sequencer.stop()
             self.sequencer.remove_all_observers()
             for i in self.sequencer.instruments:
                 i.remove_all_observers()
+        print("Reset sequencer...done")
 
+        print("Connect sequencder...")
         self.sequencer = sequencer
         self.dac.connect(self.sequencer.callback)
+        print("Connect sequencder...done")
 
         for i in sequencer.instruments:
             i.id_variable = StringVar()
             i.id_variable.set(i.name_id)
 
-        if self.sequencer_frame:
-            self.sequencer_frame.destroy()
         self.sequencer_frame = SequencerFrame(self, self.sequencer)
         self.sequencer_frame.pack()
 
-        if self.mixer_window:
-            self.mixer_window.destroy()
         self.mixer_window = mixer_gui.MixerWindow(self, self.sequencer)
 
-        if self.scale_window is not None:
-            self.scale_window.destroy()
         self.scale_window = keyboard.ScaleWindow(self)
         for i in sequencer.instruments:
             self.scale_window.add_instrument(i)

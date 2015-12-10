@@ -16,9 +16,9 @@ class SineSynth(Instrument, Oscilator):
             output_buffer *= 0
         return output_buffer
 
-    def on(self, frequency):
+    def on(self, frequency, time=0):
         self.setFreq(frequency)
-        Instrument.on(self, 0)
+        Instrument.on(self, 0, time=time)
 
     def __str__(self):
         string = "SineSynth\n  Frequency: %0.1f" % self.frequency

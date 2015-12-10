@@ -19,10 +19,10 @@ class MonophonicScaleSynth(Instrument):
     def set_scale(self, scale):
         self.scale = scale
 
-    def on(self, tone):
+    def on(self, tone, time=0):
         frequency = self.scale.get_frequency(tone)
         self.oscillator.setFreq(frequency)
-        Instrument.on(self, tone)
+        Instrument.on(self, tone, time=time)
 
     def __str__(self):
         return "MonophonicScaleSynth %s" % str(self.scale)
@@ -50,10 +50,10 @@ class ScaleSynth(PolyphonicInstrument):
         self.add_device(synth)
         self.sub_instruments[tone] = synth
 
-    def on(self, tone):
+    def on(self, tone, time=0):
         if tone not in self.sub_instruments:
             self._add_synth(tone)
-        PolyphonicInstrument.on(self, tone)
+        PolyphonicInstrument.on(self, tone, time=time)
 
     def __str__(self):
         return "ScaleSynth %s" % str(self.scale)
