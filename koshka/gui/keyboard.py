@@ -238,7 +238,6 @@ class ScalePlot(Canvas):
     def delete_scale(self, scale):
         if type(scale) in self.scales:
             for l in self.scales[type(scale)]:
-                print "delete %s" % str(l)
                 self.delete(l)
             del self.scales[type(scale)]
 
