@@ -1,0 +1,19 @@
+parameters
+speed 140
+measure_resolution 12
+beats_per_measure 3
+samplerate 48000
+buffersize 1024
+
+instruments
+Drumset
+
+rhythm
+ 0   7: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   6: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   5: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   4: 1  1  1  1  1  1  1  1  1  1  1  1
+ 0   3: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   2: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   1: 0  0  0  0  0  0  0  0  0  0  0  0
+ 0   0: 0  0  0  0  0  0  0  0  0  0  0  0

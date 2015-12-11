@@ -11,6 +11,9 @@ from sequencers.grid_sequencer import GridSequencer
 import mixer_gui
 import keyboard
 import threading
+import webbrowser
+
+URL_HELP_DOC = "https://github.com/ladsmund/msp_group_project/blob/master/koshka/help.md"
 
 from dac import DAC
 
@@ -179,6 +182,10 @@ class MainWindow(Tk):
         filemenu.add_command(label="Save As...", command=self.save_as, accelerator="meta-shift-s")
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.quit)
+
+        menu.add_cascade(label="Help", menu=filemenu)
+        filemenu.add_command(label="Online Help...", command=lambda: webbrowser.open_new_tab(URL_HELP_DOC))
+
 
         # Note: This is only implemented and tested for Mac OS
         self.bind_all("<Command-o>", self.open)

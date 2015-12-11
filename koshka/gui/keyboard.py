@@ -18,6 +18,7 @@ KEYBOARD_WIDTH = (MAX_TONE - MIN_TONE) * KEY_WIDTH
 
 SCALE_COLOR = 'blue'
 SCALE_PLOT_HEIGHT = 50
+SCALE_PLOT_LINE_HEIGHT = 40
 TONE_RADIUS = 10
 TONE_Y = 25
 TONE_COLOR = 'green'
@@ -194,8 +195,6 @@ class ScalePlot(Canvas):
 
         self.bind("<<update>>", self._update)
 
-
-
     def destroy(self):
         self.running = False
         self.worker_thread.join(1)
@@ -246,16 +245,29 @@ class ScalePlot(Canvas):
 
     def draw_scale(self, scale, color=SCALE_COLOR, width=3, add_to_scales=True):
         if not type(scale) in self.scales:
-            lines = []
+            scale_objects = []
 
             for tone in range(self.min_tone, self.max_tone):
                 cents = scale.get_cents(tone)
                 x = int(self.tone_width * cents / 100.) + self.offset
-                # x = self.tone_width * tone + self.offset
-                lines.append(self.create_line(x, 0, x, SCALE_PLOT_HEIGHT, fill=color, width=width))
+                # x = s_elf.tone_width * tone + self.offset
+                scale_objects.append(self.create_line(
+                    x,
+                    0,
+                    x,
+                    SCALE_PLOT_LINE_HEIGHT,
+                    fill=color,
+                    width=width))
+
+                if add_to_scales:
+                    scale_objects.append(self.create_text(
+                        x,
+                        SCALE_PLOT_LINE_HEIGHT + 5,
+                        text="%.0f" % cents, font="Helvetica 10",
+                        justify='center'))
 
             if add_to_scales:
-                self.scales[type(scale)] = lines
+                self.scales[type(scale)] = scale_objects
 
 
 class ScaleWindow(Toplevel):

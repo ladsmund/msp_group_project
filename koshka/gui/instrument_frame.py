@@ -6,17 +6,24 @@ import instruments
 import scales
 
 _INSTRUMENT_LABEL_WIDTH = 20
-_FILE_BUTTON_WIDTH = 3
+_FILE_BUTTON_WIDTH = 10
 
 
-class Instrument(Frame):
-    def __init__(self, master, instrument):
-        Frame.__init__(self, master, relief=RIDGE)
+class InstrumentFrame(Frame):
+    def __init__(self, master, instrument, relief=RIDGE, text_label=None):
+        Frame.__init__(self, master, relief=relief)
         self.instrument = instrument
 
         if instrument.id_variable is None:
+
+            if text_label == "":
+                return
+
+            if text_label is None:
+                text_label = instrument.name
+
             Label(self,
-                  text=instrument.name,
+                  text=text_label,
                   width=_INSTRUMENT_LABEL_WIDTH,
                   ).grid(row=0, padx=3, pady=3)
         else:
@@ -27,18 +34,18 @@ class Instrument(Frame):
                   ).grid(row=0, padx=3, pady=3)
 
 
-class SineSynthFrame(Instrument):
+class SineSynthFrame(InstrumentFrame):
     def __init__(self, master, instrument):
-        Instrument.__init__(self, master, instrument)
+        InstrumentFrame.__init__(self, master, instrument)
 
         self.frequency_label = Label(self, text=str(self.instrument.frequency))
         self.frequency_label.grid(row=0, column=0)
 
 
 
-class SamplerFrame(Instrument):
+class SamplerFrame(InstrumentFrame):
     def __init__(self, master, instrument):
-        Instrument.__init__(self, master, instrument)
+        InstrumentFrame.__init__(self, master, instrument,text_label="")
 
         file_name = os.path.basename(self.instrument.filename)
         self.load_file_button = Button(self, text=file_name, command=self.load_file,
@@ -52,20 +59,24 @@ class SamplerFrame(Instrument):
             self.instrument.load_file(file_path.name)
             self.load_file_button.config(text=file_name)
 
-class DrumsetFrame(Instrument):
+class DrumsetFrame(InstrumentFrame):
     def __init__(self, master, instrument = instruments.Drumset()):
-        Instrument.__init__(self, master, instrument)
+        InstrumentFrame.__init__(self, master, instrument)
+        self.sample_frame = Frame(self)
+        self.sample_frame.grid(row = 1, padx=5)
 
-        row = 1
+        row = 0
         for ch in instrument:
-            ch_frame = SamplerFrame(self,ch.device).grid(row=row, padx=3)
+
             # Label(self,text="%s"%ch.device.filename).grid(row=row, padx=3)
+            Label(self.sample_frame,text="%i: "%row).grid(row=row, column=0,padx=3)
+            ch_frame = SamplerFrame(self.sample_frame,ch.device).grid(row=row, column=1, padx=3)
             row += 1
 
 
 
 
-class ScaleSynthFrame(Instrument):
+class ScaleSynthFrame(InstrumentFrame):
 
     def find_scale(self, name):
         for s in scales.SCALES:
@@ -94,7 +105,7 @@ class ScaleSynthFrame(Instrument):
             self.freq_var.set(self.instrument.scale.base_frequency)
 
     def __init__(self, master, instrument):
-        Instrument.__init__(self, master, instrument)
+        InstrumentFrame.__init__(self, master, instrument)
 
         scale_name = [s.__name__ for s in scales.SCALES]
         scale_name = [type(instrument.scale).__name__] + scale_name
@@ -106,7 +117,7 @@ class ScaleSynthFrame(Instrument):
 
         freq_frame = Frame(self)
         freq_frame.grid(row=2, sticky="W", padx=3)
-        Label(freq_frame, text='Base Frequency: ').pack(side='left')
+        Label(freq_frame, text='Base Frequency (Hz): ').pack(side='left')
 
         self.freq_var = StringVar(self)
         self.freq_var.set(str(instrument.scale.base_frequency))
@@ -125,4 +136,4 @@ def get_instrument_frame(master, instrument):
     elif isinstance(instrument, instruments.Drumset):
         return DrumsetFrame(master, instrument)
     else:
-        return Instrument(master, instrument)
+        return InstrumentFrame(master, instrument)
