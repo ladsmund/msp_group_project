@@ -106,7 +106,7 @@ class ScaleSynthFrame(Instrument):
 
         freq_frame = Frame(self)
         freq_frame.grid(row=2, sticky="W", padx=3)
-        Label(freq_frame, text='Base Frequency: ').pack(side='left')
+        Label(freq_frame, text='Base Frequency (Hz): ').pack(side='left')
 
         self.freq_var = StringVar(self)
         self.freq_var.set(str(instrument.scale.base_frequency))
