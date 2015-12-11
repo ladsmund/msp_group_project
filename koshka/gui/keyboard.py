@@ -4,9 +4,9 @@ import scales
 from instruments import ScaleSynth
 from instruments.instrument import ToneOnEvent, ToneOffEvent
 from instruments.scalesynth import NewScaleEvent
-from instrument_frame import get_instrument_frame
 import time
-import threading
+
+
 
 MIN_TONE = 0
 MAX_TONE = 29
@@ -29,6 +29,8 @@ CONTROL_FRAME_INACTIVE = 'gray'
 KEY_ON_TAG = "<<KEY_ON>>"
 KEY_OFF_TAG = "<<KEY_OFF>>"
 
+UPDATE_INTERVAL = 10
+
 
 class Key:
     OCTAVE_KEYS = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
@@ -49,26 +51,19 @@ class Key:
             activeoutline=self.active_outline)
 
         self.pressed = False
-        # self.running = True
         self.press_time = 0
         self.release_time = time.time()
-
-        self.press_tag = "<<Tone-%i>>" % tone
-        self.release_tag = "<<ToneRelease-%i>>" % tone
-
-        self.keyboard.bind(self.press_tag, self._press)
-        self.keyboard.bind(self.release_tag, self._release)
 
     def work(self):
         active_press = self.release_time < self.press_time
         if active_press:
             if not self.pressed and time.time() - self.press_time > self.MIN_UPDATE_TIME:
                 self.pressed = True
-                self.keyboard.event_generate(self.press_tag, when='head')
+                self._press()
         else:
             if self.pressed and time.time() - self.release_time > self.MIN_UPDATE_TIME:
                 self.pressed = False
-                self.keyboard.event_generate(self.release_tag, when='head')
+                self._release()
 
     def _press(self, event=None):
 
@@ -88,6 +83,8 @@ class Key:
 
     def release(self, event=None):
         self.release_time = time.time()
+
+
 
     @staticmethod
     def get_key_color(tone):
@@ -122,15 +119,15 @@ class KeyboardView(Frame):
             self.keyboard_keys[tone] = self.create_key(tone)
 
         self.running = True
-        self.worker_thread = threading.Thread(target=self._worker)
-        self.worker_thread.daemon = True
-        self.worker_thread.start()
+        self._worker()
 
     def _worker(self):
-        while self.running:
-            for k in self.keyboard_keys.values():
-                k.work()
-            time.sleep(.01)
+        if not self.running:
+            return
+        for k in self.keyboard_keys.values():
+            k.work()
+        self.after(UPDATE_INTERVAL, self._worker)
+
 
     def set_instrument(self, new_instrument):
         # print "set_instrument: %s" % str(new_instrument)
@@ -141,10 +138,6 @@ class KeyboardView(Frame):
 
         if not old_instrument is None:
             old_instrument.off()
-
-    def terminate(self):
-        self.running = False
-        self.worker_thread.join()
 
     def create_key(self, tone):
         x0 = tone * KEY_WIDTH
@@ -157,14 +150,13 @@ class KeyboardView(Frame):
 
         if 0 <= tone < len(self.INPUT_KEYS):
             input_key = self.INPUT_KEYS[tone]
-            self.master.bind_all("<Key-%s>" % input_key, key.press)
-            self.master.bind_all("<KeyRelease-%s>" % input_key, key.release)
+            self.bind_all("<Key-%s>" % input_key, key.press)
+            self.bind_all("<KeyRelease-%s>" % input_key, key.release)
 
         return key
 
     def destroy(self):
         self.running = False
-        self.worker_thread.join()
         return Frame.destroy(self)
 
 
@@ -187,35 +179,21 @@ class ScalePlot(Canvas):
 
         self.tones = {}
         self.events = []
-
         self.running = True
-        self.worker_thread = threading.Thread(target=self._worker)
-        self.worker_thread.daemon = True
-        self.worker_thread.start()
-
-        self.bind("<<update>>", self._update)
+        self.consume()
 
     def destroy(self):
         self.running = False
-        self.worker_thread.join(1)
         return Canvas.destroy(self)
 
     def notify(self, event):
         self.events.append(event)
 
-    def _worker(self):
-        while self.running:
-            if len(self.events) > 0:
-                # self.event_generate("<<update>>", when='tail')
-                self._update(None)
-                pass
-            time.sleep(.04)
-
-    def _update(self, _):
-
+    def consume(self):
+        if not self.running:
+            return
         while len(self.events):
             event = self.events.pop()
-            # continue
             if isinstance(event, ToneOnEvent):
                 if isinstance(event.instrument, ScaleSynth):
                     cents = event.instrument.scale.get_cents(event.tone)
@@ -236,6 +214,7 @@ class ScalePlot(Canvas):
             elif isinstance(event, NewScaleEvent):
                 self.delete_scale(event.old_scale)
                 self.draw_scale(event.new_scale)
+        self.after(UPDATE_INTERVAL,self.consume)
 
     def delete_scale(self, scale):
         if type(scale) in self.scales:

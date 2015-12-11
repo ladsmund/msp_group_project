@@ -1,9 +1,6 @@
 from Tkinter import IntVar, Button, Canvas
 from ttk import Frame, Label, Style, Checkbutton, Button
 
-import threading
-import time
-
 _RHYTHM_BUTTON_WIDTH = 1
 
 COLOR_ACTIVE = 'green'

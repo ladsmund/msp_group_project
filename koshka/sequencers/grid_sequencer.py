@@ -1,7 +1,6 @@
 from os import path
 from time import sleep
 from exceptions import Exception
-import threading
 
 from mixer import Mixer
 import instruments
@@ -120,7 +119,7 @@ class GridSequencer(Mixer):
             i = int(self.total_frame_count // self.sleep_interval)
             i %= self.measure_resolution
 
-            # self.notify_observers(TimeEvent(i))
+            self.notify_observers(TimeEvent(i))
 
             offset = -self.sleep_frames
 
