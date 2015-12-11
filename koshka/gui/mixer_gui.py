@@ -45,9 +45,9 @@ class MixerFrame(Frame):
         scrollbar_v.config(command=self.canvas.yview)
         scrollbar_h.config(command=self.canvas.xview)
 
-        self.canvas.bind("<MouseWheel>",
+        master.bind("<MouseWheel>",
                          lambda e: self.canvas.yview_scroll(-e.delta, 'units'))
-        self.canvas.bind("<Shift-MouseWheel>",
+        master.bind("<Shift-MouseWheel>",
                          lambda e: self.canvas.xview_scroll(-e.delta, 'units'))
 
         Sizegrip(self).grid(column=2, row=1, sticky='se')
