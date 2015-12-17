@@ -119,6 +119,12 @@ class GridSequencer(Mixer):
             i = int(self.total_frame_count // self.sleep_interval)
             i %= self.measure_resolution
 
+            if i == 0:
+                if self.loop == 0:
+                    self.running = False
+                    return
+                self.loop -= 1
+
             self.notify_observers(TimeEvent(i))
 
             offset = -self.sleep_frames
@@ -145,7 +151,6 @@ class GridSequencer(Mixer):
         pass
 
     def callback(self, in_data, frame_count, time_info, status):
-        # time = time_info['output_buffer_dac_time']
         if self.running:
             self.update(frame_count)
         res = Mixer.callback(self, in_data, frame_count, time_info, status)
@@ -157,6 +162,7 @@ class GridSequencer(Mixer):
     def play(self, loop=INFINIT_LOOP):
         self.total_frame_count = 0
         self.sleep_frames = 0
+        self.loop = loop
         self.running = True
 
     def stop(self):
