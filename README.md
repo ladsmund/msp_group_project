@@ -1,5 +1,33 @@
 # Koshka - Group project for MSP 2015
 
+##Final Version
+By Mads Lund and Aric Werner
+
+This is the final version of our project Koshka for Music Software Project 2015.
+
+#Excecution
+Run Koshka using the executable file:
+```
+./koshka/koshka.py
+```
+
+A score can also be run without GUI using the command line:
+
+```
+usage: koshka.py [-h] [--no_gui [NO_GUI]] [-l [LOOP]] [score]
+
+Koshka - MSP project
+
+positional arguments:
+  score
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --no_gui [NO_GUI]
+  -l [LOOP], --loop [LOOP]
+```
+
+
 ##Homework 9
 By Mads Lund and Aric Werner
 

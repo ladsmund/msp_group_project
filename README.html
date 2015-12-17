@@ -1014,7 +1014,54 @@ body .markdown-body
     page-break-after: avoid;
   }
 }
-</style><title>README</title></head><body><article class="markdown-body"><h1 id="koshka-group-project-for-msp-2015"><a name="user-content-koshka-group-project-for-msp-2015" href="#koshka-group-project-for-msp-2015" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Koshka - Group project for MSP 2015</h1>
+</style><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+MathJax.Hub.Config({
+  config: ["MMLorHTML.js"],
+  extensions: ["tex2jax.js"],
+  jax: ["input/TeX"],
+  tex2jax: {
+    inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: false
+  },
+  TeX: {
+    extensions: ["AMSmath.js", "AMSsymbols.js"],
+    TagSide: "right",
+    TagIndent: ".8em",
+    MultLineWidth: "85%",
+    equationNumbers: {
+      autoNumber: "AMS",
+    },
+    unicode: {
+      fonts: "STIXGeneral,'Arial Unicode MS'"
+    }
+  },
+  showProcessingMessages: false
+});
+</script>
+<title>README</title></head><body><article class="markdown-body"><h1 id="koshka-group-project-for-msp-2015"><a name="user-content-koshka-group-project-for-msp-2015" href="#koshka-group-project-for-msp-2015" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Koshka - Group project for MSP 2015</h1>
+<h2 id="final-version"><a name="user-content-final-version" href="#final-version" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Final Version</h2>
+<p>By Mads Lund and Aric Werner</p>
+<p>This is the final version of our project Koshka for Music Software Project 2015.</p>
+<h1 id="excecution"><a name="user-content-excecution" href="#excecution" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Excecution</h1>
+<p>Run Koshka using the executable file:<br />
+<pre><code>./koshka/koshka.py
+</code></pre></p>
+<p>A score can also be run without GUI using the command line:</p>
+<pre><code>usage: koshka.py [-h] [--no_gui [NO_GUI]] [-l [LOOP]] [score]
+
+Koshka - MSP project
+
+positional arguments:
+  score
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --no_gui [NO_GUI]
+  -l [LOOP], --loop [LOOP]
+</code></pre>
+
 <h2 id="homework-9"><a name="user-content-homework-9" href="#homework-9" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Homework 9</h2>
 <p>By Mads Lund and Aric Werner</p>
 <p>The homework solution is implemented with the two Python programs and the required deliverables and be executed with the command: <code>./homework9.sh</code>.</p>
