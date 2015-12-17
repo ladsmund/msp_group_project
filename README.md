@@ -5,7 +5,7 @@ By Mads Lund and Aric Werner
 
 This is the final version of our project Koshka for Music Software Project 2015.
 
-#Excecution
+###Excecution
 Run Koshka using the executable file:
 ```
 ./koshka/koshka.py
@@ -27,6 +27,8 @@ optional arguments:
   -l [LOOP], --loop [LOOP]
 ```
 
+### Online Help
+The online help can be found [here](koshka/help.md)
 
 ##Homework 9
 By Mads Lund and Aric Werner
