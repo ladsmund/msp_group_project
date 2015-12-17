@@ -93,8 +93,8 @@ class GridSequencer(Mixer):
         print "grid sequencer: change_measures"
         self.stop()
         if measure_resolution % beats_per_measure == 0:
-            self.beats_per_measure = beats_per_measure
-            self.measure_resolution = measure_resolution
+            self.beats_per_measure = int(beats_per_measure)
+            self.measure_resolution = int(measure_resolution)
             for t in self.tracks:
                 if len(t.rhythms) < self.measure_resolution:
                     t.rhythms.extend([0] * (self.measure_resolution - len(t.rhythms)))
