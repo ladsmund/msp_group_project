@@ -6,11 +6,13 @@ from time import sleep
 from dac import DAC
 from sequencers.grid_sequencer import GridSequencer
 
+DEFAULT_SCORE_FILE = "./scores/score_sample_blank.txt"
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Koshka - MSP project')
 
-    parser.add_argument('score', type=str)
+    parser.add_argument('score', nargs='?', type=str, default=DEFAULT_SCORE_FILE)
     parser.add_argument('--no_gui', type=bool, default=False, const=True,
                         nargs='?')
     parser.add_argument('-l', '--loop', type=int, default=0,
