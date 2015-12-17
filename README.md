@@ -3,7 +3,7 @@
 ##Final Version
 By Mads Lund and Aric Werner
 
-This is the final version of our project Koshka for Music Software Project 2015.
+This is the final version of our project Koshka for the course Music Software Project at NYU 2015.
 
 ###Excecution
 Run Koshka using the executable file:
