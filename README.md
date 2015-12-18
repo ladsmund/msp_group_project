@@ -1,14 +1,23 @@
-# Koshka - Group project for MSP 2015
+# Koshka sequencer
+Group project for Music Software Projects at NYU, 2015. 
 
-##Final Version
 By Mads Lund and Aric Werner
 
-This is the final version of our project Koshka for the course Music Software Project at NYU 2015.
+##Final version
+
+###Dependencies
+You will need to be running Python 2.7, and have a few other packages installed to run Koshka:
+```
+brew install portaudio # If you have a Mac
+pip install pyaudio
+pip install numpy
+pip install scipy
+```
 
 ###Excecution
 Run Koshka using the executable file:
 ```
-./koshka/koshka.py
+python koshka/koshka.py
 ```
 
 A score can also be run without GUI using the command line:
@@ -27,8 +36,8 @@ optional arguments:
   -l [LOOP], --loop [LOOP]
 ```
 
-### Online Help
-The online help can be found [here](koshka/help.md)
+### Online help
+The online help can be found [here](koshka/help.md).
 
 ##Homework 9
 By Mads Lund and Aric Werner
